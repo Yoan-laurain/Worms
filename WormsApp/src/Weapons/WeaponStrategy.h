@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object/SActor.h"
+#include "Object/SActor.h";
 
 class WeaponStrategy : public SActor
 {

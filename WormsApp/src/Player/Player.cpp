@@ -7,7 +7,7 @@ Player::Player() :
 	maxHealth(100),
 	weaponStrategy(nullptr)
 {
-	SetWeaponStrategy(std::make_unique<SimpleGun>());
+	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 }
 
 void Player::SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy)

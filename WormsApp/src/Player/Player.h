@@ -1,8 +1,8 @@
 #pragma once
 
-#include <memory>
 #include "Object/SActor.h"
 #include "../Turn/ITurnObserver.h"
+#include <memory>
 
 class WeaponStrategy;
 

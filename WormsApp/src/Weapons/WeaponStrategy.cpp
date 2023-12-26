@@ -1,6 +1,6 @@
 #include "WeaponStrategy.h"
 
-WeaponStrategy::WeaponStrategy() :
+WeaponStrategy::WeaponStrategy() : 
 	currentAmunition(0),
 	maxAmunition(0),
 	damage(0)

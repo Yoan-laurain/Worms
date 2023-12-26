@@ -7,12 +7,12 @@ class ITurnObserver
 {
     public:
     
-    virtual ~ITurnObserver() = default;
     ITurnObserver() = default;
-    ITurnObserver(const ITurnObserver& other) = default;
-    ITurnObserver& operator=(const ITurnObserver& other) = default;
-    ITurnObserver(ITurnObserver&& other) = default;
-    ITurnObserver& operator=(ITurnObserver&& other) = default;
+    virtual ~ITurnObserver() = default;
+    ITurnObserver(const ITurnObserver& other) = delete;
+    ITurnObserver(ITurnObserver&& other) = delete;
+    ITurnObserver& operator=(const ITurnObserver& other) = delete;
+    ITurnObserver& operator=(ITurnObserver&& other) = delete;
     
     virtual void onTurnChange(int currentPlayer) = 0;
 };

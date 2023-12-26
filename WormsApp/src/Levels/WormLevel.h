@@ -1,14 +1,17 @@
 #pragma once
 
 #include "Spoon.h"
+#include <memory>
 
-class TurnManager;
+#include "../Turn/TurnManager.h"
 
 class WormLevel : public Level
 {
 	public:
 
-		void CreatePlayer(TurnManager& turnManager);
+		void CreatePlayer();
 
 		void BeginPlay() override;
+
+		std::unique_ptr<TurnManager> m_TurnManager;
 };
