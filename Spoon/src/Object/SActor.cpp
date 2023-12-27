@@ -1,6 +1,7 @@
 #include <snpch.h>
 #include "SActor.h"
 #include "Spoon/Core/Level.h"
+#include "Spoon/Events/MouseEvent.h"
 
 SActor::SActor() :
 	SObject(),
@@ -37,6 +38,42 @@ void SActor::Tick(float DeltaTime)
 void SActor::DestroyActor()
 {
 	//GetWorld()->DestroyObject(this);
+}
+
+bool SActor::OnMouseEvent(MouseMovedEvent& _event)
+{
+
+	bIsHovered = IsInBound(_event.GetLoc());
+
+	if (bIsPressed)
+	{
+		SetLocation(_event.GetLoc() - (GetSize()/2));
+	}
+
+	return false;
+}
+
+bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
+{
+	if (bIsHovered)
+	{
+		bIsPressed = true;
+	}
+	return bIsHovered;
+}
+
+bool SActor::OnMouseRelesedEvent(MouseButtonReleasedEvent& _event)
+{
+	bIsPressed = false;
+	return false;
+}
+
+void SActor::OnEvent(SpoonEvent& event)
+{
+	EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(SActor::OnMouseEvent));
+	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(SActor::OnMousePressedEvent));
+	dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(SActor::OnMouseRelesedEvent));
 }
 
 void SActor::SetWorldRef(Level* parentRef)

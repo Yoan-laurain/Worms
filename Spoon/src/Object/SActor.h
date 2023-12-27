@@ -46,6 +46,9 @@ class SPOON_API SActor : public SObject
 {
 	friend class Level;
 
+	// Todo : A delete when key application
+	friend class Application;
+
 public:
 
 	SActor();
@@ -53,17 +56,6 @@ public:
 	virtual ~SActor();
 
 	void DestroyActor();
-
-	void OnEvent(class SpoonEvent& event);
-
-#pragma region Render
-
-public:
-	Shape* MyShape;
-
-#pragma endregion
-
-#pragma region World
 
 	inline class Level* GetWorld() const { return WorldRef; };
 
@@ -73,16 +65,32 @@ protected:
 
 	virtual void Tick(float DeltaTime);
 
+	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
+
+	virtual bool OnMousePressedEvent(class MouseButtonPressedEvent& _event);
+
+	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
+
 private:
 
+	void OnEvent(class SpoonEvent& event);
+
 	void SetWorldRef(class Level* parentRef);
+
+public:
+
+	Shape* MyShape;
+
+protected:
+
+	bool bIsHovered = false;
+
+	bool bIsPressed = false;
 
 private:
 
 	FColor ObjectColor;
 
 	class Level* WorldRef;
-
-#pragma endregion World
 
 };

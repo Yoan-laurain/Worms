@@ -4,7 +4,7 @@
 
 void WormLevel::CreatePlayer()
 {
-	std::shared_ptr<Player> playerPtr = SpawnActor<Player>(FTransform(FVector2D(0, 0), FVector2D(1, 1))); // TODO : Adapt SpawnLocation
+	std::shared_ptr<Player> playerPtr = SpawnActor<Player>(FTransform(FVector2D(50, 50), FVector2D(50, 50))); // TODO : Adapt SpawnLocation
 	m_TurnManager->registerObserver(playerPtr);
 }
 
@@ -14,7 +14,8 @@ void WormLevel::BeginPlay()
 
     for (int i = 0; i < Config::MaxPlayers; ++i)
     {
-		CreatePlayer();
+		SpawnActor<Player>(FTransform(FVector2D(50 * i, 50 * i), FVector2D(50, 50))); // TODO : Adapt SpawnLocation
+
 	}
 
 	m_Field = SpawnActor<Field>(FTransform());
