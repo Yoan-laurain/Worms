@@ -1,6 +1,6 @@
 #include "SObject.h"
 #include "Level.h"
-#include "../../Object/Composant/CollisionShape.h"
+#include "Object/Composant/CollisionShape.h"
 
 SObject::SObject() : ObjectTransform(), bIsStatic(true)
 {

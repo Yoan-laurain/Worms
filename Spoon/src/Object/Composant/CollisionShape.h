@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "snpch.h"
 #include <Spoon/Library/Collision.h>
 
 struct ShapeOfYou
