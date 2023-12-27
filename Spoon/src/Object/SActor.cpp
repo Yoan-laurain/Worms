@@ -4,11 +4,8 @@
 
 SActor::SActor() :
 	SObject(),
-	WorldRef(nullptr)
-	bIsStatic = false;
 	WorldRef(nullptr),
-	MyShape(nullptr),
-	Render(nullptr)
+	MyShape(nullptr)
 {
 	Rectangle* newShape = new Rectangle();
 	newShape->height = GetSize().Y;
@@ -17,6 +14,8 @@ SActor::SActor() :
 	newShape->ObjectColor = FColor::White();
 
 	MyShape = newShape;
+
+	bIsStatic = false;
 }
 
 SActor::~SActor()

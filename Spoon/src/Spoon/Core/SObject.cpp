@@ -5,8 +5,8 @@
 SObject::SObject() : ObjectTransform(), bIsStatic(true)
 {
 	// todo remove this
-	CircleCollision* circle = new CircleCollision(ObjectTransform.Location,ObjectTransform.Size.X/2);
-	collisionShape = std::make_unique<CollisionShape>(circle);
+	//CircleCollision* circle = new CircleCollision(ObjectTransform.Location,ObjectTransform.Size.X/2);
+	//collisionShape = std::make_unique<CircleCollision>(circle);
 }
 
 SObject::~SObject()
@@ -46,7 +46,7 @@ void SObject::SetTransform(const FTransform& transform)
 	ObjectTransform = transform;
 }
 
-bool SObject::IsInBound(const FVector2D& _loc)
+bool SObject::IsInBound(const FVector2D& _loc) const
 {
 	FVector2D truc = GetLocation() + (GetSize()/2);
 	FVector2D mintruc = GetLocation() - (GetSize()/2);
@@ -63,7 +63,7 @@ bool SObject::IsInBound(const FVector2D& _loc)
 
 bool SObject::CheckCollision(const SObject& other) const
 {
-	return collisionShape->CheckCollision(other.collisionShape);
+	return collisionShape.get()->CheckCollisionImpl(*other.collisionShape.get());
 }
 
 void SObject::OnCollide(const SObject& other)

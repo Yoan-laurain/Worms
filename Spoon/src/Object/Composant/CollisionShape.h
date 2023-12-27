@@ -1,42 +1,80 @@
 #pragma once
 
-class CollisionShape
-{
-public:
-    virtual ~CollisionShape() = 0;
+#include <vector>
+#include <Spoon/Library/Collision.h>
 
-    bool CheckCollision(const CollisionShape& other);
+struct ShapeOfYou
+{
+    ShapeOfYou() {};
+    virtual ~ShapeOfYou() {};
 };
 
-class CircleCollision : public CollisionShape
+struct CircleCollision : public ShapeOfYou
 {
-    public:
-        CircleCollision(FVector2D center, float radius);
+    CircleCollision(const FVector2D& center, float radius)
+        : center(center)
+        , radius(radius)
+    {
+    }
 
-        FVector2D center;
-        float radius;
+    FVector2D center;
+    float radius;
 };
 
-class PolygonCollision : public CollisionShape
+struct PolygonCollision : public ShapeOfYou
 {
-    public:
-	    PolygonCollision(std::vector<FVector2D> vertices, FVector2D center);
+    PolygonCollision(const std::vector<FVector2D>& vertices)
+        : vertices(vertices)
+    {
+    }
 
-	    std::vector<FVector2D> vertices;
-        FVector2D center;
+    std::vector<FVector2D> vertices;
+    FVector2D center;
 };
 
-class CollisionChecker
-{
-    public :
+template <typename ShapeType>
+struct CollisionShape
+{    
+    CollisionShape(const ShapeType& body)
+        : Body(body)
+    {
+	}
 
-	    static bool CheckCollision(const CollisionShape& shape1, const CollisionShape& shape2);
+    template <typename OtherShapeType>
+    bool CheckCollisionImpl(const OtherShapeType& other) const { return false; };
 
-private :
+    bool CheckCollisionImpl(const ShapeType& other) const { return false; };
 
-	    static bool CheckCollision(const CircleCollision& circle1, const CircleCollision& circle2);
-        static bool CheckCollision(const PolygonCollision& polygon1, const PolygonCollision& polygon2);
+    using Type = ShapeType;
 
-        static bool CheckCollision(const CircleCollision& circle, const PolygonCollision& polygon);
-
+    Type Body;
 };
+
+template <>
+template <>
+inline bool CollisionShape<CircleCollision>::CheckCollisionImpl<PolygonCollision>(const PolygonCollision& other) const
+{
+    FVector2D normal;
+    float depth;
+    return Collision::IntersectCirclePolygon(Body.center, Body.radius, other.center, other.vertices, normal, depth);
+}
+
+template <>
+inline bool CollisionShape<CircleCollision>::CheckCollisionImpl(const CircleCollision& other) const
+{
+    FVector2D normal;
+    float depth;
+    return Collision::IntersectCircles(Body.center, Body.radius, other.center, other.radius, normal, depth);
+}
+
+template <>
+inline bool CollisionShape<PolygonCollision>::CheckCollisionImpl(const PolygonCollision& other) const
+{
+    FVector2D normal;
+    float depth;
+    return Collision::IntersectPolygons(Body.vertices, other.vertices, normal, depth);
+}
+
+using BasicCollisionShape = CollisionShape<ShapeOfYou>;
+using CircleCollisionShape = CollisionShape<CircleCollision>;
+using PolygonCollisionShape = CollisionShape<PolygonCollision>;

@@ -2,9 +2,9 @@
 #include "Core.h"
 #include <snpch.h>
 #include "Spoon/Library/TStruct.h"
+#include "Object/Composant/CollisionShape.h"
 
 class ObjectRender;
-class CollisionShape;
 
 // Object base. 
 class SPOON_API SObject
@@ -23,7 +23,7 @@ public:
 
 	bool bIsStatic;
 
-	std::unique_ptr<CollisionShape> collisionShape;
+	std::unique_ptr<BasicCollisionShape> collisionShape;
 
 	FVector2D GetLocation() const;
 
@@ -37,7 +37,7 @@ public:
 
 	void SetTransform(const FTransform& transform);
 
-	bool IsInBound(const FVector2D& _loc);
+	bool IsInBound(const FVector2D& _loc) const;
 
 	bool CheckCollision(const SObject& other) const;
 

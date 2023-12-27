@@ -86,17 +86,17 @@ struct SPOON_API Vector2D
 	// Vector2D<T>D with 0, 1 value
 	static Vector2D<T> const Up() { return Vector2D<T>(0, 1); }
 
-	static T& DotProduct(const Vector2D<T>& _left, const Vector2D<T> _right)
+	static T DotProduct(const Vector2D<T>& _left, const Vector2D<T> _right)
 	{
 		return _left.X * _right.X + _left.X * _right.X;
 	}
 
-	static T& Distance(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	static T Distance(const Vector2D<T>& _left, const Vector2D<T>& _right)
 	{
 		return std::sqrt((_left.X - _right.X) * (_left.X - _right.X) + (_left.Y - _right.Y) * (_left.Y - _right.Y));
 	}
 
-	static Vector2D<T>& Normalize(const Vector2D<T>& _val)
+	static Vector2D<T> Normalize(const Vector2D<T>& _val)
 	{
 		return Vector2D<T>(_val / _val.GetLength());
 	}
