@@ -2,11 +2,13 @@
 #include "SActor.h"
 #include "Spoon/Core/Level.h"
 
-SActor::SActor() : 
+SActor::SActor() :
 	SObject(),
 	ObjectColor(255, 255, 255, 255),
 	WorldRef(nullptr)
-{}
+{
+	bIsStatic = false;
+}
 
 SActor::~SActor()
 {

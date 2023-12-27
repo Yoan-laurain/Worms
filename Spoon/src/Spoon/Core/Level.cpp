@@ -35,8 +35,16 @@ void Level::UpdateEntity(double deltatime)
 	}
 	for (SActor* entity : EntityList)
 	{
-		if(entity != nullptr)
+		if (entity != nullptr)
+		{
 			entity->Tick(deltatime);
+
+			if (!entity->bIsStatic)
+			{
+				 HandleCollision(entity);
+			}
+		}
+
 	}
 }
 
@@ -67,3 +75,13 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(obj);
 }
 
+void Level::HandleCollision(SActor* obj)
+{
+	for (SActor* entity : EntityList)
+	{
+		if (entity != nullptr && entity != obj)
+		{
+			entity->CheckCollision(*obj);
+		}
+	}
+}

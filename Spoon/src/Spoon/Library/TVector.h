@@ -58,14 +58,14 @@ struct SPOON_API Vector2D
 		return *this;
 	}
 
-	T GetSquareLenght() const
+	T GetSquareLength() const
 	{
 		return (X * X) + (Y * Y);
 	}
 
-	T GetLenght() const
+	T GetLength() const
 	{
-		return std::sqrt(GetSquareLenght());
+		return std::sqrt(GetSquareLength());
 	}
 
 	T Dot(const Vector2D<T>& _val)
@@ -89,6 +89,16 @@ struct SPOON_API Vector2D
 	static T& DotProduct(const Vector2D<T>& _left, const Vector2D<T> _right)
 	{
 		return _left.X * _right.X + _left.X * _right.X;
+	}
+
+	static T& Distance(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return std::sqrt((_left.X - _right.X) * (_left.X - _right.X) + (_left.Y - _right.Y) * (_left.Y - _right.Y));
+	}
+
+	static Vector2D<T>& Normalize(const Vector2D<T>& _val)
+	{
+		return Vector2D<T>(_val / _val.GetLength());
 	}
 
 	static Vector2D<T>& Lerp(const Vector2D<T>& _left, const Vector2D<T>& _right, const float& _alpha)
@@ -146,6 +156,12 @@ bool const operator<=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
 	return left.X <= right.X && left.Y <= right.Y;
 }
+
+template <typename T, typename L = T>
+Vector2D<T> operator*(const Vector2D<T>& right, const L& left)
+{
+	return Vector2D<T>(right.X * left, right.Y * left);
+}	
 
 template <typename T>
 bool const operator>=(const Vector2D<T>& left, const Vector2D<T>& right)

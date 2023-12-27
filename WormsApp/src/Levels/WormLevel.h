@@ -6,7 +6,6 @@
 
 #include <memory>
 
-
 class WormLevel : public Level
 {
 	public:

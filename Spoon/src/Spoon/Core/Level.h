@@ -39,6 +39,8 @@ public:
 	void RemoveObject(class SActor* obj);
 
 	void AddObject(class SActor* obj);
+
+	void HandleCollision(class SActor* obj);
 	
 protected:
 

@@ -1,8 +1,12 @@
 #include "SObject.h"
 #include "Level.h"
+#include "../../Object/Composant/CollisionShape.h"
 
-SObject::SObject() : ObjectTransform()
+SObject::SObject() : ObjectTransform(), bIsStatic(true)
 {
+	// todo remove this
+	CircleCollision* circle = new CircleCollision(ObjectTransform.Location,ObjectTransform.Size.X/2);
+	collisionShape = std::make_unique<CollisionShape>(circle);
 }
 
 SObject::~SObject()
@@ -55,4 +59,14 @@ bool SObject::IsInBound(const FVector2D& _loc)
 		return true;
 	}
 	return false;
+}
+
+bool SObject::CheckCollision(const SObject& other) const
+{
+	return collisionShape->CheckCollision(other.collisionShape);
+}
+
+void SObject::OnCollide(const SObject& other)
+{
+	std::cout << " I'm colliding with " << std::endl;
 }
