@@ -47,7 +47,9 @@ private:
 
 	void HandleEvent(sf::Event& event);
 
+#ifndef DEBUG
 	void DrawImGuiWin();
+#endif // !DEBUG
 
 	// Function to callback
 	EventCallBackFn EventCallBack;

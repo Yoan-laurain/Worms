@@ -19,20 +19,20 @@ void Field::GenerateFieldCurve()
     //sf::ConvexShape terrainShape;
     //terrainShape.setPointCount(numberOfCurvePoints * 2);
 
-    // Points de contrôle pour la courbe de Bézier
+    // Points de contrï¿½le pour la courbe de Bï¿½zier
     FVector2D controlPoint1(0.0f, Config::WindowHeight / 2.0f);
     FVector2D controlPoint2(Config::WindowWidth, Config::WindowHeight / 2.0f);
 
-    float frequency = 15.0f;  // Ajustement de la fréquence de l'onde sinusoïdale
+    float frequency = 15.0f;  // Ajustement de la frï¿½quence de l'onde sinusoï¿½dale
 
     for (int i = 0; i <= numberOfCurvePoints; ++i)
     {
-        float t = static_cast<float>(i) / static_cast<float>(numberOfCurvePoints);
+        float t = ( i * 1.f ) / ( numberOfCurvePoints * 1.f );
 
         float x = (1.0f - t) * (1.0f - t) * controlPoint1.X + 2.0f * (1.0f - t) * t * controlPoint1.X + t * t * controlPoint2.X;
         float y = (1.0f - t) * (1.0f - t) * controlPoint1.Y + 2.0f * (1.0f - t) * t * controlPoint1.Y + t * t * controlPoint2.Y;
 
-        y += Config::WindowHeight * 0.1f * std::sin(frequency * x / Config::WindowWidth);  // onde sinusoïdale à la coordonnée y
+        y += Config::WindowHeight * 0.1f * std::sin(frequency * x / Config::WindowWidth);  // onde sinusoï¿½dale ï¿½ la coordonnï¿½e y
 
         FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
 
@@ -43,7 +43,7 @@ void Field::GenerateFieldCurve()
     }
 }
 
-FieldPoint::FieldPoint(float x, float y) 
+FieldPoint::FieldPoint(const float x, const float y) 
 {
     SetLocation(FVector2D(x, y));
 }
