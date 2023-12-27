@@ -2,7 +2,7 @@
 
 #include "Object/SActor.h"
 #include "../Turn/ITurnObserver.h"
-#include <memory>
+#include "../Weapons/WeaponStrategy.h"
 
 class WeaponStrategy;
 
@@ -11,6 +11,8 @@ class Player : public SActor, public ITurnObserver
 	public : 
 
 		Player();
+
+		virtual ~Player() = default;
 
 		/* Begin ITurnObserver Implementation */
 

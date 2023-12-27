@@ -5,8 +5,7 @@
 class FieldPoint : public SActor 
 {
 	public:
-		FieldPoint(float x, float y);
-		FieldPoint() = default;
+		FieldPoint();
 
 	protected:
 		void OnCollide(SActor* pActor);

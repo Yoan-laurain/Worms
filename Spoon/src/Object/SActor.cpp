@@ -4,15 +4,28 @@
 
 SActor::SActor() :
 	SObject(),
-	ObjectColor(255, 255, 255, 255),
 	WorldRef(nullptr)
-{
 	bIsStatic = false;
+	WorldRef(nullptr),
+	MyShape(nullptr),
+	Render(nullptr)
+{
+	Rectangle* newShape = new Rectangle();
+	newShape->height = GetSize().Y;
+	newShape->width = GetSize().X;
+	newShape->Type = FActorType::ActorType_Rectangle;
+	newShape->ObjectColor = FColor::White();
+
+	MyShape = newShape;
 }
 
 SActor::~SActor()
 {
 	SetWorldRef(nullptr);
+#ifdef DEBUG
+	std::cout << "Perfect destroy" << std::endl;
+#endif // DEBUG
+
 }
 
 void SActor::BeginPlay()
@@ -24,25 +37,15 @@ void SActor::Tick(float DeltaTime)
 
 void SActor::DestroyActor()
 {
-	delete this;
+	//GetWorld()->DestroyObject(this);
 }
-
-
-void SActor::SetColor(const FColor& color)
-{
-	ObjectColor = color;
-}
-
 
 void SActor::SetWorldRef(Level* parentRef)
 {
-	if (WorldRef)
-	{
-		WorldRef->RemoveObject(this);
-	}
 	WorldRef = parentRef;
-	if (WorldRef)
-	{
-		WorldRef->AddObject(this);
-	}
+}
+
+void Shape::SetColor(const FColor& color)
+{
+	ObjectColor = color;
 }

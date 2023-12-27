@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Level.h"
 
+#include "Object/SActor.h"
 #include "Spoon/Events/KeyEvent.h"
 #include "Spoon/Events/ApplicationEvent.h"
 #include "Spoon/Events/MouseEvent.h"
@@ -97,10 +98,10 @@ bool Application::OnAppTick(AppTickEvent& e)
 void Application::OnRender()
 {
 	// Todo : I should probably put a wait for the entity list to be construct to render
-	for (SActor* CurrentActor : GetWorld()->GetEntityList())
+	for (std::shared_ptr<SActor> CurrentActor : GetWorld()->GetEntityList())
 	{
 		if(m_WindowRef)
-			m_WindowRef->Draw(CurrentActor);
+			m_WindowRef->Draw(CurrentActor.get());
 	}
 	return;
 }
@@ -112,7 +113,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
 
 bool Application::OnMouseMoved(MouseMovedEvent& e)
 {
-	for (SActor* currentActor : CurrentLevel->GetEntityList())
+	for (std::shared_ptr<SActor> currentActor : CurrentLevel->GetEntityList())
 	{
 		currentActor->IsInBound(e.GetLoc());
 	}
