@@ -34,7 +34,7 @@ void Field::GenerateFieldCurve()
 
         y += Config::WindowHeight * 0.1f * std::sin(frequency * x / Config::WindowWidth);  // onde sinuso�dale � la coordonn�e y
 
-        FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
+        std::shared_ptr<FieldPoint> pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
 
         m_FieldPoint.push_back(std::make_unique<FieldPoint>(x, y));
 

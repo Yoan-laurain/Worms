@@ -16,5 +16,5 @@ class WormLevel : public Level
 		void BeginPlay() override;
 
 		std::unique_ptr<TurnManager> m_TurnManager;
-		std::unique_ptr<Field> m_Field;
+		std::shared_ptr<Field> m_Field;
 };
