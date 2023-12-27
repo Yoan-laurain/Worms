@@ -19,6 +19,13 @@ struct SPOON_API Vector2D
 
 	Vector2D<T>(const T& _x, const T& _y) : X(_x), Y(_y) {};
 
+	template <typename L>
+	Vector2D<T>& operator=(const L& _val)
+	{
+		X = _val; Y = _val;
+		return *this;
+	}
+
 	/************************************************************************/
 	/* Operator overload													*/
 	/************************************************************************/

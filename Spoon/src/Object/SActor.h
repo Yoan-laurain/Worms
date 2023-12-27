@@ -81,11 +81,15 @@ public:
 
 	Shape* MyShape;
 
+	std::vector<class SComposant*> ComposanList;
+
 protected:
 
 	bool bIsHovered = false;
 
 	bool bIsPressed = false;
+
+	FVector2D mouseLoc;
 
 private:
 

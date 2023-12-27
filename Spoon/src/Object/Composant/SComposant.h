@@ -4,37 +4,27 @@
 
 class SComposant : public SObject
 {
-
+	friend class SActor;
 public:
 
-	SComposant() = delete;
+	SComposant() = default;
 
-	SComposant(class SComposant* owner = nullptr);
+	SComposant(class SActor* owner = nullptr);
 
 	virtual ~SComposant();
 
-	virtual void OnEvent(class SpoonEvent& event) = 0;
-
-	virtual void OnUpdate() = 0;
-
-	template <typename T = SComposant>
+	template <typename T = class SActor>
 	T* GetOwner() const
 	{
 		return (T*)Owner;
 	}
 
-	FColor& const GetColor() { return ObjectColor; }
+protected:
 
-	void SetColor(const FColor& _color) { ObjectColor = _color; }
+	virtual void OnUpdate(const float Deltatime) {};
 
 private:
 
-	SComposant* Owner;
-
-protected:
-
-	bool const IsInBound(const FVector2D& loc) const;
-
-	FColor ObjectColor;
+	class SActor* Owner;
 
 };

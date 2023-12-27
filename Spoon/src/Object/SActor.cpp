@@ -2,6 +2,7 @@
 #include "SActor.h"
 #include "Spoon/Core/Level.h"
 #include "Spoon/Events/MouseEvent.h"
+#include "Composant/SComposant.h"
 
 SActor::SActor() :
 	SObject(),
@@ -21,6 +22,10 @@ SActor::SActor() :
 
 SActor::~SActor()
 {
+	for (SComposant* curr : ComposanList)
+	{
+		delete curr;
+	}
 	SetWorldRef(nullptr);
 #ifdef DEBUG
 	std::cout << "Perfect destroy" << std::endl;
@@ -33,7 +38,16 @@ void SActor::BeginPlay()
 }
 
 void SActor::Tick(float DeltaTime)
-{}
+{
+	for (SComposant* curr : ComposanList)
+	{
+		curr->OnUpdate(DeltaTime);
+	}
+	if (bIsPressed)
+	{
+		SetLocation(mouseLoc - (GetSize() / 2));
+	}
+}
 
 void SActor::DestroyActor()
 {
@@ -44,10 +58,13 @@ bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 {
 
 	bIsHovered = IsInBound(_event.GetLoc());
-
 	if (bIsPressed)
 	{
-		SetLocation(_event.GetLoc() - (GetSize()/2));
+		mouseLoc = _event.GetLoc();
+	}
+	else
+	{
+		mouseLoc = GetLocation();
 	}
 
 	return false;

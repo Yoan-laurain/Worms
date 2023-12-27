@@ -6,6 +6,7 @@
 
 namespace MathLibrary
 {
+	constexpr float Gravity(9.81f);
 	
 	constexpr double Pi() { return std::numbers::pi; }
 	
