@@ -2,11 +2,10 @@
 #include "SActor.h"
 #include "Spoon/Core/Level.h"
 
-SActor::SActor() : 
+SActor::SActor() :
 	SObject(),
 	WorldRef(nullptr),
-	MyShape(nullptr),
-	Render(nullptr)
+	MyShape(nullptr)
 {
 	Rectangle* newShape = new Rectangle();
 	newShape->height = GetSize().Y;
@@ -15,6 +14,8 @@ SActor::SActor() :
 	newShape->ObjectColor = FColor::White();
 
 	MyShape = newShape;
+
+	bIsStatic = false;
 }
 
 SActor::~SActor()

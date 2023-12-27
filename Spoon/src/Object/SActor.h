@@ -64,7 +64,7 @@ public:
 #pragma endregion
 
 #pragma region World
-=======
+
 	inline class Level* GetWorld() const { return WorldRef; };
 
 protected:

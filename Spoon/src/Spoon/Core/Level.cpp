@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "Object/SActor.h"
+#include "Object/Composant/CollisionShape.h"
 #include <snpch.h>
 
 Level::~Level()
@@ -24,8 +25,16 @@ void Level::UpdateEntity(double deltatime)
 	}
 	for (std::shared_ptr<SActor> entity : EntityList)
 	{
-		if(entity != nullptr)
+		if (entity != nullptr)
+		{
 			entity->Tick(deltatime);
+
+			if (!entity->bIsStatic)
+			{
+				 HandleCollision(entity.get());
+			}
+		}
+
 	}
 }
 
@@ -61,3 +70,16 @@ void Level::AddObject(std::shared_ptr<SActor> obj)
 	AddEntityList.push_back(obj);
 }
 
+void Level::HandleCollision(SActor* obj)
+{
+	for (std::shared_ptr<SActor> entity : EntityList)
+	{
+		if (entity.get() != obj && entity.get() != nullptr)
+		{
+			if (!entity->bIsStatic)
+			{
+				entity->CheckCollision(*obj);
+			}
+		}
+	}
+}

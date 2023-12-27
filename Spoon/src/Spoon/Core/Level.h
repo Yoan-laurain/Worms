@@ -4,8 +4,8 @@
 #include "Object/SActor.h"
 
 // TODO Levels
-// je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
-// Faire en sorte d'avoir un objet levels qui gere tous seul les entités qui seront crée.
+// je dois dÃ©placer pour faire en sorte que ce soit pas Ã  moi de faire Ã§a.
+// Faire en sorte d'avoir un objet levels qui gere tous seul les entitÃ©s qui seront crÃ©e.
 class SPOON_API Level
 {
 	friend class Application;
@@ -35,7 +35,8 @@ public:
 	std::vector<std::shared_ptr<SActor>> GetEntityList() const { return (bIsListBeingEdit) ? std::vector<std::shared_ptr<SActor>>() : EntityList; }
 
 protected:
-
+	
+	void HandleCollision(class SActor* obj);
 	virtual void BeginPlay() = 0;
 
 private:
