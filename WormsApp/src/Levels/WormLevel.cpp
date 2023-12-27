@@ -15,7 +15,7 @@ void WormLevel::BeginPlay()
 {
 	m_TurnManager = std::make_unique<TurnManager>();
 
-    for (int i = 0; i < Config::MaxPlayers; i++)
+    for (int i = 0; i < Config::MaxPlayers; ++i)
     {
 		CreatePlayer();
 	}
