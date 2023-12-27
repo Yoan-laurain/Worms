@@ -4,11 +4,8 @@
 
 void WormLevel::CreatePlayer()
 {
-	Player* player = SpawnActor<Player>(FTransform(FVector2D(0, 0), FVector2D(1, 1))); // TODO : Adapt SpawnLocation
-
-	// TODO ! Fix le crash du moteur shared_ptr
-	//std::shared_ptr<Player> playerPtr(player);
-	//m_TurnManager->registerObserver(playerPtr);
+	std::shared_ptr<Player> playerPtr = SpawnActor<Player>(FTransform(FVector2D(0, 0), FVector2D(1, 1))); // TODO : Adapt SpawnLocation
+	m_TurnManager->registerObserver(playerPtr);
 }
 
 void WormLevel::BeginPlay()
@@ -20,7 +17,6 @@ void WormLevel::BeginPlay()
 		CreatePlayer();
 	}
 
-	m_Field = std::make_unique<Field>();
-	m_Field->SetWorldRef(this);
+	m_Field = SpawnActor<Field>(FTransform());
 	m_Field->GenerateFieldCurve();
 }
