@@ -1,20 +1,9 @@
-#include "snpch.h"
 #include "Level.h"
-#include "SObject.h"
+#include "Object/SActor.h"
+#include <snpch.h>
 
 Level::~Level()
-{
-	auto ListObj = AddEntityList;
-	for (auto obj : ListObj)
-	{
-		obj->DestroyActor();
-	}
-	auto ListObject = EntityList;
-	for (auto object : ListObject)
-	{
-		object->DestroyActor();
-	}
-}
+{}
 
 void Level::UpdateEntity(double deltatime)
 {
@@ -22,9 +11,9 @@ void Level::UpdateEntity(double deltatime)
 	{
 		bIsListBeingEdit = true;
 		auto tmpAddList = AddEntityList;
-		for (SActor* addEntity : tmpAddList)
+		for (std::shared_ptr<SActor> addEntity : tmpAddList)
 		{
-			if (addEntity != nullptr)
+			if (addEntity.get() != nullptr)
 			{
 				EntityList.push_back(addEntity);
 				addEntity->BeginPlay();
@@ -33,14 +22,19 @@ void Level::UpdateEntity(double deltatime)
 		AddEntityList.clear();
 		bIsListBeingEdit = false;
 	}
-	for (SActor* entity : EntityList)
+	for (std::shared_ptr<SActor> entity : EntityList)
 	{
 		if(entity != nullptr)
 			entity->Tick(deltatime);
 	}
 }
 
-void Level::RemoveObject(SActor* obj)
+void Level::DestroyObject(class SActor* _actor)
+{
+	RemoveObject(std::shared_ptr<SActor>(_actor));
+}
+
+void Level::RemoveObject(std::shared_ptr<SActor> obj)
 {
 	auto tmp = std::find(EntityList.begin(), EntityList.end(), obj);
 	if (tmp == EntityList.end())
@@ -51,7 +45,7 @@ void Level::RemoveObject(SActor* obj)
 	EntityList.erase(tmp);
 }
 
-void Level::AddObject(SActor* obj)
+void Level::AddObject(std::shared_ptr<SActor> obj)
 {
 	if (!obj)
 	{

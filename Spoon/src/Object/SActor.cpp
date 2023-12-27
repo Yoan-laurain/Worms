@@ -20,6 +20,10 @@ SActor::SActor() :
 SActor::~SActor()
 {
 	SetWorldRef(nullptr);
+#ifdef DEBUG
+	std::cout << "Perfect destroy" << std::endl;
+#endif // DEBUG
+
 }
 
 void SActor::BeginPlay()
@@ -31,20 +35,12 @@ void SActor::Tick(float DeltaTime)
 
 void SActor::DestroyActor()
 {
-	delete this;
+	//GetWorld()->DestroyObject(this);
 }
 
 void SActor::SetWorldRef(Level* parentRef)
 {
-	if (WorldRef)
-	{
-		WorldRef->RemoveObject(this);
-	}
 	WorldRef = parentRef;
-	if (WorldRef)
-	{
-		WorldRef->AddObject(this);
-	}
 }
 
 void Shape::SetColor(const FColor& color)

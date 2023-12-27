@@ -44,14 +44,13 @@ struct Convex : public Shape
 
 class SPOON_API SActor : public SObject
 {
+	friend class Level;
+
 public:
+
 	SActor();
 
 	virtual ~SActor();
-
-	virtual void BeginPlay();
-
-	virtual void Tick(float DeltaTime);
 
 	void DestroyActor();
 
@@ -59,28 +58,30 @@ public:
 
 #pragma region Render
 
-private:
-
-	ObjectRender* Render;
-
 public:
 	Shape* MyShape;
-
-	ObjectRender* GetRender() const { return Render; };
 
 #pragma endregion
 
 #pragma region World
+=======
+	inline class Level* GetWorld() const { return WorldRef; };
+
+protected:
+
+	virtual void BeginPlay();
+
+	virtual void Tick(float DeltaTime);
 
 private:
 
-	class Level* WorldRef = nullptr;
-
-public:
-
-	inline class Level* GetWorld() const { return WorldRef; };
-
 	void SetWorldRef(class Level* parentRef);
+
+private:
+
+	FColor ObjectColor;
+
+	class Level* WorldRef;
 
 #pragma endregion World
 
