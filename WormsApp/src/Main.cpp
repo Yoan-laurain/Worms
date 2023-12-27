@@ -1,10 +1,11 @@
 #include "Spoon.h"
 #include "Levels/WormLevel.h"
+#include "Config.h"
 
 class App : public Application
 {
 	public : 
-		App() : Application("Spoon", FVector2D(1280, 720))
+		App() : Application("Spoon", FVector2D(Config::WindowWidth, Config::WindowHeight))
 		{
 			SetLevel(new WormLevel());
 		}

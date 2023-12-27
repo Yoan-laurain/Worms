@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Spoon.h"
+#include "../Turn/TurnManager.h" // Forwards declaration ne fonctionne pas sur les unique_ptr
+#include "../Field/Field.h" // Forwards declaration ne fonctionne pas sur les unique_ptr
+
 #include <memory>
 
-#include "../Turn/TurnManager.h"
 
 class WormLevel : public Level
 {
@@ -14,4 +16,5 @@ class WormLevel : public Level
 		void BeginPlay() override;
 
 		std::unique_ptr<TurnManager> m_TurnManager;
+		std::unique_ptr<Field> m_Field;
 };
