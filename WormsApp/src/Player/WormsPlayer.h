@@ -10,6 +10,7 @@ class WormsPlayer : public Player, public ITurnObserver
 
 		WormsPlayer();
 
+
 		/* Begin ITurnObserver Implementation */
 
 		void onTurnChange(int currentPlayer) override;
@@ -20,6 +21,12 @@ class WormsPlayer : public Player, public ITurnObserver
 
 		int currentHealth;
 		int maxHealth;
+
+		class SGravityComponent* GravityComponent;
+
+protected:
+
+	virtual void Tick(float DeltaTime) override;
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
