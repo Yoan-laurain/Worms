@@ -14,8 +14,7 @@ void WormLevel::BeginPlay()
 
     for (int i = 0; i < Config::MaxPlayers; ++i)
     {
-		SpawnActor<Player>(FTransform(FVector2D(50 * i, 50 * i), FVector2D(50, 50))); // TODO : Adapt SpawnLocation
-
+		CreatePlayer();
 	}
 
 	m_Field = SpawnActor<Field>(FTransform());
