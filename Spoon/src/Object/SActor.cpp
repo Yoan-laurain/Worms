@@ -4,9 +4,18 @@
 
 SActor::SActor() : 
 	SObject(),
-	ObjectColor(255, 255, 255, 255),
-	WorldRef(nullptr)
-{}
+	WorldRef(nullptr),
+	MyShape(nullptr),
+	Render(nullptr)
+{
+	Rectangle* newShape = new Rectangle();
+	newShape->height = GetSize().Y;
+	newShape->width = GetSize().X;
+	newShape->Type = FActorType::ActorType_Rectangle;
+	newShape->ObjectColor = FColor::White();
+
+	MyShape = newShape;
+}
 
 SActor::~SActor()
 {
@@ -25,13 +34,6 @@ void SActor::DestroyActor()
 	delete this;
 }
 
-
-void SActor::SetColor(const FColor& color)
-{
-	ObjectColor = color;
-}
-
-
 void SActor::SetWorldRef(Level* parentRef)
 {
 	if (WorldRef)
@@ -43,4 +45,9 @@ void SActor::SetWorldRef(Level* parentRef)
 	{
 		WorldRef->AddObject(this);
 	}
+}
+
+void Shape::SetColor(const FColor& color)
+{
+	ObjectColor = color;
 }

@@ -28,6 +28,9 @@ public:
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
 
+	void DrawRectangle(const SActor* _currentActor, sf::RectangleShape& _rectangle);
+	void DrawConvex(const SActor* _currentActor, sf::ConvexShape& _convex);
+
 private:
 	
 	sf::Clock clock;
