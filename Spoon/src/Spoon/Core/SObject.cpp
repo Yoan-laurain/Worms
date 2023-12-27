@@ -48,12 +48,11 @@ void SObject::SetTransform(const FTransform& transform)
 
 bool SObject::IsInBound(const FVector2D& _loc) const
 {
-	FVector2D truc = GetLocation() + (GetSize()/2);
-	FVector2D mintruc = GetLocation() - (GetSize()/2);
-	if (_loc.X <= truc.X && _loc.X >= mintruc.X && _loc.Y <= truc.Y && _loc.Y >= truc.Y)
+	FVector2D mintruc = GetLocation() - GetSize();
+	if (_loc.X <= GetLocation().X && _loc.X >= mintruc.X && _loc.Y <= GetLocation().Y && _loc.Y >= mintruc.Y)
 	{
 #ifdef DEBUG
-		std::cout << "Object coord : " << truc << " , curseur loc : " << _loc << std::endl;
+		std::cout << "Object coord : " << GetLocation() << " , curseur loc : " << _loc << std::endl;
 #endif // DEBUG
 
 		return true;
