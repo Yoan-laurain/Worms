@@ -1,13 +1,12 @@
-#include "GravityComposant.h"
+#include "SGravityComponent.h"
 #include "Spoon/Library/MathLibrary.h"
 #include "Object/SActor.h"
 #include <snpch.h>
 
-GravityComposant::GravityComposant(SActor* owner) : SComposant(owner)
-{
-}
+SGravityComponent::SGravityComponent(SActor* owner) : SComponent(owner), bSimulateGravity(true)
+{}
 
-void GravityComposant::Simulated(bool bSimulate)
+void SGravityComponent::Simulated(bool bSimulate)
 {
 	bSimulateGravity = bSimulate;
 	if (!bSimulateGravity)
@@ -16,7 +15,7 @@ void GravityComposant::Simulated(bool bSimulate)
 	}
 }
 
-void GravityComposant::OnUpdate(const float Deltatime)
+void SGravityComponent::OnUpdate(const float Deltatime)
 {
 	if (bSimulateGravity)
 	{

@@ -81,17 +81,25 @@ public:
 
 	Shape* MyShape;
 
-	std::vector<class SComposant*> ComposanList;
-
 protected:
 
-	bool bIsHovered = false;
+	template<typename T>
+	T* CreateComponent()
+	{
+		T* tmp = new T(this);
+		ComposanList.push_back(std::unique_ptr<T>(tmp));
+		return tmp;
+	}
 
-	bool bIsPressed = false;
+	bool bIsHovered;
+
+	bool bIsPressed;
 
 	FVector2D mouseLoc;
 
 private:
+
+	std::vector<std::unique_ptr<class SComponent>> ComposanList;
 
 	FColor ObjectColor;
 

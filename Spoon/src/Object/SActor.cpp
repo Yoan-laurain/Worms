@@ -1,13 +1,15 @@
-#include <snpch.h>
 #include "SActor.h"
 #include "Spoon/Core/Level.h"
 #include "Spoon/Events/MouseEvent.h"
-#include "Composant/SComposant.h"
+#include "Component/SComponent.h"
+#include <snpch.h>
 
 SActor::SActor() :
 	SObject(),
 	WorldRef(nullptr),
-	MyShape(nullptr)
+	MyShape(nullptr),
+	bIsHovered(false),
+	bIsPressed(false)
 {
 	Rectangle* newShape = new Rectangle();
 	newShape->height = GetSize().Y;
@@ -22,10 +24,6 @@ SActor::SActor() :
 
 SActor::~SActor()
 {
-	for (SComposant* curr : ComposanList)
-	{
-		delete curr;
-	}
 	SetWorldRef(nullptr);
 #ifdef DEBUG
 	std::cout << "Perfect destroy" << std::endl;
@@ -39,9 +37,9 @@ void SActor::BeginPlay()
 
 void SActor::Tick(float DeltaTime)
 {
-	for (SComposant* curr : ComposanList)
+	for (int i = 0; i < ComposanList.size(); ++i)
 	{
-		curr->OnUpdate(DeltaTime);
+		ComposanList[i]->OnUpdate(DeltaTime);
 	}
 	if (bIsPressed)
 	{
@@ -58,24 +56,16 @@ bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 {
 
 	bIsHovered = IsInBound(_event.GetLoc());
-	if (bIsPressed)
-	{
-		mouseLoc = _event.GetLoc();
-	}
-	else
-	{
-		mouseLoc = GetLocation();
-	}
+
+	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
 
 	return false;
 }
 
 bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
 {
-	if (bIsHovered)
-	{
-		bIsPressed = true;
-	}
+
+	bIsPressed = bIsHovered;
 	return bIsHovered;
 }
 

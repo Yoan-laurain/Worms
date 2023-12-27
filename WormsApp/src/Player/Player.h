@@ -26,7 +26,7 @@ class Player : public SActor, public ITurnObserver
 		int currentHealth;
 		int maxHealth;
 
-		class GravityComposant* GravityComponent;
+		class SGravityComponent* GravityComponent;
 
 protected:
 

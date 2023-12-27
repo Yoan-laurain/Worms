@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "../Weapons/WeaponStrategy.h"
 #include "../Weapons/SimpleGun/SimpleGun.h"
-#include "Object/Composant/GravityComposant.h"
+#include "Object/Component/SGravityComponent.h"
 
 Player::Player() :
 	currentHealth(100),
@@ -9,8 +9,7 @@ Player::Player() :
 	weaponStrategy(nullptr)
 {
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
-	GravityComponent = new GravityComposant(this);
-	ComposanList.push_back(GravityComponent);
+	GravityComponent = CreateComponent<SGravityComponent>();
 }
 
 void Player::SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy)
@@ -26,14 +25,9 @@ void Player::onTurnChange(int currentPlayer)
 void Player::Tick(float DeltaTime)
 {
 	SActor::Tick(DeltaTime);
-	if (bIsPressed)
-	{
-		GravityComponent->Simulated(false);
-	}
-	else
-	{
-		GravityComponent->Simulated(true);
-	}
+
+	GravityComponent->Simulated(!bIsPressed);
+
 }
 
 bool Player::OnDamageTaken(int damage)

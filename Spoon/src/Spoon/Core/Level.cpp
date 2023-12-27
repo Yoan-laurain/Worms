@@ -1,6 +1,5 @@
 #include "Level.h"
 #include "Object/SActor.h"
-#include "Object/Composant/CollisionShape.h"
 #include <snpch.h>
 
 Level::~Level()

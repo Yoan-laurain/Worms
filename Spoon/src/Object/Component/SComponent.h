@@ -2,16 +2,16 @@
 #include "Spoon/Core/SObject.h"
 #include "Spoon/Library/TColor.h"
 
-class SComposant : public SObject
+class SComponent : public SObject
 {
 	friend class SActor;
 public:
 
-	SComposant() = default;
+	SComponent() = default;
 
-	SComposant(class SActor* owner = nullptr);
+	SComponent(class SActor* owner = nullptr);
 
-	virtual ~SComposant();
+	virtual ~SComponent();
 
 	template <typename T = class SActor>
 	T* GetOwner() const

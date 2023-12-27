@@ -1,12 +1,12 @@
 #pragma once
 
-#include "SComposant.h"
+#include "SComponent.h"
 
-class SPOON_API GravityComposant : public SComposant
+class SPOON_API SGravityComponent : public SComponent
 {
 public:
 	
-	GravityComposant(class SActor* owner);
+	SGravityComponent(class SActor* owner);
 
 	void Simulated(bool bSimulate = true);
 
@@ -14,9 +14,7 @@ protected:
 
 	virtual void OnUpdate(const float Deltatime) override;
 
-protected:
-
-	bool bSimulateGravity = true;
+	bool bSimulateGravity;
 
 private:
 

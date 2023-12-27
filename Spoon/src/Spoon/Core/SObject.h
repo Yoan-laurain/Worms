@@ -2,13 +2,14 @@
 #include "Core.h"
 #include <snpch.h>
 #include "Spoon/Library/TStruct.h"
-#include "Object/Composant/CollisionShape.h"
+#include "Object/Component/CollisionShape.h"
 
 class ObjectRender;
 
 // Object base. 
 class SPOON_API SObject
 {
+	std::mutex _mutex;
 public:
 	
 	SObject();
