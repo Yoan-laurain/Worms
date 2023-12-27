@@ -75,18 +75,25 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 		return;
 	}
 
-	sf::RectangleShape _currentShape;
-
-	_currentShape.setSize(sf::Vector2f(_currentActor->GetSize().X, _currentActor->GetSize().Y));
-	_currentShape.setFillColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G, _currentActor->GetColor().B, _currentActor->GetColor().A));
-	_currentShape.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
-
 	if (WindowRef != nullptr)
 	{
-		WindowRef->draw(_currentShape);
-	}
+		if (_currentActor->MyShape->Type == FActorType::ActorType_Rectangle)
+		{
+			sf::RectangleShape drawShape;
+			DrawRectangle(_currentActor, drawShape);
+			WindowRef->draw(drawShape);
+		}
+		else if (_currentActor->MyShape->Type == FActorType::ActorType_Convex)
+		{
+			sf::ConvexShape drawShape;
+			DrawConvex(_currentActor, drawShape);
+			WindowRef->draw( drawShape);
+		}
+		else if (_currentActor->MyShape->Type == FActorType::ActorType_None)
+		{
 
-	return;
+		}
+	}
 }
 
 unsigned int SfmlWindow::GetWidth() const
@@ -97,6 +104,29 @@ unsigned int SfmlWindow::GetWidth() const
 unsigned int SfmlWindow::GetHeight() const
 {
 	return m_Data.Height;
+}
+
+void SfmlWindow::DrawRectangle( const SActor* _currentActor, sf::RectangleShape& _currentShape)
+{
+	_currentShape.setSize(sf::Vector2f(_currentActor->GetSize().X, _currentActor->GetSize().Y));
+	_currentShape.setFillColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
+		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+	_currentShape.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
+}
+
+void SfmlWindow::DrawConvex(const SActor* _currentActor, sf::ConvexShape& drawShape)
+{
+	Convex* _currentShape = static_cast<Convex*>(_currentActor->MyShape);
+
+	drawShape.setPointCount(_currentShape->Points.size());
+
+	for (auto& point : _currentShape->Points)
+	{
+		drawShape.setPoint(point.first, sf::Vector2f(point.second.X, point.second.Y));
+	}
+
+	drawShape.setFillColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
+		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
 }
 
 void SfmlWindow::Init(const WindowsProps& props)
