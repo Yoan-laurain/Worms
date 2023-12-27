@@ -52,13 +52,19 @@ void Application::OnEvent(SpoonEvent& e)
 {
 	EventDispatcher dispatcher(e);
 
+	// Todo : à sup lorsque les key seront bien impl
+	for (std::shared_ptr<SActor> tmp : GetWorld()->GetEntityList())
+	{
+		tmp->OnEvent(e);
+	}
+
 	dispatcher.Dispatch<AppTickEvent>(BIND_EVENT_FN(Application::OnAppTick));
 
-	dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
+	//dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
 
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
-	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Application::OnMouseMoved));
+	//dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Application::OnMouseMoved));
 
 }
 

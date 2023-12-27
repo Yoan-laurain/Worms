@@ -14,6 +14,7 @@ class Player : public SActor, public ITurnObserver
 
 		virtual ~Player() = default;
 
+
 		/* Begin ITurnObserver Implementation */
 
 		void onTurnChange(int currentPlayer) override;
@@ -24,6 +25,12 @@ class Player : public SActor, public ITurnObserver
 
 		int currentHealth;
 		int maxHealth;
+
+		class SGravityComponent* GravityComponent;
+
+protected:
+
+	virtual void Tick(float DeltaTime) override;
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul à posséder l'objet

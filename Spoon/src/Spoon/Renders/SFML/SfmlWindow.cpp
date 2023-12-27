@@ -136,6 +136,8 @@ void SfmlWindow::Init(const WindowsProps& props)
 	m_Data.Width = props.Width;
 
 	WindowRef = new sf::RenderWindow(sf::VideoMode(m_Data.Width, m_Data.Height), m_Data.Title);
+	WindowRef->setFramerateLimit(60);
+	WindowRef->setVerticalSyncEnabled(true);
 
 	// TODO faire la window imgui here so it will be better for setting and get the button.
 #ifndef DEBUG
