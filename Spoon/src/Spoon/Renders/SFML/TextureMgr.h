@@ -5,13 +5,13 @@
 
 class TextureMgr
 {
-private:
+
+public:
+
 	TextureMgr() : TextureRef(nullptr) {};
 	virtual ~TextureMgr() {};
 
 	TextureMgr(const TextureMgr&) = delete;
-
-public:
 
 	static TextureMgr& GetManager() { return ManagerInstance; };
 
