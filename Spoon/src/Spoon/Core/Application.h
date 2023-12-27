@@ -2,6 +2,9 @@
 #include "Core.h"
 #include "Spoon/Library/TVector.h"
 #include <snpch.h>
+#include "Player.h"
+#include <Spoon/Input/InputMgr.h>
+#include <Spoon/Renders/SFML/TextureMgr.h>
 
 class Level;
 class Window;
@@ -27,6 +30,13 @@ public:
 	Level* GetWorld() const;
 
 	__forceinline static Application& Get() { return *s_Instance; }
+
+	InputMgr* GetInputMgr() const;
+	TextureMgr* GetTextureMgr() const;
+
+	void AddNewPlayer(Player* player);
+
+	bool BindAction(Player* player, InputAction inputAction, std::function<void(float)> func);
 
 protected:
 
@@ -62,5 +72,8 @@ private:
 
 	static Application* s_Instance;
 
-};
+	std::vector<Player*> Players;
+	InputMgr* _InputMgr;
+	TextureMgr* _TextureMgr;
 
+};

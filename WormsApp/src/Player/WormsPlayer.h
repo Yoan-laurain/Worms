@@ -1,18 +1,14 @@
 #pragma once
 
-#include "Object/SActor.h"
 #include "../Turn/ITurnObserver.h"
-#include "../Weapons/WeaponStrategy.h"
+#include "../Weapons/WeaponStrategy.h" // On peut pas forward
+#include <Spoon/Core/Player.h>
 
-class WeaponStrategy;
-
-class Player : public SActor, public ITurnObserver
+class WormsPlayer : public Player, public ITurnObserver
 {
 	public : 
 
-		Player();
-
-		virtual ~Player() = default;
+		WormsPlayer();
 
 
 		/* Begin ITurnObserver Implementation */
@@ -33,8 +29,10 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private :
-	// On utilise un pointeur unique pour s'assurer que le Player est le seul à posséder l'objet
+	// On utilise un pointeur unique pour s'assurer que le Player est le seul ï¿½ possï¿½der l'objet
 	std::unique_ptr<WeaponStrategy> weaponStrategy; 
+
+	void Move(float value, float sign);
 
 protected : 
 	bool OnDamageTaken(int damage);

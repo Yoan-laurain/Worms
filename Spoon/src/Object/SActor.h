@@ -53,7 +53,7 @@ public:
 
 	SActor();
 
-	virtual ~SActor();
+	~SActor() override;
 
 	void DestroyActor();
 

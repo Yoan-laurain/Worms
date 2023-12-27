@@ -8,11 +8,14 @@
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application() : WindowName("SpoonEngine"), ScreenSize(FVector2D(720, 1080))
+Application::Application() : 
+	WindowName("SpoonEngine"),
+	ScreenSize(FVector2D(720, 1080)),
+	_InputMgr(nullptr),
+	_TextureMgr(nullptr)
 {
 	s_Instance = this;
 	Init();
-	
 }
 
 Application::Application(std::string windowName, FVector2D screensize) : WindowName(windowName), ScreenSize(screensize)
@@ -24,6 +27,8 @@ Application::Application(std::string windowName, FVector2D screensize) : WindowN
 Application::~Application()
 {
 	SetLevel(nullptr, true);
+	delete _InputMgr;
+	delete _TextureMgr;
 }
 
 void Application::Init()
@@ -32,6 +37,10 @@ void Application::Init()
 	m_WindowRef = Window::Create(win);
 	m_WindowRef->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 	m_WindowRef->SetEventRenderBack(std::bind(&Application::OnRender, this));
+
+	_InputMgr = new InputMgr();
+	_InputMgr->Init();
+	_TextureMgr = new TextureMgr();
 }
 
 void Application::Run()
@@ -97,6 +106,7 @@ bool Application::OnKeyPressed(KeyPressedEvent& e)
 
 bool Application::OnAppTick(AppTickEvent& e)
 {
+	_InputMgr->Update(e.GetDeltaTime());
 	CurrentLevel->UpdateEntity(e.GetDeltaTime());
 	return true;
 }
@@ -110,6 +120,47 @@ void Application::OnRender()
 			m_WindowRef->Draw(CurrentActor.get());
 	}
 	return;
+}
+
+void Application::AddNewPlayer(Player* player)
+{
+	Players.push_back(player);
+
+	_InputMgr->AddNewPlayer();
+}
+
+bool Application::BindAction(Player* player, InputAction inputAction, std::function<void(float)> func)
+{
+	int index = -1;
+	for (int i = 0; i < Players.size(); ++i)
+	{
+		if (Players[i] == player)
+		{
+			index = i;
+		}
+	}
+
+#if _DEBUG
+	assert(index != -1);
+#else
+	if (index == -1)
+	{
+		return false;
+	}
+#endif
+
+	_InputMgr->BindAction(index, inputAction, func);
+	return true;
+}
+
+InputMgr* Application::GetInputMgr() const
+{
+	return _InputMgr;
+}
+
+TextureMgr* Application::GetTextureMgr() const
+{
+	return _TextureMgr;
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
