@@ -24,6 +24,10 @@ void WormsPlayer::onTurnChange(int currentWormsPlayer)
 	std::cout << "WormsPlayer " << currentWormsPlayer << " is playing" << std::endl;
 }
 
+void WormsPlayer::Tick(float DeltaTime)
+{
+}
+
 void WormsPlayer::Move(float value, float sign)
 {
 	FVector2D direction = FVector2D(sign, 0.f);
