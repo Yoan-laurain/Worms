@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <random>
+#include <map>
 
 
 #include <string>

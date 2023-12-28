@@ -44,3 +44,11 @@ message("Target file : ${TARGET_FILE}")
 message("Target files dir : ${TARGET_FILE_DIR}")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${TARGET_FILE}  ${TARGET_FILE_DIR} COMMAND_EXPAND_LISTS )
+
+file(GLOB_RECURSE ASSETS "*.png")
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/Ressources/ COMMAND_EXPAND_LISTS )
+
+foreach(ASSET ${ASSETS})
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${ASSET}  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/Ressources COMMAND_EXPAND_LISTS )
+endforeach()

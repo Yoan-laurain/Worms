@@ -1,28 +1,26 @@
 #pragma once
+
 #include "Spoon/Core/Core.h"
+#include <SFML/Graphics.hpp>
 #include <snpch.h>
-#include <SFML/Graphics/Texture.hpp>
 
 class TextureMgr
 {
 
 public:
-
-	TextureMgr() : TextureRef(nullptr) {};
-	virtual ~TextureMgr() {};
-
+	TextureMgr() {}
 	TextureMgr(const TextureMgr&) = delete;
+	TextureMgr& operator=(const TextureMgr&) = delete;
+	~TextureMgr() {}
 
-	static TextureMgr& GetManager() { return ManagerInstance; };
+	bool LoadTexture(const std::string& name, std::string& fileName, sf::Texture& texture);
+	sf::Texture& GetTexture(const std::string& name);
 
-	sf::Texture* GetTexture() const { return TextureRef; };
-
-	bool LoadTexture(const std::filesystem::path& path);
+	void LoadFont(const std::string& name, const std::string& fileName);
+	sf::Font& GetFont(const std::string& name);
 
 private:
-
-	sf::Texture* TextureRef;
-
-	static TextureMgr ManagerInstance;
+	std::map<std::string, sf::Texture> _textures;
+	std::map<std::string, sf::Font> _fonts;
 
 };

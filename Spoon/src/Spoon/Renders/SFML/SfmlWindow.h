@@ -30,12 +30,15 @@ public:
 
 	void DrawRectangle(const SActor* _currentActor, sf::RectangleShape& _rectangle);
 	void DrawConvex(const SActor* _currentActor, sf::ConvexShape& _convex);
+	void DrawTexture(const SActor* _currentActor, sf::Sprite& _text);
 
 private:
 	
 	sf::Clock clock;
 
 	sf::RenderWindow* WindowRef;
+
+	std::vector<sf::Texture> Textures;
 	
 	virtual void Init(const WindowsProps& props);
 
