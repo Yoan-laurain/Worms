@@ -8,7 +8,8 @@ enum FActorType
 	ActorType_None = BIT(0),
 	ActorType_Circle = BIT(1),
 	ActorType_Rectangle = BIT(2),
-	ActorType_Convex = BIT(3)
+	ActorType_Convex = BIT(3),
+	ActorType_Sprite = BIT(4),
 };
 
 struct Shape
@@ -40,6 +41,14 @@ struct Convex : public Shape
 	Convex() : Points() {};
 
 	std::unordered_map<int, FVector2D> Points;
+};
+
+struct Sprite : public Shape
+{
+	Sprite() : texturePath("") {};
+
+	std::string texturePath;
+	std::string name;
 };
 
 class SPOON_API SActor : public SObject

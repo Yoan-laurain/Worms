@@ -29,7 +29,7 @@ public:
 
 	Level* GetWorld() const;
 
-	__forceinline static Application& Get() { return *s_Instance; }
+	static Application& Get() { return *s_Instance; }
 
 	InputMgr* GetInputMgr() const;
 	TextureMgr* GetTextureMgr() const;

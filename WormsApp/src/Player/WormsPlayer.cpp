@@ -8,6 +8,13 @@ WormsPlayer::WormsPlayer() :
 	maxHealth(100),
 	weaponStrategy(nullptr)
 {
+	Sprite* newShape = new Sprite();
+	newShape->name = "WormsPlayer";
+	newShape->ObjectColor = FColor::Green();
+	newShape->Type = FActorType::ActorType_Sprite;
+	newShape->texturePath = "Ressources/WormsPlayer.png";
+	MyShape = newShape;
+
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 
 	BindFunctionToInputAction(InputAction::Left, std::bind(&WormsPlayer::Move, this, std::placeholders::_1, -1.f));

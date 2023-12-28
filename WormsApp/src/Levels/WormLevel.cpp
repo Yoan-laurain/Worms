@@ -4,7 +4,7 @@
 
 void WormLevel::CreatePlayer()
 {
-	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(FTransform(FVector2D(50,50), FVector2D(50, 50))); // TODO : Adapt SpawnLocation
+	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(FTransform(FVector2D(50,50), FVector2D(20, 20))); // TODO : Adapt SpawnLocation
 	m_TurnManager->registerObserver(playerPtr);
 }
 

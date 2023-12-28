@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include <imgui-SFML.h>
 #endif // !DEBUG
+#include <Spoon/Core/Application.h>
 
 // Function call de maniere indirect lorsque j'ai besoin de la fenetre.
 Window* Window::Create(const WindowsProps& props)
@@ -53,7 +54,8 @@ void SfmlWindow::OnRender()
 	ImGui::SFML::Update(*WindowRef, clock.getElapsedTime());
 #endif // !DEBUG
 
-	WindowRef->clear();	
+	WindowRef->clear();
+	Textures.clear();
 
 #ifndef DEBUG
 	DrawImGuiWin();
@@ -89,9 +91,11 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 			DrawConvex(_currentActor, drawShape);
 			WindowRef->draw( drawShape);
 		}
-		else if (_currentActor->MyShape->Type == FActorType::ActorType_None)
+		else if (_currentActor->MyShape->Type == FActorType::ActorType_Sprite)
 		{
-
+			sf::Sprite drawSprite;
+			DrawTexture(_currentActor, drawSprite);	
+			WindowRef->draw(drawSprite);
 		}
 	}
 }
@@ -127,6 +131,23 @@ void SfmlWindow::DrawConvex(const SActor* _currentActor, sf::ConvexShape& drawSh
 
 	drawShape.setFillColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
 		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+}
+
+void SfmlWindow::DrawTexture(const SActor* _currentActor, sf::Sprite& sprite)
+{
+	Sprite* _currentShape = static_cast<Sprite*>(_currentActor->MyShape);
+	
+	Textures.push_back(sf::Texture());
+	
+	Application::Get().GetTextureMgr()->LoadTexture(_currentShape->name, _currentShape->texturePath, Textures.back());
+
+	sprite.setColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
+		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+
+	sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
+	sprite.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
+
+	sprite.setTexture(Textures.back());
 }
 
 void SfmlWindow::Init(const WindowsProps& props)
