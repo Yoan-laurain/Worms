@@ -2,6 +2,9 @@
 
 #include "Spoon/Core/SObject.h"
 #include "Spoon/Library/TColor.h"
+#include "Spoon/Library/TStruct.h"
+#include "Spoon/Library/Collision.h"
+#include "Object/Component/CollisionShape.h"
 
 enum FActorType
 {
@@ -17,10 +20,6 @@ struct Shape
 	Shape() : Type(FActorType::ActorType_None), ObjectColor(FColor::White()) {};
 	FActorType Type;
 	FColor ObjectColor;
-
-	FColor GetColor() const { return ObjectColor; };
-
-	void SetColor(const FColor& color);
 };
 
 struct Circle : public Shape
@@ -58,17 +57,57 @@ class SPOON_API SActor : public SObject
 	// Todo : A delete when key application
 	friend class Application;
 
+	std::mutex _mutex;
+
 public:
 
 	SActor();
 
 	virtual ~SActor();
 
-	SActor(SActor&) = default;
-
 	void DestroyActor();
 
 	inline class Level* GetWorld() const { return WorldRef; };
+
+	/************************************************************************/
+	/* GetColor																*/
+	/************************************************************************/
+
+	FColor GetColor() const;
+
+	void SetColor(const FColor& color);
+
+	/************************************************************************/
+	/* Transform															*/
+	/************************************************************************/
+
+	FVector2D GetLocation() const;
+
+	void SetLocation(const FVector2D& loc);
+
+	FVector2D GetSize() const;
+
+	void SetSize(const FVector2D& size);
+
+	FTransform GetTransform() const;
+
+	void SetTransform(const FTransform& transform);
+
+	/************************************************************************/
+	/* Collision															*/
+	/************************************************************************/
+
+	bool IsInBound(const FVector2D& _loc) const;
+
+	bool CheckCollision(SActor* other) const;
+
+	void OnCollide(SActor* other);
+
+	FActorType GetType() const;
+
+	Shape* GetShape() const;
+
+	void SetShape(Shape* _newShape);
 
 protected:
 
@@ -82,18 +121,6 @@ protected:
 
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
-private:
-
-	void OnEvent(class SpoonEvent& event);
-
-	void SetWorldRef(class Level* parentRef);
-
-public:
-
-	Shape* MyShape;
-
-protected:
-
 	template<typename T>
 	T* CreateComponent()
 	{
@@ -102,17 +129,33 @@ protected:
 		return tmp;
 	}
 
+private:
+
+	void OnEvent(class SpoonEvent& event);
+
+	void SetWorldRef(class Level* parentRef);
+
+public:
+
+	bool bIsStatic;
+
+	std::unique_ptr<BaseShape> collisionShape;
+
+protected:
+
 	bool bIsHovered;
 
 	bool bIsPressed;
 
 	FVector2D mouseLoc;
 
+	FTransform ObjectTransform;
+
 private:
 
-	std::vector<std::unique_ptr<class SComponent>> ComposanList;
+	std::unique_ptr<Shape> MyShape;
 
-	FColor ObjectColor;
+	std::vector<std::unique_ptr<class SComponent>> ComposanList;
 
 	class Level* WorldRef;
 

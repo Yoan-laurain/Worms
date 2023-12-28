@@ -15,10 +15,6 @@ Player::~Player()
 void Player::Tick(float DeltaTime)
 {
 	SActor::Tick(DeltaTime);
-	if (GravityComponent)
-	{
-		GravityComponent->Simulated(!bIsPressed);
-	}
 }
 
 void Player::BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func)

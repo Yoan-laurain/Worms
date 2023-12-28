@@ -11,23 +11,20 @@ SActor::SActor() :
 	bIsHovered(false),
 	bIsPressed(false)
 {
-	Rectangle* newShape = new Rectangle();
+	std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
 	newShape->height = GetSize().Y;
 	newShape->width = GetSize().X;
 	newShape->Type = FActorType::ActorType_Rectangle;
 	newShape->ObjectColor = FColor::White();
-
-	MyShape = newShape;
-
+	MyShape = std::move(newShape);
 	bIsStatic = false;
+
+	collisionShape = std::make_unique<CircleShape>(GetLocation(), 50);
 }
 
 SActor::~SActor()
 {
 	SetWorldRef(nullptr);
-#ifdef DEBUG
-	std::cout << "Perfect destroy : " << this << std::endl;
-#endif // DEBUG
 
 }
 
@@ -64,7 +61,6 @@ bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 
 bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
 {
-
 	bIsPressed = bIsHovered;
 	return bIsHovered;
 }
@@ -88,7 +84,85 @@ void SActor::SetWorldRef(Level* parentRef)
 	WorldRef = parentRef;
 }
 
-void Shape::SetColor(const FColor& color)
+FColor SActor::GetColor() const
 {
-	ObjectColor = color;
+	return MyShape->ObjectColor;
+}
+
+void SActor::SetColor(const FColor& color)
+{
+	MyShape->ObjectColor = color;
+}
+
+FVector2D SActor::GetLocation() const
+{
+	return ObjectTransform.Location;
+}
+
+void SActor::SetLocation(const FVector2D& loc)
+{
+	std::unique_lock<std::mutex> _lock(_mutex);
+	ObjectTransform.Location = loc;
+}
+
+FVector2D SActor::GetSize() const
+{
+	return ObjectTransform.Size;
+}
+
+void SActor::SetSize(const FVector2D& size)
+{
+	std::unique_lock<std::mutex> _lock(_mutex);
+	ObjectTransform.Size = size;
+}
+
+FTransform SActor::GetTransform() const
+{
+	return ObjectTransform;
+}
+
+void SActor::SetTransform(const FTransform& transform)
+{
+	std::unique_lock<std::mutex> _lock(_mutex);
+	ObjectTransform = transform;
+}
+
+bool SActor::IsInBound(const FVector2D& _loc) const
+{
+	FVector2D mintruc = GetLocation() + GetSize();
+	if (_loc.X >= GetLocation().X && _loc.X <= mintruc.X && _loc.Y >= GetLocation().Y && _loc.Y <= mintruc.Y)
+	{
+#ifdef DEBUG
+		// std::cout << "Object coord : " << GetLocation() << " , curseur loc : " << _loc << std::endl;
+#endif // DEBUG
+		return true;
+	}
+	return false;
+}
+
+bool SActor::CheckCollision(SActor* other) const
+{
+	std::cout << "Collision : " << other->GetClassName() << ", " << GetClassName() << std::endl;
+	return collisionShape->tmp.CheckCollisionImpl(other->collisionShape->tmp);
+}
+
+void SActor::OnCollide(SActor* other)
+{
+	std::cout << " I'm colliding with " << std::endl;
+}
+
+FActorType SActor::GetType() const
+{
+	return MyShape->Type;
+}
+
+Shape* SActor::GetShape() const
+{
+	return MyShape.get();
+}
+
+void SActor::SetShape(Shape* _newShape)
+{
+	MyShape.reset();
+	MyShape = std::unique_ptr<Shape>(_newShape);
 }

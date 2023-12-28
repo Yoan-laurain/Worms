@@ -1,80 +1,83 @@
 #pragma once
 
-#include "snpch.h"
-#include <Spoon/Library/Collision.h>
+#include "Spoon/Library/Collision.h"
+#include <snpch.h>
 
-struct BaseCollision
-{
-    BaseCollision() {};
-    virtual ~BaseCollision() {};
-};
 
-struct CircleCollision : public BaseCollision
-{
-    CircleCollision(const FVector2D& center, float radius)
-        : center(center)
-        , radius(radius)
-    {
-    }
-
-    FVector2D center;
-    float radius;
-};
-
-struct PolygonCollision : public BaseCollision
-{
-    PolygonCollision(const std::vector<FVector2D>& vertices)
-        : vertices(vertices)
-    {
-    }
-
-    std::vector<FVector2D> vertices;
-    FVector2D center;
-};
-
-template <typename ShapeType>
+template <typename T>
 struct CollisionShape
-{    
-    CollisionShape(const ShapeType& body)
-        : Body(body)
-    {
-	}
+{
+	using ShapeType = T;
 
-    template <typename OtherShapeType>
-    bool CheckCollisionImpl(const OtherShapeType& other) const { return false; };
+	CollisionShape() : Body(nullptr) {};
 
-    bool CheckCollisionImpl(const ShapeType& other) const { return false; };
+	CollisionShape(ShapeType* body)
+		: Body(body)
+	{}
 
-    using Type = ShapeType;
+	template <typename OtherShapeType>
+	bool CheckCollisionImpl(const CollisionShape<OtherShapeType>& other) const { return false; };
 
-    Type Body;
+	bool CheckCollisionImpl(const CollisionShape<ShapeType>& other) const { return false; };
+
+	ShapeType* Body;
+};
+
+struct BaseShape;
+struct CircleShape;
+struct PolygonShape;
+using BaseShapeCollision = CollisionShape<BaseShape>;
+using CircleShapeCollision = CollisionShape<CircleShape>;
+using PolygonShapeCollision = CollisionShape<PolygonShape>;
+
+struct BaseShape
+{
+    BaseShape(const FVector2D& _center) : Center(_center) { tmp = BaseShapeCollision(this); }
+
+    FVector2D Center;
+
+    BaseShapeCollision tmp;
+};
+
+struct CircleShape : public BaseShape
+{
+    CircleShape(const FVector2D& _center, float _radius) : BaseShape(_center), Radius(_radius) { tmp = CircleShapeCollision(this); }
+
+    float Radius;
+
+    CircleShapeCollision tmp;
+};
+
+struct PolygonShape : public BaseShape
+{
+    PolygonShape(const FVector2D& _center, const std::vector<FVector2D> _vertices) : BaseShape(_center), Vertices(_vertices) { tmp = PolygonShapeCollision(this); }
+
+    std::vector<FVector2D> Vertices;
+
+	PolygonShapeCollision tmp;
 };
 
 template <>
 template <>
-inline bool CollisionShape<CircleCollision>::CheckCollisionImpl<PolygonCollision>(const PolygonCollision& other) const
+inline bool CollisionShape<CircleShape>::CheckCollisionImpl<PolygonShape>(const CollisionShape<PolygonShape>& other) const
 {
     FVector2D normal;
     float depth;
-    return Collision::IntersectCirclePolygon(Body.center, Body.radius, other.center, other.vertices, normal, depth);
+    return Collision::IntersectCirclePolygon(Body->Center, Body->Radius, other.Body->Center , other.Body->Vertices, normal, depth);
 }
 
 template <>
-inline bool CollisionShape<CircleCollision>::CheckCollisionImpl(const CircleCollision& other) const
+inline bool CollisionShape<CircleShape>::CheckCollisionImpl(const CollisionShape<CircleShape>& other) const
 {
     FVector2D normal;
     float depth;
-    return Collision::IntersectCircles(Body.center, Body.radius, other.center, other.radius, normal, depth);
+    return Collision::IntersectCircles(Body->Center, Body->Radius, other.Body->Center, other.Body->Radius, normal, depth);
 }
 
 template <>
-inline bool CollisionShape<PolygonCollision>::CheckCollisionImpl(const PolygonCollision& other) const
+inline bool CollisionShape<PolygonShape>::CheckCollisionImpl(const CollisionShape<PolygonShape>& other) const
 {
     FVector2D normal;
     float depth;
-    return Collision::IntersectPolygons(Body.vertices, other.vertices, normal, depth);
+    return Collision::IntersectPolygons(Body->Vertices, other.Body->Vertices, normal, depth);
 }
-
-using BasicCollisionShape = CollisionShape<BaseCollision>;
-using CircleCollisionShape = CollisionShape<CircleCollision>;
-using PolygonCollisionShape = CollisionShape<PolygonCollision>;

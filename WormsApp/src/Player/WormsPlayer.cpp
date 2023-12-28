@@ -8,12 +8,11 @@ WormsPlayer::WormsPlayer() :
 	maxHealth(100),
 	weaponStrategy(nullptr)
 {
-	Sprite* newShape = new Sprite();
-	newShape->name = "WormsPlayer";
+	Rectangle* newShape = new Rectangle();
 	newShape->ObjectColor = FColor::Green();
-	newShape->Type = FActorType::ActorType_Sprite;
-	newShape->texturePath = "Ressources/WormsPlayer.png";
-	MyShape = newShape;
+	newShape->Type = FActorType::ActorType_Rectangle;
+	//newShape->texturePath = "Ressources/WormsPlayer.png";
+	SetShape(newShape);
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 

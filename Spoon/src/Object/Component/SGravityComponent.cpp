@@ -3,7 +3,7 @@
 #include "Object/SActor.h"
 #include <snpch.h>
 
-SGravityComponent::SGravityComponent(SActor* owner) : SComponent(owner), bSimulateGravity(true)
+SGravityComponent::SGravityComponent(SActor* owner) : SComponent(owner), bSimulateGravity(false)
 {}
 
 void SGravityComponent::Simulated(bool bSimulate)

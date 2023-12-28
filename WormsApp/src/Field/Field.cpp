@@ -10,12 +10,12 @@ Field::Field() :
     Convex* newShape = new Convex();
     newShape->Type = FActorType::ActorType_Convex;
     newShape->ObjectColor = FColor(139, 69, 19);
-    MyShape = newShape;
+    SetShape(newShape);
 }
 
 void Field::GenerateFieldCurve()
 {
-    Convex* pConvex = static_cast<Convex*>(MyShape);
+    Convex* pConvex = static_cast<Convex*>(GetShape());
     pConvex->Points.clear();
 
     m_FieldPoint.clear();
@@ -43,9 +43,9 @@ void Field::GenerateFieldCurve()
 
         y += Config::WindowHeight * 0.1f * std::sin(baseFrequency * x / Config::WindowWidth);  // Sine wave with random frequency variation
 
-        FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
+        //FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
 
-        m_FieldPoint.push_back(std::make_unique<FieldPoint>());
+        //m_FieldPoint.push_back(std::make_unique<FieldPoint>());
 
         pConvex->Points.emplace(i, FVector2D(x, y));
         pConvex->Points.emplace(numberOfCurvePoints * 2 - i, FVector2D(x, Config::WindowHeight));
@@ -56,7 +56,7 @@ FieldPoint::FieldPoint()
 {
     Shape* newShape = new Shape();
     newShape->Type = FActorType::ActorType_None;
-    MyShape = newShape;
+    SetShape(newShape);
 }
 
 void FieldPoint::OnCollide(SActor* pActor)

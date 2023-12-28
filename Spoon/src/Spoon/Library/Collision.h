@@ -2,10 +2,6 @@
 
 #include "Spoon/Library/TVector.h"
 
-#include <vector>
-#include <cmath>
-#include <algorithm>
-
 class Collision
 {
 public:

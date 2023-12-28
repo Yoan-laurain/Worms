@@ -79,19 +79,19 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 
 	if (WindowRef != nullptr)
 	{
-		if (_currentActor->MyShape->Type == FActorType::ActorType_Rectangle)
+		if (_currentActor->GetType() == FActorType::ActorType_Rectangle)
 		{
 			sf::RectangleShape drawShape;
 			DrawRectangle(_currentActor, drawShape);
 			WindowRef->draw(drawShape);
 		}
-		else if (_currentActor->MyShape->Type == FActorType::ActorType_Convex)
+		else if (_currentActor->GetType() == FActorType::ActorType_Convex)
 		{
 			sf::ConvexShape drawShape;
 			DrawConvex(_currentActor, drawShape);
 			WindowRef->draw( drawShape);
 		}
-		else if (_currentActor->MyShape->Type == FActorType::ActorType_Sprite)
+		else if (_currentActor->GetType() == FActorType::ActorType_Sprite)
 		{
 			sf::Sprite drawSprite;
 			DrawTexture(_currentActor, drawSprite);	
@@ -113,14 +113,14 @@ unsigned int SfmlWindow::GetHeight() const
 void SfmlWindow::DrawRectangle( const SActor* _currentActor, sf::RectangleShape& _currentShape)
 {
 	_currentShape.setSize(sf::Vector2f(_currentActor->GetSize().X, _currentActor->GetSize().Y));
-	_currentShape.setFillColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
-		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+	_currentShape.setFillColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
+		_currentActor->GetColor().B, _currentActor->GetColor().A));
 	_currentShape.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
 }
 
 void SfmlWindow::DrawConvex(const SActor* _currentActor, sf::ConvexShape& drawShape)
 {
-	Convex* _currentShape = static_cast<Convex*>(_currentActor->MyShape);
+	Convex* _currentShape = static_cast<Convex*>(_currentActor->GetShape());
 
 	drawShape.setPointCount(_currentShape->Points.size());
 
@@ -129,22 +129,22 @@ void SfmlWindow::DrawConvex(const SActor* _currentActor, sf::ConvexShape& drawSh
 		drawShape.setPoint(point.first, sf::Vector2f(point.second.X, point.second.Y));
 	}
 
-	drawShape.setFillColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
-		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+	drawShape.setFillColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
+		_currentActor->GetColor().B, _currentActor->GetColor().A));
 }
 
 void SfmlWindow::DrawTexture(const SActor* _currentActor, sf::Sprite& sprite)
 {
-	Sprite* _currentShape = static_cast<Sprite*>(_currentActor->MyShape);
+	Sprite* _currentShape = static_cast<Sprite*>(_currentActor->GetShape());
 	
 	Textures.push_back(sf::Texture());
-	
+
 	Application::Get().GetTextureMgr()->LoadTexture(_currentShape->name, _currentShape->texturePath, Textures.back());
 
-	sprite.setColor(sf::Color(_currentActor->MyShape->GetColor().R, _currentActor->MyShape->GetColor().G,
-		_currentActor->MyShape->GetColor().B, _currentActor->MyShape->GetColor().A));
+	sprite.setColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
+		_currentActor->GetColor().B, _currentActor->GetColor().A));
 
-	sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
+	//sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
 	sprite.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
 
 	sprite.setTexture(Textures.back());

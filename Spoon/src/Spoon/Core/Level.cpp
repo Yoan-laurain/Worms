@@ -42,7 +42,15 @@ void Level::DestroyObject(class SActor* _actor)
 
 void Level::RemoveObject(SActor* obj)
 {
-	auto it = std::remove_if(EntityList.begin(), EntityList.end(), [obj](const std::unique_ptr<SActor>& ptr) { return ptr->GetUniqueId() == obj->GetUniqueId(); });
+	auto it = std::remove_if(EntityList.begin(), EntityList.end(), [obj](std::unique_ptr<SActor>& ptr) {
+		if (ptr->GetUniqueId() == obj->GetUniqueId())
+		{
+			ptr.reset();
+			return true;
+		}
+		return false;
+	});
+
 	EntityList.erase(it, EntityList.end());
 }
 
@@ -71,7 +79,10 @@ void Level::HandleCollision(SActor* obj)
 		{
 			if (!entity->bIsStatic)
 			{
-				entity->CheckCollision(*obj);
+				if (entity->CheckCollision(obj))
+				{
+					std::cout << "Collision!!!!!" << std::endl;
+				}
 			}
 		}
 	}
