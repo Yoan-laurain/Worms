@@ -62,4 +62,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-graphics sfml-win
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${SOURCE_FILES})
 
+set(TARGET_FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>/${PROJECT_NAME}.dll)
+set(TARGET_FILE_DIR ${CMAKE_BINARY_DIR}/WormsApp/$<CONFIG>)
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory  ${TARGET_FILE_DIR} COMMAND_EXPAND_LISTS )
+
+message("Target file : ${TARGET_FILE}")
+message("Target files dir : ${TARGET_FILE_DIR}")
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${TARGET_FILE}  ${TARGET_FILE_DIR} COMMAND_EXPAND_LISTS )

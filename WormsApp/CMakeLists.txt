@@ -37,14 +37,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${DLL_NAME} sfml-system sfml-graph
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
-set(TARGET_FILE ${CMAKE_BINARY_DIR}/${DLL_NAME}/$<CONFIG>/${DLL_NAME}.dll)
-set(TARGET_FILE_DIR ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/$<CONFIG>)
-
-message("Target file : ${TARGET_FILE}")
-message("Target files dir : ${TARGET_FILE_DIR}")
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${TARGET_FILE}  ${TARGET_FILE_DIR} COMMAND_EXPAND_LISTS )
-
 file(GLOB_RECURSE ASSETS "*.png")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/Ressources/ COMMAND_EXPAND_LISTS )
