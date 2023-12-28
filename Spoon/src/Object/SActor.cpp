@@ -26,7 +26,7 @@ SActor::~SActor()
 {
 	SetWorldRef(nullptr);
 #ifdef DEBUG
-	std::cout << "Perfect destroy" << std::endl;
+	std::cout << "Perfect destroy : " << this << std::endl;
 #endif // DEBUG
 
 }
@@ -49,7 +49,7 @@ void SActor::Tick(float DeltaTime)
 
 void SActor::DestroyActor()
 {
-	//GetWorld()->DestroyObject(this);
+	GetWorld()->DestroyObject(this);
 }
 
 bool SActor::OnMouseEvent(MouseMovedEvent& _event)

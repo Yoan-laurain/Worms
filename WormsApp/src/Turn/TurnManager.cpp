@@ -9,7 +9,7 @@ TurnManager::~TurnManager()
 {
     for (const auto& weakObserver : observers)
     {
-		auto observer = weakObserver.lock();
+		auto observer = weakObserver;
         if (observer)
         {
 			unregisterObserver(observer);
@@ -17,19 +17,18 @@ TurnManager::~TurnManager()
 	}
 }
 
-void TurnManager::registerObserver(std::shared_ptr<ITurnObserver> observer)
+void TurnManager::registerObserver(ITurnObserver* observer)
 {
     observers.push_back(observer);
 }
 
-void TurnManager::unregisterObserver(std::shared_ptr<ITurnObserver> observer)
+void TurnManager::unregisterObserver(ITurnObserver* observer)
 {
-    auto it = std::remove_if(observers.begin(), observers.end(),
-        [observer](const std::weak_ptr<ITurnObserver>& weakObs) {
-            return weakObs.lock() == observer;
-        });
-
-    observers.erase(it, observers.end());
+    auto it = std::find(observers.begin(), observers.end(), observer);
+    if (it != observers.end())
+    {
+        observers.erase(it, observers.end());
+    }
 }
 
 void TurnManager::nextTurn()
@@ -42,7 +41,7 @@ void TurnManager::notifyObservers()
 {
     for (const auto& weakObserver : observers)
     {
-        auto observer = weakObserver.lock();
+        auto observer = weakObserver;
         if (observer)
         {
             observer->onTurnChange(currentPlayer);

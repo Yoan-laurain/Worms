@@ -53,7 +53,9 @@ public:
 
 	SActor();
 
-	~SActor() override;
+	virtual ~SActor();
+
+	SActor(SActor&) = default;
 
 	void DestroyActor();
 

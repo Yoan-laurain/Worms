@@ -43,7 +43,7 @@ void Field::GenerateFieldCurve()
 
         y += Config::WindowHeight * 0.1f * std::sin(baseFrequency * x / Config::WindowWidth);  // Sine wave with random frequency variation
 
-        std::shared_ptr<FieldPoint> pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
+        FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
 
         m_FieldPoint.push_back(std::make_unique<FieldPoint>());
 

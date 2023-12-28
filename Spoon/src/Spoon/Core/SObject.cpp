@@ -1,7 +1,7 @@
 #include "SObject.h"
 #include "Level.h"
 
-SObject::SObject() : ObjectTransform(), bIsStatic(true)
+SObject::SObject() : ObjectTransform(), bIsStatic(true), UniqueId(reinterpret_cast<unsigned long long>(this))
 {
 	// todo remove this
 	//CircleCollision* circle = new CircleCollision(ObjectTransform.Location,ObjectTransform.Size.X/2);
@@ -51,7 +51,7 @@ bool SObject::IsInBound(const FVector2D& _loc) const
 	if (_loc.X >= GetLocation().X && _loc.X <= mintruc.X && _loc.Y >= GetLocation().Y && _loc.Y <= mintruc.Y)
 	{
 #ifdef DEBUG
-		std::cout << "Object coord : " << GetLocation() << " , curseur loc : " << _loc << std::endl;
+		//std::cout << "Object coord : " << GetLocation() << " , curseur loc : " << _loc << std::endl;
 #endif // DEBUG
 		return true;
 	}

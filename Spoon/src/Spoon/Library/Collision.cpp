@@ -160,6 +160,7 @@ bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const
 
         return true;
     }
+    return false;
 }
 
 void Collision::ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max)

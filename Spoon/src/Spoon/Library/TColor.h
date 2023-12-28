@@ -2,10 +2,7 @@
 
 struct FColor
 {
-	unsigned char R;
-	unsigned char G;
-	unsigned char B;
-	unsigned char A;
+	unsigned char R, G, B, A;
 
 	FColor() : R(0), G(0), B(0), A(0) {};
 
