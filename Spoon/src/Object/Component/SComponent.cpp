@@ -8,4 +8,8 @@ SComponent::SComponent(SActor* owner) :
 {}
 
 SComponent::~SComponent()
-{}
+{
+#if DEBUG
+	std::cout << "Component Destroy" << std::endl;
+#endif // DEBUG
+}

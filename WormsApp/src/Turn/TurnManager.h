@@ -12,13 +12,13 @@ class TurnManager
         TurnManager();
         ~TurnManager();
 
-        void registerObserver(std::shared_ptr<ITurnObserver> observer);
-        void unregisterObserver(std::shared_ptr<ITurnObserver> observer);
+        void registerObserver(ITurnObserver* observer);
+        void unregisterObserver(ITurnObserver* observer);
         void nextTurn();
 
     private:
         int currentPlayer;
-        std::vector<std::weak_ptr<ITurnObserver>> observers;
+        std::vector<ITurnObserver*> observers;
 
         void notifyObservers();
 };

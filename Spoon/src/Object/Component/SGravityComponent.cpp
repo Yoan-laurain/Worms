@@ -23,11 +23,8 @@ void SGravityComponent::OnUpdate(const float Deltatime)
 		// acc : m/s²
 		Velocity.Y += MathLibrary::Gravity*Deltatime;
 
-#ifdef DEBUG
-		std::cout << Velocity << std::endl;
-#endif // DEBUG
 		if (GetOwner())
-			GetOwner()->SetLocation(GetOwner()->GetLocation() + (Velocity*Deltatime)*10); // Todo : faire en sorte que le size ne correspond plus au pixel.
+			GetOwner()->SetLocation(GetOwner()->GetLocation() + (Velocity*Deltatime)); // Todo : faire en sorte que le size ne correspond plus au pixel.
 
 	}
 }

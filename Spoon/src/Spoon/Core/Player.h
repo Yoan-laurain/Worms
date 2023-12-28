@@ -7,8 +7,16 @@ class SPOON_API Player : public SActor
 {
 public:
 	Player();
-	~Player() override;
+	virtual ~Player();
 
 protected:
+
+	virtual void Tick(float DeltaTime) override;
+
 	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
+
+private:
+
+	class SGravityComponent* GravityComponent;
+
 };

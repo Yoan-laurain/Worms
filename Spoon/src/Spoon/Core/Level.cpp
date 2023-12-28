@@ -10,21 +10,20 @@ void Level::UpdateEntity(double deltatime)
 	if (!AddEntityList.empty())
 	{
 		bIsListBeingEdit = true;
-		auto tmpAddList = AddEntityList;
-		for (std::shared_ptr<SActor> addEntity : tmpAddList)
+		for (unsigned int i = 0; i < AddEntityList.size(); ++i)
 		{
-			if (addEntity.get() != nullptr)
+			if (AddEntityList[i].get() != nullptr)
 			{
-				EntityList.push_back(addEntity);
-				addEntity->BeginPlay();
+				AddEntityList[i]->BeginPlay();
+				EntityList.push_back(std::move(AddEntityList[i]));
 			}
 		}
 		AddEntityList.clear();
 		bIsListBeingEdit = false;
 	}
-	for (std::shared_ptr<SActor> entity : EntityList)
+	for (const auto& entity : EntityList)
 	{
-		if (entity != nullptr)
+		if (entity.get() != nullptr)
 		{
 			entity->Tick(deltatime);
 
@@ -33,45 +32,40 @@ void Level::UpdateEntity(double deltatime)
 				 HandleCollision(entity.get());
 			}
 		}
-
 	}
 }
 
 void Level::DestroyObject(class SActor* _actor)
 {
-	RemoveObject(std::shared_ptr<SActor>(_actor));
+	RemoveObject(_actor);
 }
 
-void Level::RemoveObject(std::shared_ptr<SActor> obj)
+void Level::RemoveObject(SActor* obj)
 {
-	auto tmp = std::find(EntityList.begin(), EntityList.end(), obj);
-	if (tmp == EntityList.end())
-	{
-		std::cout << "Objet non trouver dans la list objets" << std::endl;
-		return;
-	}
-	EntityList.erase(tmp);
+	auto it = std::remove_if(EntityList.begin(), EntityList.end(), [obj](const std::unique_ptr<SActor>& ptr) { return ptr->GetUniqueId() == obj->GetUniqueId(); });
+	EntityList.erase(it, EntityList.end());
 }
 
-void Level::AddObject(std::shared_ptr<SActor> obj)
+void Level::AddObject(SActor* obj)
 {
 	if (!obj)
 	{
 		std::cout << "Add objet null" <<  std::endl;
 		return;
 	}
-	auto tmp = std::find(EntityList.begin(), EntityList.end(), obj);
+	auto tmp = std::remove_if(EntityList.begin(), EntityList.end(), [obj](const std::unique_ptr<SActor>& ptr) { return ptr->GetUniqueId() == obj->GetUniqueId(); });
 	if (tmp != EntityList.end())
 	{
 		std::cout << "Objet already in the list" << std::endl;
 		return;
 	}
-	AddEntityList.push_back(obj);
+
+	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
 void Level::HandleCollision(SActor* obj)
 {
-	for (std::shared_ptr<SActor> entity : EntityList)
+	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{

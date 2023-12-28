@@ -18,11 +18,11 @@ public:
 	// Le DestroyObject might not work so be carefull
 	void DestroyObject(class SActor* _actor);
 
-	template<typename T = class SActor>
-	std::shared_ptr<T> SpawnActor(const FTransform& transform)
+	template<typename T>
+	T* SpawnActor(const FTransform& transform)
 	{
-		std::shared_ptr<T> tmp = std::make_shared<T>();
-		if (tmp.get())
+		T* tmp = new T();
+		if (tmp)
 		{
 			tmp->SetTransform(transform);
 			tmp->SetWorldRef(this);
@@ -31,8 +31,6 @@ public:
 		// Cast vide du coup c mort.
 		return tmp;
 	}
-
-	std::vector<std::shared_ptr<SActor>> GetEntityList() const { return (bIsListBeingEdit) ? std::vector<std::shared_ptr<SActor>>() : EntityList; }
 
 protected:
 	
@@ -43,16 +41,17 @@ private:
 
 	void UpdateEntity(double deltatime);
 
-	void RemoveObject(std::shared_ptr<class SActor> obj);
+	// TODO Change to be able to change the ownership
+	void RemoveObject(class SActor* obj);
 
-	void AddObject(std::shared_ptr<class SActor> obj);
+	void AddObject(class SActor* obj);
 	
 protected:
 
 	// Entity actuellement dans le world.
-	std::vector<std::shared_ptr<SActor>> EntityList;
+	std::vector<std::unique_ptr<class SActor>> EntityList;
 
-	std::vector<std::shared_ptr<SActor>> AddEntityList;
+	std::vector<std::unique_ptr<class SActor>> AddEntityList;
 
 	bool bIsListBeingEdit = false;
 

@@ -2,12 +2,10 @@
 #include "Spoon/Core/SObject.h"
 #include "Spoon/Library/TColor.h"
 
-class SComponent : public SObject
+class SPOON_API SComponent : public SObject
 {
 	friend class SActor;
 public:
-
-	SComponent() = default;
 
 	SComponent(class SActor* owner = nullptr);
 

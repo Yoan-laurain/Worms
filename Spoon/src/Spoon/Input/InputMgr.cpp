@@ -37,7 +37,7 @@ bool InputMgr::Reset()
 
 void InputMgr::AddNewPlayer()
 {
-	unsigned index = PlayersInputAction.size();
+	unsigned int index = PlayersInputAction.size();
 	PlayersInputAction.push_back(PlayerInputAction(index));
 
 	if (index == 0)

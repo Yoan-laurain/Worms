@@ -4,8 +4,6 @@
 #include "Spoon/Library/TStruct.h"
 #include "Object/Component/CollisionShape.h"
 
-class ObjectRender;
-
 // Object base. 
 class SPOON_API SObject
 {
@@ -15,16 +13,6 @@ public:
 	SObject();
 
 	virtual ~SObject();
-
-protected:
-
-	FTransform ObjectTransform;
-
-public:
-
-	bool bIsStatic;
-
-	std::unique_ptr<BasicCollisionShape> collisionShape;
 
 	FVector2D GetLocation() const;
 
@@ -43,5 +31,21 @@ public:
 	bool CheckCollision(const SObject& other) const;
 
 	void OnCollide(const SObject& other);
+
+	unsigned long long GetUniqueId() const { return UniqueId; }
+
+protected:
+
+	FTransform ObjectTransform;
+
+public:
+
+	bool bIsStatic;
+
+	std::unique_ptr<BasicCollisionShape> collisionShape;
+
+private:
+	
+	unsigned long long UniqueId = 0;
 };
 

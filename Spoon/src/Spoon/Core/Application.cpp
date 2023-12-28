@@ -62,7 +62,7 @@ void Application::OnEvent(SpoonEvent& e)
 	EventDispatcher dispatcher(e);
 
 	// Todo : à sup lorsque les key seront bien impl
-	for (std::shared_ptr<SActor> tmp : GetWorld()->GetEntityList())
+	for (const auto& tmp : GetWorld()->EntityList)
 	{
 		tmp->OnEvent(e);
 	}
@@ -114,7 +114,7 @@ bool Application::OnAppTick(AppTickEvent& e)
 void Application::OnRender()
 {
 	// Todo : I should probably put a wait for the entity list to be construct to render
-	for (std::shared_ptr<SActor> CurrentActor : GetWorld()->GetEntityList())
+	for (const auto& CurrentActor : GetWorld()->EntityList)
 	{
 		if(m_WindowRef)
 			m_WindowRef->Draw(CurrentActor.get());
@@ -170,7 +170,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
 
 bool Application::OnMouseMoved(MouseMovedEvent& e)
 {
-	for (std::shared_ptr<SActor> currentActor : CurrentLevel->GetEntityList())
+	for (const auto& currentActor : CurrentLevel->EntityList)
 	{
 		currentActor->IsInBound(e.GetLoc());
 	}

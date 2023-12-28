@@ -3,13 +3,13 @@
 #include "snpch.h"
 #include <Spoon/Library/Collision.h>
 
-struct ShapeOfYou
+struct BaseCollision
 {
-    ShapeOfYou() {};
-    virtual ~ShapeOfYou() {};
+    BaseCollision() {};
+    virtual ~BaseCollision() {};
 };
 
-struct CircleCollision : public ShapeOfYou
+struct CircleCollision : public BaseCollision
 {
     CircleCollision(const FVector2D& center, float radius)
         : center(center)
@@ -21,7 +21,7 @@ struct CircleCollision : public ShapeOfYou
     float radius;
 };
 
-struct PolygonCollision : public ShapeOfYou
+struct PolygonCollision : public BaseCollision
 {
     PolygonCollision(const std::vector<FVector2D>& vertices)
         : vertices(vertices)
@@ -75,6 +75,6 @@ inline bool CollisionShape<PolygonCollision>::CheckCollisionImpl(const PolygonCo
     return Collision::IntersectPolygons(Body.vertices, other.vertices, normal, depth);
 }
 
-using BasicCollisionShape = CollisionShape<ShapeOfYou>;
+using BasicCollisionShape = CollisionShape<BaseCollision>;
 using CircleCollisionShape = CollisionShape<CircleCollision>;
 using PolygonCollisionShape = CollisionShape<PolygonCollision>;
