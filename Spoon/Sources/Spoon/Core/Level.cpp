@@ -78,7 +78,7 @@ void Level::HandleCollision(SActor* obj)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
-			if (Collision::CheckCollisionImpl(entity->GetComponent<CircleShape*>("Collision Component"), obj->GetComponent<CircleShape*>("Collision Component")))
+			if (Collision::CheckCollisionImpl(static_cast<SCircleObject*>(entity.get()), static_cast<SCircleObject*>(obj)))
 			{
 				std::cout << "Collision!!!!!" << std::endl;
 			}

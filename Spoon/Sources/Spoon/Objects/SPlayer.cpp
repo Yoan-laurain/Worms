@@ -7,8 +7,7 @@ SPlayer::SPlayer() : SActor()
 {
 	Application::Get().AddNewPlayer(this);
 	GravityComponent = CreateComponent<SGravityComponent>("Gravity Component");
-	CollisionComponent = CreateComponent<CircleShape>("Collision Component");
-	CollisionComponent->Radius = 50;
+
 }
 
 SPlayer::~SPlayer()

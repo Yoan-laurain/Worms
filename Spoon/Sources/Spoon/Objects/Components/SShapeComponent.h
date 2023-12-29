@@ -15,13 +15,16 @@ class SPOON_API SShapeComponent : public SComponent
 {
 	GENERATE()
 public:
-	SShapeComponent(class SActor* _owner) : SComponent(_owner), Type(FActorType::ActorType_None), ObjectColor(FColor::White()) {};
+	SShapeComponent(class SActor* _owner) : SComponent(_owner), Type(FActorType::ActorType_None), ObjectColor(FColor::White()), Origin(0.5f) {};
 
 	FActorType GetType() const { return Type; }
 
 	FColor ObjectColor;
 
+	FVector2D Origin;
+
 protected:
+
 	FActorType Type;
 };
 

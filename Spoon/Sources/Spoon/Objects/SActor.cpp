@@ -53,7 +53,6 @@ void SActor::DestroyActor()
 
 bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 {
-
 	bIsHovered = IsInBound(_event.GetLoc());
 
 	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();

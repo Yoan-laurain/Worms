@@ -3,6 +3,7 @@
 #include "Library/TVector.h"
 #include "Objects/Components/SCollisionComponent.h"
 #include "Objects/SActor.h"
+#include "Objects/Prefab/CircleObject.h"
 
 class Collision
 {
@@ -45,7 +46,7 @@ inline bool Collision::CheckCollisionImpl<CircleShape, PolygonShape>(CircleShape
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<CircleShape>(CircleShape* first, CircleShape* other)
+inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, SCircleObject* other)
 {
 	if (first == nullptr || other == nullptr)
 	{
@@ -53,7 +54,7 @@ inline bool Collision::CheckCollisionImpl<CircleShape>(CircleShape* first, Circl
 	}
 	FVector2D normal;
 	float depth;
-	return Collision::IntersectCircles(first->GetOwner()->GetLocation(), first->Radius, first->GetOwner()->GetLocation(), other->Radius, normal, depth);
+	return Collision::IntersectCircles(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetRadius(), normal, depth);
 }
 
 template <>

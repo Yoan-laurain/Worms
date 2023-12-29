@@ -48,7 +48,7 @@ public:
 	/* Collision															*/
 	/************************************************************************/
 
-	bool IsInBound(const FVector2D& _loc) const;
+	virtual bool IsInBound(const FVector2D& _loc) const;
 
 	/************************************************************************/
 	/* Component Getter														*/

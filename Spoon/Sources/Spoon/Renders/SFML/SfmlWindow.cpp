@@ -134,6 +134,7 @@ void SfmlWindow::DrawCircle(const SCircleComponent* _component, sf::CircleShape&
 	_circle.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
 	_circle.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+	_circle.setOrigin(_component->Origin.X * _component->Radius*2, _component->Origin.Y * _component->Radius*2);
 }
 
 void SfmlWindow::DrawConvex(const SConvexComponent* _component, sf::ConvexShape& drawShape)
