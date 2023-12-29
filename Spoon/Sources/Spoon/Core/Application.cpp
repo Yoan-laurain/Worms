@@ -1,10 +1,10 @@
 #include "Application.h"
 #include "Level.h"
 
-#include "Object/SActor.h"
-#include "Spoon/Events/KeyEvent.h"
-#include "Spoon/Events/ApplicationEvent.h"
-#include "Spoon/Events/MouseEvent.h"
+#include "Objects/SActor.h"
+#include "Events/KeyEvent.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/MouseEvent.h"
 
 Application* Application::s_Instance = nullptr;
 

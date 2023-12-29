@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Spoon/Core/Core.h"
+#include "Core/Core.h"
 #include <SFML/Graphics.hpp>
 #include <snpch.h>
 

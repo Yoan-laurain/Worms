@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Object/SActor.h"
-#include "Spoon/Input/InputAction.h"
+#include "Objects/SActor.h"
+#include "Inputs/InputAction.h"
 
 class SPOON_API Player : public SActor
 {

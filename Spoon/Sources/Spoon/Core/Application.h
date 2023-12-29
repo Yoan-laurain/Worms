@@ -1,8 +1,8 @@
 #pragma once
 #include "Core.h"
 #include "Library/TVector.h"
-#include "Object/SPlayer.h"
-#include "Input/InputMgr.h"
+#include "Objects/SPlayer.h"
+#include "Inputs/InputMgr.h"
 #include "Renders/SFML/TextureMgr.h"
 #include <snpch.h>
 

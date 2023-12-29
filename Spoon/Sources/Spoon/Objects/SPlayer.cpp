@@ -1,6 +1,6 @@
-#include "Player.h"
-#include "Application.h"
-#include "Object/Component/SGravityComponent.h"
+#include "Objects/SPlayer.h"
+#include "Core/Application.h"
+#include "Components/SGravityComponent.h"
 
 Player::Player() : SActor()
 {

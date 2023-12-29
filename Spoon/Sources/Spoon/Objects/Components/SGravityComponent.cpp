@@ -1,6 +1,6 @@
 #include "SGravityComponent.h"
-#include "Spoon/Library/MathLibrary.h"
-#include "Object/SActor.h"
+#include "Library/MathLibrary.h"
+#include "Objects/SActor.h"
 #include <snpch.h>
 
 SGravityComponent::SGravityComponent(SActor* owner) : SComponent(owner), bSimulateGravity(false)

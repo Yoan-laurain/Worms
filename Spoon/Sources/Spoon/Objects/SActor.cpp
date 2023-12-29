@@ -1,7 +1,7 @@
 #include "SActor.h"
-#include "Spoon/Core/Level.h"
-#include "Spoon/Events/MouseEvent.h"
-#include "Component/SComponent.h"
+#include "Core/Level.h"
+#include "Events/MouseEvent.h"
+#include "Components/SComponent.h"
 #include <snpch.h>
 
 SActor::SActor() :
@@ -11,15 +11,15 @@ SActor::SActor() :
 	bIsHovered(false),
 	bIsPressed(false)
 {
-	std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
-	newShape->height = GetSize().Y;
-	newShape->width = GetSize().X;
-	newShape->Type = FActorType::ActorType_Rectangle;
-	newShape->ObjectColor = FColor::White();
-	MyShape = std::move(newShape);
-	bIsStatic = false;
+	//std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
+	//newShape->height = GetSize().Y;
+	//newShape->width = GetSize().X;
+	//newShape->Type = FActorType::ActorType_Rectangle;
+	//newShape->ObjectColor = FColor::White();
+	//MyShape = std::move(newShape);
+	//bIsStatic = false;
 
-	collisionShape = std::make_unique<CircleShape>(GetLocation(), 50);
+	//collisionShape = std::make_unique<CircleShape>(GetLocation(), 50);
 }
 
 SActor::~SActor()

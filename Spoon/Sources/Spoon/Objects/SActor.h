@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Spoon/Core/SObject.h"
-#include "Spoon/Library/TColor.h"
-#include "Spoon/Library/TStruct.h"
-#include "Spoon/Library/Collision.h"
-#include "Object/Component/CollisionShape.h"
+#include "Objects/SObject.h"
+#include "Library/TColor.h"
+#include "Library/TStruct.h"
+#include "Library/Collision.h"
+#include "Objects/Components/CollisionShape.h"
 
 enum SPOON_API FActorType
 {
@@ -104,9 +104,9 @@ public:
 
 	bool IsInBound(const FVector2D& _loc) const;
 
-	bool CheckCollision(SActor* other) const;
+	//bool CheckCollision(SActor* other) const;
 
-	void OnCollide(SActor* other);
+	//void OnCollide(SActor* other);
 
 	FActorType GetType() const;
 

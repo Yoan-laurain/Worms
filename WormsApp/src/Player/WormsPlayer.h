@@ -2,7 +2,7 @@
 
 #include "../Turn/ITurnObserver.h"
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
-#include <Spoon/Core/Player.h>
+#include "Objects/SPlayer.h"
 
 class WormsPlayer : public Player, public ITurnObserver
 {

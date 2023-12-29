@@ -1,6 +1,6 @@
 #pragma once
-#include "Spoon/Core/Core.h"
-#include "Spoon/Events/SpoonEvent.h"
+#include "Core/Core.h"
+#include "Events/SpoonEvent.h"
 
 struct WindowsProps
 {

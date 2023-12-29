@@ -1,6 +1,6 @@
 #pragma once
-#include "Spoon/Core/SObject.h"
-#include "Spoon/Library/TColor.h"
+#include "Objects/SObject.h"
+#include "Library/TColor.h"
 
 class SPOON_API SComponent : public SObject
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SComponent.h"
-#include "Spoon/Library/TVector.h"
+#include "Library/TVector.h"
 
 class SPOON_API SGravityComponent : public SComponent
 {

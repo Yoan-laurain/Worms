@@ -1,5 +1,5 @@
 #include "Level.h"
-#include "Object/SActor.h"
+#include "Objects/SActor.h"
 #include <snpch.h>
 
 Level::~Level()
@@ -71,7 +71,7 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
-void Level::HandleCollision(CollisionShape* obj)
+void Level::HandleCollision(SActor* obj)
 {
 	for (const auto& entity : EntityList)
 	{
@@ -79,10 +79,10 @@ void Level::HandleCollision(CollisionShape* obj)
 		{
 			if (!entity->bIsStatic)
 			{
-				if (entity->CheckCollision(obj))
-				{
-					std::cout << "Collision!!!!!" << std::endl;
-				}
+				//if (entity->CheckCollision(obj))
+				//{
+				//	std::cout << "Collision!!!!!" << std::endl;
+				//}
 			}
 		}
 	}

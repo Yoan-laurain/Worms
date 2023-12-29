@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "Window.h"
-#include "Object/SActor.h"
+#include "Objects/SActor.h"
 
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.

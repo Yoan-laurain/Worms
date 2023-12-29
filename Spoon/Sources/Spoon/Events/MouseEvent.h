@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SpoonEvent.h"
-#include "Spoon/Core/MouseCode.h"
+#include "Inputs/MouseCode.h"
 
 class MouseMovedEvent : public SpoonEvent
 {

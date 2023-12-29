@@ -1,5 +1,5 @@
 #pragma once
-#include "Spoon/Core/Core.h"
+#include "Core/Core.h"
 #include <snpch.h>
 
 

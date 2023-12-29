@@ -1,6 +1,6 @@
 #pragma once
 #include "SpoonEvent.h"
-#include "Spoon/Core/KeyCode.h"
+#include "Inputs/KeyCode.h"
 
 class KeyEvent : public SpoonEvent
 {

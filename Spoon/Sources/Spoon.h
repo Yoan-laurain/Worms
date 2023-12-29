@@ -1,7 +1,7 @@
-#include "Spoon/Core/Application.h"
-#include "Spoon/Core/Level.h"
-#include "Object/SActor.h"
+#include "Core/Application.h"
+#include "Core/Level.h"
+#include "Objects/SActor.h"
 
-#include "Spoon/Library/TVector.h"
-#include "Spoon/Library/TColor.h"
-#include "Spoon/Library/TStruct.h"
+#include "Library/TVector.h"
+#include "Library/TColor.h"
+#include "Library/TStruct.h"

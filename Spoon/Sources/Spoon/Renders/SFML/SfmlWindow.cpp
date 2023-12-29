@@ -1,14 +1,14 @@
 #include "SfmlWindow.h"
-#include "Object/SActor.h"
-#include "Spoon/Events/KeyEvent.h"
-#include "Spoon/Events/ApplicationEvent.h"
-#include "Spoon/Events/MouseEvent.h"
+#include "Objects/SActor.h"
+#include "Events/KeyEvent.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/MouseEvent.h"
 
 #ifndef DEBUG
 #include "imgui.h"
 #include <imgui-SFML.h>
 #endif // !DEBUG
-#include <Spoon/Core/Application.h>
+#include <Core/Application.h>
 
 // Function call de maniere indirect lorsque j'ai besoin de la fenetre.
 Window* Window::Create(const WindowsProps& props)

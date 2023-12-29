@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Core/Core.h"
 #include <snpch.h>
 
 class SPOON_API InputHandler
