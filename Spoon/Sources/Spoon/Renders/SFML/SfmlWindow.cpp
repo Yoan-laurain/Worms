@@ -8,7 +8,7 @@
 
 #ifndef DEBUG
 #include "imgui.h"
-#include <imgui-SFML.h>
+#include "imgui-SFML.h"
 #endif // !DEBUG
 #include <Core/Application.h>
 

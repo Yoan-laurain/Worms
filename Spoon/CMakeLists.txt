@@ -48,7 +48,6 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-
     # target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
 endif()
 
@@ -62,7 +61,6 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-graphics sfml-window
 	    imgui::imgui
 	    ImGui-SFML::ImGui-SFML
-        Threads::Threads
 )
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${SOURCE_FILES})
