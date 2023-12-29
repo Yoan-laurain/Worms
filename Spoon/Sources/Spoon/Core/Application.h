@@ -1,14 +1,13 @@
 #pragma once
 #include "Core.h"
 #include "Library/TVector.h"
-#include "Objects/SPlayer.h"
+
 #include "Inputs/InputMgr.h"
 #include "Renders/SFML/TextureMgr.h"
 #include <snpch.h>
 
 class Level;
 class Window;
-
 
 class SPOON_API Application
 {
@@ -34,9 +33,9 @@ public:
 	InputMgr* GetInputMgr() const;
 	TextureMgr* GetTextureMgr() const;
 
-	void AddNewPlayer(Player* player);
+	void AddNewPlayer(class SPlayer* player);
 
-	bool BindAction(Player* player, InputAction inputAction, std::function<void(float)> func);
+	bool BindAction(class SPlayer* player, InputAction inputAction, std::function<void(float)> func);
 
 protected:
 
@@ -72,7 +71,7 @@ private:
 
 	static Application* s_Instance;
 
-	std::vector<Player*> Players;
+	std::vector<class SPlayer*> Players;
 	InputMgr* _InputMgr;
 	TextureMgr* _TextureMgr;
 

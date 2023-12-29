@@ -122,14 +122,14 @@ void Application::OnRender()
 	return;
 }
 
-void Application::AddNewPlayer(Player* player)
+void Application::AddNewPlayer(SPlayer* player)
 {
 	Players.push_back(player);
 
 	_InputMgr->AddNewPlayer();
 }
 
-bool Application::BindAction(Player* player, InputAction inputAction, std::function<void(float)> func)
+bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func)
 {
 	int index = -1;
 	for (int i = 0; i < Players.size(); ++i)

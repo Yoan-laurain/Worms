@@ -33,8 +33,6 @@ class SPOON_API SObject : public IReflecatble
 {
 	GENERATE()
 
-	
-
 public:
 	
 	SObject();

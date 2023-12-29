@@ -2,23 +2,23 @@
 #include "Core/Application.h"
 #include "Components/SGravityComponent.h"
 
-Player::Player() : SActor()
+SPlayer::SPlayer() : SActor()
 {
 	Application::Get().AddNewPlayer(this);
 	GravityComponent = CreateComponent<SGravityComponent>("Gravity Component");
 	std::cout << GetClassId() << std::endl;
 }
 
-Player::~Player()
+SPlayer::~SPlayer()
 {
 }
 
-void Player::Tick(float DeltaTime)
+void SPlayer::Tick(float DeltaTime)
 {
 	SActor::Tick(DeltaTime);
 }
 
-void Player::BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func)
+void SPlayer::BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func)
 {
 	Application::Get().BindAction(this, inputAction, func);
 }

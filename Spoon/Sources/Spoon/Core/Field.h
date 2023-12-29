@@ -16,7 +16,7 @@ public:
 
 	// Creat le constructeur avec tous les arguments par défaut
 
-	FieldClass(std::string _name, uint64 _id, FieldClass* SuperClass, Field* DefaultObject) : Name(_name), Id(_id), SuperClass(SuperClass), DefaultObject(DefaultObject) {}
+	FieldClass(std::string _name, uint64 _id, FieldClass* _superClass, Field* _defaultObject) : Name(_name), Id(_id), SuperClass(_superClass), DefaultObject(_defaultObject) {}
 
 	std::string GetName() const { return Name; }
 

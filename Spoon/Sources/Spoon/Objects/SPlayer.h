@@ -3,13 +3,13 @@
 #include "Objects/SActor.h"
 #include "Inputs/InputAction.h"
 
-class SPOON_API Player : public SActor
+class SPOON_API SPlayer : public SActor
 {
 	GENERATE()
 
 public:
-	Player();
-	virtual ~Player();
+	SPlayer();
+	virtual ~SPlayer();
 
 protected:
 

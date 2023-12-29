@@ -133,14 +133,14 @@ private:
 
 
 // Return le first element si c'est juste avec un nom
-template <>
-SComponent* SActor::GetComponent<SComponent>(const std::string& name)
-{
-	for (auto& comp : ComponentList)
-	{
-		if (comp->GetName() == name)
-				return comp.get();
-
-	}
-	return nullptr;
-}
+// template <>
+// SComponent* SActor::GetComponent<SComponent>(const std::string& name)
+// {
+// 	for (auto& comp : ComponentList)
+// 	{
+// 		if (comp->GetName() == name)
+// 				return comp.get();
+// 
+// 	}
+// 	return nullptr;
+// }
