@@ -1,13 +1,18 @@
 project (Spoon)
 
-set (SOURCE_FILES 
-	src/snpch.h
-	src/snpch.cpp
+set(dir Sources)
+
+set (SOURCE_FILES
+	${dir}/snpch.h
+	${dir}/snpch.cpp
 )
 
-file(GLOB_RECURSE PROJECT_SOURCE_FILES "*.h" "*.cpp")
+file(GLOB_RECURSE PROJECT_SOURCE_FILES "*.h" "*.cpp" "*.inl")
 
-include_directories(src)
+include_directories(
+    ${dir}/Spoon
+    ${dir}
+)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
 
@@ -28,7 +33,7 @@ macro(GroupSources curdir)
 endmacro()
 
 # Execute the macro
-GroupSources(src)
+GroupSources(Sources)
 
 
 add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCE_FILES})
@@ -44,7 +49,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 
-    target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
+    # target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
 endif()
 
 add_compile_definitions(SN_BUILD_DLL)

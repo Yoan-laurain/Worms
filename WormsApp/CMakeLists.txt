@@ -25,7 +25,9 @@ endmacro()
 # Execute the macro
 GroupSources(src)
 
-include_directories(${CMAKE_SOURCE_DIR}/${DLL_NAME}/src)
+include_directories(${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources
+${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources/Spoon
+)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 

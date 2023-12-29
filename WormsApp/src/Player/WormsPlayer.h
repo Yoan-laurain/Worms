@@ -2,11 +2,13 @@
 
 #include "../Turn/ITurnObserver.h"
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
-#include <Spoon/Core/Player.h>
+#include "Objects/SPlayer.h"
 
-class WormsPlayer : public Player, public ITurnObserver
+class WormsPlayer : public SPlayer, public ITurnObserver
 {
-	public : 
+	GENERATE()
+
+public :
 
 		WormsPlayer();
 
@@ -21,6 +23,8 @@ class WormsPlayer : public Player, public ITurnObserver
 
 		int currentHealth;
 		int maxHealth;
+
+		class SCircleComponent* CircleComponent; 
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
