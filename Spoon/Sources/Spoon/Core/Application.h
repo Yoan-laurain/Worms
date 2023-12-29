@@ -1,8 +1,6 @@
 #pragma once
 #include "Core.h"
 #include "Library/TVector.h"
-
-#include "Renders/SFML/TextureMgr.h"
 #include <snpch.h>
 
 class Level;
@@ -30,7 +28,7 @@ public:
 	static Application& Get() { return *s_Instance; }
 
 	class InputMgr* GetInputMgr() const;
-	TextureMgr* GetTextureMgr() const;
+	class TextureMgr* GetTextureMgr() const;
 
 	void AddNewPlayer(class SPlayer* player);
 

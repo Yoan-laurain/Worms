@@ -1,11 +1,12 @@
 #include "Application.h"
 #include "Level.h"
 
-#include "Objects/SActor.h"
-#include "Events/KeyEvent.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Inputs/InputMgr.h"
+#include "Objects/SActor.h"
+#include "Renders/SFML/TextureMgr.h"
 
 Application* Application::s_Instance = nullptr;
 

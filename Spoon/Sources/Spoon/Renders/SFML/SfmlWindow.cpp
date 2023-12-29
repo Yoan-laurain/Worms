@@ -4,6 +4,7 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
 #include "Objects/Components/SShapeComponent.h"
+#include "TextureMgr.h"
 
 #ifndef DEBUG
 #include "imgui.h"
