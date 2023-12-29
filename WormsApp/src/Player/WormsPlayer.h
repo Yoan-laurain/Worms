@@ -6,7 +6,7 @@
 
 class WormsPlayer : public Player, public ITurnObserver
 {
-	public : 
+public : 
 
 		WormsPlayer();
 

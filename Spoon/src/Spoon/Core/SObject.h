@@ -8,7 +8,7 @@ class IReflecatble
 public:
 	virtual std::string GetClassName() const = 0;
 
-	virtual int GetClassId() const = 0;
+	virtual size_t GetClassId() const = 0;
 };
 
 // To be honest C'est chat GPT qui là fait
@@ -23,7 +23,7 @@ public:
         } \
         return mangledName; \
     } \
-	virtual int GetClassId() const { return typeid(*this).hash_code(); }
+	virtual size_t GetClassId() const { return typeid(*this).hash_code(); }
 
 // Object base. 
 class SPOON_API SObject : public IReflecatble

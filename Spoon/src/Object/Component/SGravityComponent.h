@@ -5,6 +5,8 @@
 
 class SPOON_API SGravityComponent : public SComponent
 {
+	GENERATE()
+
 public:
 	
 	SGravityComponent(class SActor* owner);

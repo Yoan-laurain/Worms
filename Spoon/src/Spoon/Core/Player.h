@@ -5,6 +5,8 @@
 
 class SPOON_API Player : public SActor
 {
+	GENERATE()
+
 public:
 	Player();
 	virtual ~Player();

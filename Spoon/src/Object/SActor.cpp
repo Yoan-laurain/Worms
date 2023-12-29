@@ -142,8 +142,7 @@ bool SActor::IsInBound(const FVector2D& _loc) const
 
 bool SActor::CheckCollision(SActor* other) const
 {
-	std::cout << "Collision : " << other->GetClassName() << ", " << GetClassName() << std::endl;
-	return collisionShape->tmp.CheckCollisionImpl(other->collisionShape->tmp);
+	return Collision::CheckCollisionImpl(collisionShape.get(), other->collisionShape.get());
 }
 
 void SActor::OnCollide(SActor* other)

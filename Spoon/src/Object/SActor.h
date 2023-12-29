@@ -6,44 +6,49 @@
 #include "Spoon/Library/Collision.h"
 #include "Object/Component/CollisionShape.h"
 
-enum FActorType
+enum SPOON_API FActorType
 {
-	ActorType_None = BIT(0),
-	ActorType_Circle = BIT(1),
-	ActorType_Rectangle = BIT(2),
-	ActorType_Convex = BIT(3),
-	ActorType_Sprite = BIT(4),
+	ActorType_None,
+	ActorType_Circle,
+	ActorType_Rectangle,
+	ActorType_Convex,
+	ActorType_Sprite
 };
 
-struct Shape
+class SPOON_API Shape
 {
+public:
 	Shape() : Type(FActorType::ActorType_None), ObjectColor(FColor::White()) {};
 	FActorType Type;
 	FColor ObjectColor;
 };
 
-struct Circle : public Shape
+class SPOON_API Circle : public Shape
 {
+public:
 	Circle() : radius(0) {};
 	float radius;
 };
 
-struct Rectangle : public Shape
+class SPOON_API Rectangle : public Shape
 {
+public:
 	Rectangle() : width(0), height(0) {};
 	float width;
 	float height;
 };
 
-struct Convex : public Shape
+class SPOON_API Convex : public Shape
 {
+public:
 	Convex() : Points() {};
 
 	std::unordered_map<int, FVector2D> Points;
 };
 
-struct Sprite : public Shape
+class SPOON_API Sprite : public Shape
 {
+public:
 	Sprite() : texturePath("") {};
 
 	std::string texturePath;

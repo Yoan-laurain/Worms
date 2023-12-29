@@ -5,7 +5,7 @@ set (SOURCE_FILES
 	src/snpch.cpp
 )
 
-file(GLOB_RECURSE PROJECT_SOURCE_FILES "*.h" "*.cpp")
+file(GLOB_RECURSE PROJECT_SOURCE_FILES "*.h" "*.cpp" "*.inl")
 
 include_directories(src)
 
@@ -44,7 +44,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 
-    target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
+    # target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
 endif()
 
 add_compile_definitions(SN_BUILD_DLL)

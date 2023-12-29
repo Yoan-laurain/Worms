@@ -1,10 +1,18 @@
 #pragma once
 
 #include "Spoon/Library/TVector.h"
+#include "Object/Component/CollisionShape.h"
 
 class Collision
 {
 public:
+
+	template <typename FirstShapeType, typename OtherShapeType = FirstShapeType>
+	static bool CheckCollisionImpl(FirstShapeType* first, OtherShapeType* other)
+    {
+        return false;
+    };
+
     static bool IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter,
         const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth);
 
@@ -25,3 +33,4 @@ private:
 
     static FVector2D FindArithmeticMean(const std::vector<FVector2D>& vertices);
 };
+

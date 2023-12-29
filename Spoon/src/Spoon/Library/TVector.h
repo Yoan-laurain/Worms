@@ -15,12 +15,13 @@ struct SPOON_API Vector2D
 
 	Vector2D<T>() : X(0), Y(0) {};
 
-	explicit Vector2D<T>(const T& _val) : X(_val), Y(_val) {};
+	template <typename L = T>
+	explicit Vector2D<T>(const L& _val) : X(static_cast<T>(_val)), Y(static_cast<T>(_val)) {};
 
-	Vector2D<T>(const T& _x, const T& _y) : X(_x), Y(_y) {};
+	template <typename L = T, typename R = L>
+	explicit Vector2D<T>(const L& _x, const R& _y) : X(static_cast<T>(_x)), Y(static_cast<T>(_y)) {};
 
-	template <typename L>
-	Vector2D<T>& operator=(const L& _val)
+	Vector2D<T>& operator=(const T& _val)
 	{
 		X = _val; Y = _val;
 		return *this;
@@ -116,62 +117,62 @@ struct SPOON_API Vector2D
 };
 
 template <typename T, typename L = T>
-Vector2D<T> operator+(const Vector2D<T>& right, const Vector2D<L>& left)
+Vector2D<T> OBJECT_API operator+(const Vector2D<T>& right, const Vector2D<L>& left)
 {
 	return Vector2D<T>(right.X + left.X, right.Y + left.Y);
 }
 
 template <typename T, typename L = T>
-Vector2D<T> operator+(const Vector2D<T>& right, const L& left)
+Vector2D<T> OBJECT_API operator+(const Vector2D<T>& right, const L& left)
 {
 	return Vector2D<T>(right.X + left, right.Y + left);
 }
 
 template <typename T, typename L = T>
-Vector2D<T> operator-(const Vector2D<T>& right, const Vector2D<L>& left)
+Vector2D<T> OBJECT_API operator-(const Vector2D<T>& right, const Vector2D<L>& left)
 {
 	return Vector2D<T>(right.X - left.X, right.Y - left.Y);
 }
 
 template <typename T, typename L = T>
-Vector2D<T> operator-(const Vector2D<T>& right, const L& left)
+Vector2D<T> OBJECT_API operator-(const Vector2D<T>& right, const L& left)
 {
 	return Vector2D<T>(right.X - left, right.Y - left);
 }
 
 template <typename T, typename L = T>
-Vector2D<T> operator/(const Vector2D<T>& right, const L& left)
+Vector2D<T> OBJECT_API operator/(const Vector2D<T>& right, const L& left)
 {
 	return Vector2D<T>(right.X / left, right.Y / left);
 }
 
 template <typename T>
-bool const operator==(const Vector2D<T>& left, const Vector2D<T>& right)
+bool const OBJECT_API operator==(const Vector2D<T>& left, const Vector2D<T>& right)
 {
 	return (left.X == right.X) && (left.Y == right.Y);
 }
 
 template <typename T>
-bool const operator!=(const Vector2D<T>& left, const Vector2D<T>& right)
+bool const OBJECT_API operator!=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
 	return !(left == right);
 }
 
 // This operation doesn't really have sense cause it suppose that X1 and Y1 will always be inferior or equal to X2 and Y2.
 template <typename T>
-bool const operator<=(const Vector2D<T>& left, const Vector2D<T>& right)
+bool const OBJECT_API operator<=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
 	return left.X <= right.X && left.Y <= right.Y;
 }
 
 template <typename T, typename L = T>
-Vector2D<T> operator*(const Vector2D<T>& right, const L& left)
+Vector2D<T> OBJECT_API operator*(const Vector2D<T>& right, const L& left)
 {
 	return Vector2D<T>(right.X * left, right.Y * left);
 }	
 
 template <typename T>
-bool const operator>=(const Vector2D<T>& left, const Vector2D<T>& right)
+bool const OBJECT_API operator>=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
 	return (right <= left);
 }
@@ -253,3 +254,7 @@ std::ostream& operator<<(std::ostream& os, const Vector<T>& _var)
 	return os << "X: " << _var.X << " Y: " << _var.Y << " Z: " << _var.Z;
 }
 
+//template <typename T> struct Vector2D;
+using FVector2D = Vector2D<float>;
+using IVector2D = Vector2D<int>;
+using DVector2D = Vector2D<double>;

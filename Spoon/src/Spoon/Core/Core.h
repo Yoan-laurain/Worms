@@ -1,23 +1,24 @@
 #pragma once
 #ifdef SN_BUILD_DLL
 	#define SPOON_API __declspec(dllexport)
+	#define OBJECT_API SPOON_API
 #else
 	#define SPOON_API __declspec(dllimport)
+	#define OBJECT_API
 #endif // SN_BUILD_DLL
 
-template <typename T> struct Vector2D;
-using FVector2D = Vector2D<float>;
-using IVector2D = Vector2D<int>;
-using DVector2D = Vector2D<double>;
-
-template <typename T> struct Transform;
-using FTransform = Transform<float>;
-using ITransform = Transform<int>;
-using DTransform = Transform<double>;
+using uint64 = unsigned __int64;
+using uint = unsigned int;
 
 struct FColor;
 
 #define BIT(x) (1 << x)
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
+#define NONCOPYABLE(TypeName) \
+	TypeName(TypeName&&) = delete; \
+	TypeName(const TypeName&) = delete; \
+	TypeName& operator=(const TypeName&) = delete; \
+	TypeName& operator=(TypeName&&) = delete;
 

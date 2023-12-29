@@ -1,83 +1,24 @@
 #pragma once
 
-#include "Spoon/Library/Collision.h"
-#include <snpch.h>
+#include "Spoon/Library/TVector.h"
+#include <vector>
 
-
-template <typename T>
-struct CollisionShape
+struct SPOON_API BaseShape
 {
-	using ShapeType = T;
-
-	CollisionShape() : Body(nullptr) {};
-
-	CollisionShape(ShapeType* body)
-		: Body(body)
-	{}
-
-	template <typename OtherShapeType>
-	bool CheckCollisionImpl(const CollisionShape<OtherShapeType>& other) const { return false; };
-
-	bool CheckCollisionImpl(const CollisionShape<ShapeType>& other) const { return false; };
-
-	ShapeType* Body;
-};
-
-struct BaseShape;
-struct CircleShape;
-struct PolygonShape;
-using BaseShapeCollision = CollisionShape<BaseShape>;
-using CircleShapeCollision = CollisionShape<CircleShape>;
-using PolygonShapeCollision = CollisionShape<PolygonShape>;
-
-struct BaseShape
-{
-    BaseShape(const FVector2D& _center) : Center(_center) { tmp = BaseShapeCollision(this); }
-
+    BaseShape(const FVector2D _center) : Center(_center) {}
     FVector2D Center;
-
-    BaseShapeCollision tmp;
 };
 
-struct CircleShape : public BaseShape
+struct SPOON_API CircleShape : public BaseShape
 {
-    CircleShape(const FVector2D& _center, float _radius) : BaseShape(_center), Radius(_radius) { tmp = CircleShapeCollision(this); }
+    CircleShape(const FVector2D& _center, float _radius) : BaseShape(_center), Radius(_radius) {}
 
     float Radius;
-
-    CircleShapeCollision tmp;
 };
 
-struct PolygonShape : public BaseShape
+struct SPOON_API PolygonShape : public BaseShape
 {
-    PolygonShape(const FVector2D& _center, const std::vector<FVector2D> _vertices) : BaseShape(_center), Vertices(_vertices) { tmp = PolygonShapeCollision(this); }
+    PolygonShape(const FVector2D& _center, const std::vector<FVector2D> _vertices) : BaseShape(_center), Vertices(_vertices) {}
 
     std::vector<FVector2D> Vertices;
-
-	PolygonShapeCollision tmp;
 };
-
-template <>
-template <>
-inline bool CollisionShape<CircleShape>::CheckCollisionImpl<PolygonShape>(const CollisionShape<PolygonShape>& other) const
-{
-    FVector2D normal;
-    float depth;
-    return Collision::IntersectCirclePolygon(Body->Center, Body->Radius, other.Body->Center , other.Body->Vertices, normal, depth);
-}
-
-template <>
-inline bool CollisionShape<CircleShape>::CheckCollisionImpl(const CollisionShape<CircleShape>& other) const
-{
-    FVector2D normal;
-    float depth;
-    return Collision::IntersectCircles(Body->Center, Body->Radius, other.Body->Center, other.Body->Radius, normal, depth);
-}
-
-template <>
-inline bool CollisionShape<PolygonShape>::CheckCollisionImpl(const CollisionShape<PolygonShape>& other) const
-{
-    FVector2D normal;
-    float depth;
-    return Collision::IntersectPolygons(Body->Vertices, other.Body->Vertices, normal, depth);
-}

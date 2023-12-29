@@ -9,8 +9,8 @@ public:
 	MouseMovedEvent(const FVector2D& _loc)
 		: m_MouseLoc(_loc) {}
 
-	int GetX() const { return m_MouseLoc.X; }
-	int GetY() const { return m_MouseLoc.Y; }
+	float GetX() const { return m_MouseLoc.X; }
+	float GetY() const { return m_MouseLoc.Y; }
 
 	FVector2D GetLoc() const { return m_MouseLoc; }
 

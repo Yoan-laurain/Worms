@@ -6,13 +6,14 @@ struct WindowsProps
 {
 	std::string Title;
 
-	unsigned int Width;
+	uint Width;
 	unsigned int Height;
 
+	template <typename GivenSize = uint>
 	WindowsProps(const std::string& title = "SpoonEngine",
-				unsigned int width = 1280,
-				unsigned int height = 720)
-			: Title(title), Width(width), Height(height)
+				GivenSize width = 1280,
+				GivenSize height = 720)
+			: Title(title), Width(static_cast<uint>(width)), Height(static_cast<uint>(height))
 	{}
 };
 
