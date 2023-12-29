@@ -1,12 +1,14 @@
 #include "Objects/SPlayer.h"
 #include "Core/Application.h"
 #include "Components/SGravityComponent.h"
+#include "Components/SCollisionComponent.h"
 
 SPlayer::SPlayer() : SActor()
 {
 	Application::Get().AddNewPlayer(this);
 	GravityComponent = CreateComponent<SGravityComponent>("Gravity Component");
-	std::cout << GetClassId() << std::endl;
+	CollisionComponent = CreateComponent<CircleShape>("Collision Component");
+	CollisionComponent->Radius = 50;
 }
 
 SPlayer::~SPlayer()

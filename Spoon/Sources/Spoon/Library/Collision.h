@@ -2,6 +2,7 @@
 
 #include "Library/TVector.h"
 #include "Objects/Components/SCollisionComponent.h"
+#include "Objects/SActor.h"
 
 class Collision
 {
@@ -9,9 +10,9 @@ public:
 
 	template <typename FirstShapeType, typename OtherShapeType = FirstShapeType>
 	static bool CheckCollisionImpl(FirstShapeType* first, OtherShapeType* other)
-    {
-        return false;
-    };
+	{
+		return false;
+	};
 
     static bool IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter,
         const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth);
@@ -34,3 +35,31 @@ private:
     static FVector2D FindArithmeticMean(const std::vector<FVector2D>& vertices);
 };
 
+
+template <>
+inline bool Collision::CheckCollisionImpl<CircleShape, PolygonShape>(CircleShape* first, struct PolygonShape* other)
+{
+	FVector2D normal;
+	float depth;
+	return Collision::IntersectCirclePolygon(first->GetOwner()->GetLocation(), first->Radius, first->GetOwner()->GetLocation(), other->Vertices, normal, depth);
+}
+
+template <>
+inline bool Collision::CheckCollisionImpl<CircleShape>(CircleShape* first, CircleShape* other)
+{
+	if (first == nullptr || other == nullptr)
+	{
+		return false;
+	}
+	FVector2D normal;
+	float depth;
+	return Collision::IntersectCircles(first->GetOwner()->GetLocation(), first->Radius, first->GetOwner()->GetLocation(), other->Radius, normal, depth);
+}
+
+template <>
+inline bool Collision::CheckCollisionImpl<PolygonShape>(PolygonShape* first, PolygonShape* other)
+{
+	FVector2D normal;
+	float depth;
+	return Collision::IntersectPolygons(first->Vertices, other->Vertices, normal, depth);
+}

@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "Objects/SActor.h"
+#include "Library/Collision.h"
 #include <snpch.h>
 
 Level::~Level()
@@ -77,12 +78,9 @@ void Level::HandleCollision(SActor* obj)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
-			if (!entity->bIsStatic)
+			if (Collision::CheckCollisionImpl(entity->GetComponent<CircleShape*>("Collision Component"), obj->GetComponent<CircleShape*>("Collision Component")))
 			{
-				//if (entity->CheckCollision(obj))
-				//{
-				//	std::cout << "Collision!!!!!" << std::endl;
-				//}
+				std::cout << "Collision!!!!!" << std::endl;
 			}
 		}
 	}

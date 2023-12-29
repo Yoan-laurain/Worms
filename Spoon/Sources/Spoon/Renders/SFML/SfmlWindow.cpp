@@ -101,6 +101,12 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 			DrawTexture(static_cast<SSpriteComponent*>(comp), drawSprite);
 			WindowRef->draw(drawSprite);
 		}
+		else if(comp->GetType() == FActorType::ActorType_Circle)
+		{
+			sf::CircleShape drawShape;
+			DrawCircle(static_cast<SCircleComponent*>(comp), drawShape);
+			WindowRef->draw(drawShape);
+		}
 	}
 }
 
@@ -120,6 +126,14 @@ void SfmlWindow::DrawRectangle(const SRectangleComponent* _component, sf::Rectan
 	_currentShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
 	_currentShape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+}
+
+void SfmlWindow::DrawCircle(const SCircleComponent* _component, sf::CircleShape& _circle)
+{
+	_circle.setRadius(_component->Radius);
+	_circle.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
+	_circle.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 }
 
 void SfmlWindow::DrawConvex(const SConvexComponent* _component, sf::ConvexShape& drawShape)

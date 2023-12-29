@@ -3,6 +3,7 @@
 #include "Objects/SObject.h"
 #include "Library/TColor.h"
 #include "Library/TStruct.h"
+#include "Components/SComponent.h"
 
 class SPOON_API SActor : public SObject
 {
@@ -49,9 +50,13 @@ public:
 
 	bool IsInBound(const FVector2D& _loc) const;
 
+	/************************************************************************/
+	/* Component Getter														*/
+	/************************************************************************/
+
 	// Get the component type of with a specific name
-	template <typename T = class SComponent>
-	T* GetComponent(const std::string& name)
+	template <typename T = SComponent*>
+	T GetComponent(const std::string& name)
 	{
 		for (auto& comp : ComponentList)
 		{
@@ -80,8 +85,10 @@ public:
 
 protected:
 
+	// Funciton called lorsque l'objet est ajouté à la list update
 	virtual void BeginPlay();
 
+	// Function called à chaque boucle du LogicThread
 	virtual void Tick(float DeltaTime);
 
 	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
@@ -90,6 +97,7 @@ protected:
 
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
+	// Function à called pour cree un component
 	template<typename T>
 	T* CreateComponent(const std::string& name)
 	{
@@ -131,16 +139,3 @@ private:
 
 };
 
-
-// Return le first element si c'est juste avec un nom
-// template <>
-// SComponent* SActor::GetComponent<SComponent>(const std::string& name)
-// {
-// 	for (auto& comp : ComponentList)
-// 	{
-// 		if (comp->GetName() == name)
-// 				return comp.get();
-// 
-// 	}
-// 	return nullptr;
-// }

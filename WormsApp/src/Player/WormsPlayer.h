@@ -4,7 +4,7 @@
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
 #include "Objects/SPlayer.h"
 
-class WormsPlayer : public Player, public ITurnObserver
+class WormsPlayer : public SPlayer, public ITurnObserver
 {
 	GENERATE()
 
@@ -24,7 +24,7 @@ public :
 		int currentHealth;
 		int maxHealth;
 
-		class SRectangleComponent* RectangleComponent; 
+		class SCircleComponent* CircleComponent; 
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet

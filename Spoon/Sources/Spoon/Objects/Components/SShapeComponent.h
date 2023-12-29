@@ -30,8 +30,8 @@ class SPOON_API SCircleComponent : public SShapeComponent
 {
 	GENERATE()
 public:
-	SCircleComponent(class SActor* _owner) : SShapeComponent(_owner), radius(0) { Type = ActorType_Circle; };
-	float radius;
+	SCircleComponent(class SActor* _owner) : SShapeComponent(_owner), Radius(0) { Type = ActorType_Circle; };
+	float Radius;
 };
 
 class SPOON_API SRectangleComponent : public SShapeComponent

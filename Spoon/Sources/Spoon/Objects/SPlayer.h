@@ -20,5 +20,7 @@ protected:
 private:
 
 	class SGravityComponent* GravityComponent;
+	
+	class CircleShape* CollisionComponent;
 
 };

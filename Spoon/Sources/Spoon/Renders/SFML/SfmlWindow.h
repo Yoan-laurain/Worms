@@ -29,6 +29,7 @@ public:
 	unsigned int GetHeight() const override;
 
 	void DrawRectangle(const class SRectangleComponent* _component, sf::RectangleShape& _rectangle);
+	void DrawCircle(const class SCircleComponent* _component, sf::CircleShape& _circle);
 	void DrawConvex(const class SConvexComponent* _component, sf::ConvexShape& _convex);
 	void DrawTexture(class SSpriteComponent* _component, sf::Sprite& _text);
 

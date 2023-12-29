@@ -1,6 +1,5 @@
 #include "SCollisionComponent.h"
+#include "Objects/SActor.h"
+#include "Core/Level.h"
 
 
-BaseShape::BaseShape(SActor* _owner, const FVector2D& _center)
-{
-}

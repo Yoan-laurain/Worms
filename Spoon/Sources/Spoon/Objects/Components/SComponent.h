@@ -17,7 +17,7 @@ public:
 	template <typename T = class SActor>
 	T* GetOwner() const
 	{
-		return (T*)Owner;
+		return (Owner) ? (T*)Owner : nullptr;
 	}
 
 	std::string GetName() const { return ComponentName; }

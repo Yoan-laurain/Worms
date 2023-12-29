@@ -4,13 +4,13 @@
 #include "Objects/Components/SShapeComponent.h"
 
 WormsPlayer::WormsPlayer() :
-	Player(),
 	currentHealth(100),
 	maxHealth(100),
 	weaponStrategy(nullptr),
-	RectangleComponent(CreateComponent<SRectangleComponent>("RectangleComponent"))
+	CircleComponent(CreateComponent<SCircleComponent>("CircleComponent"))
 {
-	RectangleComponent->ObjectColor = FColor::Green();
+	CircleComponent->ObjectColor = FColor::Green();
+	CircleComponent->Radius = 50.f;
 	//newShape->texturePath = "Ressources/WormsPlayer.png";
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );

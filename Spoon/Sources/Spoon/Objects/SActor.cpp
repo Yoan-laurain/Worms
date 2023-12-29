@@ -8,7 +8,8 @@ SActor::SActor() :
 	SObject(),
 	WorldRef(nullptr),
 	bIsHovered(false),
-	bIsPressed(false)
+	bIsPressed(false),
+	bIsStatic(false)
 {
 
 	
