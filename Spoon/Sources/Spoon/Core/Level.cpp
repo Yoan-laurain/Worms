@@ -71,7 +71,7 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
-void Level::HandleCollision(SActor* obj)
+void Level::HandleCollision(CollisionShape* obj)
 {
 	for (const auto& entity : EntityList)
 	{

@@ -1,11 +1,10 @@
 #pragma once
+#include "SComponent.h"
 
-#include "Spoon/Library/TVector.h"
-#include <vector>
-
-struct SPOON_API BaseShape
+class SPOON_API BaseShape : public SComponent
 {
-    BaseShape(const FVector2D _center) : Center(_center) {}
+public:
+    BaseShape(class SActor* _owner, const FVector2D& _center);
     FVector2D Center;
 };
 

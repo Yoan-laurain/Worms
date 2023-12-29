@@ -1,13 +1,18 @@
 project (Spoon)
 
-set (SOURCE_FILES 
-	src/snpch.h
-	src/snpch.cpp
+set(dir Sources)
+
+set (SOURCE_FILES
+	${dir}/snpch.h
+	${dir}/snpch.cpp
 )
 
 file(GLOB_RECURSE PROJECT_SOURCE_FILES "*.h" "*.cpp" "*.inl")
 
-include_directories(src)
+include_directories(
+    ${dir}/Spoon
+    ${dir}
+)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
 
@@ -28,7 +33,7 @@ macro(GroupSources curdir)
 endmacro()
 
 # Execute the macro
-GroupSources(src)
+GroupSources(Sources)
 
 
 add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCE_FILES})

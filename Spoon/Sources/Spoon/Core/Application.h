@@ -1,10 +1,10 @@
 #pragma once
 #include "Core.h"
-#include "Spoon/Library/TVector.h"
+#include "Library/TVector.h"
+#include "Object/SPlayer.h"
+#include "Input/InputMgr.h"
+#include "Renders/SFML/TextureMgr.h"
 #include <snpch.h>
-#include "Player.h"
-#include <Spoon/Input/InputMgr.h>
-#include <Spoon/Renders/SFML/TextureMgr.h>
 
 class Level;
 class Window;

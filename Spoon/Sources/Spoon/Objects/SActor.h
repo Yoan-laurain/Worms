@@ -144,8 +144,6 @@ public:
 
 	bool bIsStatic;
 
-	std::unique_ptr<BaseShape> collisionShape;
-
 protected:
 
 	bool bIsHovered;

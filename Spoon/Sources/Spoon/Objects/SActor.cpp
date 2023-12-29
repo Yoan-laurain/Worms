@@ -140,16 +140,6 @@ bool SActor::IsInBound(const FVector2D& _loc) const
 	return false;
 }
 
-bool SActor::CheckCollision(SActor* other) const
-{
-	return Collision::CheckCollisionImpl(collisionShape.get(), other->collisionShape.get());
-}
-
-void SActor::OnCollide(SActor* other)
-{
-	std::cout << " I'm colliding with " << std::endl;
-}
-
 FActorType SActor::GetType() const
 {
 	return MyShape->Type;
