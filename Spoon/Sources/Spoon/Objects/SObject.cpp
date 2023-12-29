@@ -3,14 +3,9 @@
 
 SObject::SObject() : UniqueId(0)
 {
-	UniqueId = reinterpret_cast<unsigned long long>(this);
+	UniqueId = reinterpret_cast<uint64>(this);
 }
 
 SObject::~SObject()
-{
-#if DEBUG
-	std::cout << "Object Destroy : " << GetClassName() << std::endl;
-#endif // DEBUG
-
-}
+{}
 

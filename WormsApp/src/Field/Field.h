@@ -4,21 +4,23 @@
 
 class FieldPoint : public SActor 
 {
-	public:
-		FieldPoint();
+public:
+	FieldPoint();
 
-	protected:
-		void OnCollide(SActor* pActor);
+protected:
+	void OnCollide(SActor* pActor);
+	class SShapeComponent* ShapeComponent;
 };
 
 class Field : public SActor
 {
-	public : 
+public:
 
-		Field();
+	Field();
 
-		void GenerateFieldCurve();
+	void GenerateFieldCurve();
 
-	private :
-		std::vector<std::unique_ptr<FieldPoint>> m_FieldPoint;
+private:
+	std::vector<std::unique_ptr<FieldPoint>> m_FieldPoint;
+	class SConvexComponent* CurrentShape;
 };

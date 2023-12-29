@@ -1,6 +1,6 @@
 #pragma once
 #include "Collision.h"
-#include "Object/Component/CollisionShape.h"
+#include "Objects/Components/CollisionShape.h"
 
 
 template <>

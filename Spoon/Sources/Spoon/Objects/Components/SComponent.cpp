@@ -13,3 +13,8 @@ SComponent::~SComponent()
 	std::cout << "Component Destroy" << std::endl;
 #endif // DEBUG
 }
+
+void SComponent::SetName(const std::string& name)
+{
+	ComponentName = name;
+}

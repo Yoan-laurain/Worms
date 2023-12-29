@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include <string>
 #include <typeinfo>
+#include "Core/Field.h"
 
 class IReflecatble
 {
@@ -12,6 +13,8 @@ public:
 };
 
 // To be honest C'est chat GPT qui là fait
+// Je voulais pouvoir avoir la classe dans le quel il est crée pour que si je le stock dans une var du type parent
+// Je puisse get la class child
 #define GENERATE() \
 	public: \
     virtual std::string GetClassName() const { \
@@ -30,17 +33,25 @@ class SPOON_API SObject : public IReflecatble
 {
 	GENERATE()
 
+	
+
 public:
 	
 	SObject();
 
 	virtual ~SObject();
 
-	unsigned long long GetUniqueId() const { return UniqueId; }
+	template <typename T = SObject>
+	bool IsA() const
+	{
+		return static_cast<T>(this) != nullptr;
+	}
+
+	uint64 GetUniqueId() const { return UniqueId; }
 
 private:
 
-	unsigned long long UniqueId;
+	uint64 UniqueId;
 
 };
 

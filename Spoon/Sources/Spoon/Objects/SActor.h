@@ -3,60 +3,13 @@
 #include "Objects/SObject.h"
 #include "Library/TColor.h"
 #include "Library/TStruct.h"
-#include "Library/Collision.h"
-#include "Objects/Components/CollisionShape.h"
-
-enum SPOON_API FActorType
-{
-	ActorType_None,
-	ActorType_Circle,
-	ActorType_Rectangle,
-	ActorType_Convex,
-	ActorType_Sprite
-};
-
-class SPOON_API Shape
-{
-public:
-	Shape() : Type(FActorType::ActorType_None), ObjectColor(FColor::White()) {};
-	FActorType Type;
-	FColor ObjectColor;
-};
-
-class SPOON_API Circle : public Shape
-{
-public:
-	Circle() : radius(0) {};
-	float radius;
-};
-
-class SPOON_API Rectangle : public Shape
-{
-public:
-	Rectangle() : width(0), height(0) {};
-	float width;
-	float height;
-};
-
-class SPOON_API Convex : public Shape
-{
-public:
-	Convex() : Points() {};
-
-	std::unordered_map<int, FVector2D> Points;
-};
-
-class SPOON_API Sprite : public Shape
-{
-public:
-	Sprite() : texturePath("") {};
-
-	std::string texturePath;
-	std::string name;
-};
 
 class SPOON_API SActor : public SObject
 {
+	GENERATE()
+
+private:
+
 	friend class Level;
 
 	// Todo : A delete when key application
@@ -73,14 +26,6 @@ public:
 	void DestroyActor();
 
 	inline class Level* GetWorld() const { return WorldRef; };
-
-	/************************************************************************/
-	/* GetColor																*/
-	/************************************************************************/
-
-	FColor GetColor() const;
-
-	void SetColor(const FColor& color);
 
 	/************************************************************************/
 	/* Transform															*/
@@ -104,15 +49,34 @@ public:
 
 	bool IsInBound(const FVector2D& _loc) const;
 
-	//bool CheckCollision(SActor* other) const;
+	// Get the component type of with a specific name
+	template <typename T = class SComponent>
+	T* GetComponent(const std::string& name)
+	{
+		for (auto& comp : ComponentList)
+		{
+			if (comp->GetName() == name)
+				if (T tmp = dynamic_cast<T>(comp.get()))
+					return tmp;
 
-	//void OnCollide(SActor* other);
+		}
+		return nullptr;
+	}
 
-	FActorType GetType() const;
-
-	Shape* GetShape() const;
-
-	void SetShape(Shape* _newShape);
+	// Get all Component of a specific type
+	// Be careful, this function is not optimized
+	template <typename T>
+	bool GetAllComponentType(std::vector<T>& CompList) const
+	{
+		for (auto& comp : ComponentList)
+		{
+			if (T tmp = dynamic_cast<T>(comp.get()))
+			{
+				CompList.push_back(tmp);
+			}
+		}
+		return !CompList.empty();
+	}
 
 protected:
 
@@ -127,14 +91,17 @@ protected:
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
 	template<typename T>
-	T* CreateComponent()
+	T* CreateComponent(const std::string& name)
 	{
 		T* tmp = new T(this);
-		ComposanList.push_back(std::unique_ptr<T>(tmp));
+		tmp->SetName(name);
+		ComponentList.push_back(std::unique_ptr<T>(tmp));
 		return tmp;
 	}
 
 private:
+
+	// TODO faire add de component / Destroy Component
 
 	void OnEvent(class SpoonEvent& event);
 
@@ -156,10 +123,24 @@ protected:
 
 private:
 
-	std::unique_ptr<Shape> MyShape;
+	std::vector<std::unique_ptr<class SComponent>> ComponentList;
 
-	std::vector<std::unique_ptr<class SComponent>> ComposanList;
+	std::vector<class SComponent> TickableComponent;
 
 	class Level* WorldRef;
 
 };
+
+
+// Return le first element si c'est juste avec un nom
+template <>
+SComponent* SActor::GetComponent<SComponent>(const std::string& name)
+{
+	for (auto& comp : ComponentList)
+	{
+		if (comp->GetName() == name)
+				return comp.get();
+
+	}
+	return nullptr;
+}

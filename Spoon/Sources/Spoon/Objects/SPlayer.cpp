@@ -5,7 +5,8 @@
 Player::Player() : SActor()
 {
 	Application::Get().AddNewPlayer(this);
-	GravityComponent = CreateComponent<SGravityComponent>();
+	GravityComponent = CreateComponent<SGravityComponent>("Gravity Component");
+	std::cout << GetClassId() << std::endl;
 }
 
 Player::~Player()

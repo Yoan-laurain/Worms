@@ -8,7 +8,8 @@
 #endif // SN_BUILD_DLL
 
 using uint64 = unsigned __int64;
-using uint = unsigned int;
+using uint32 = unsigned int;
+using int32 = signed int;
 
 struct FColor;
 

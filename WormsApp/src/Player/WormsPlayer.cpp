@@ -1,20 +1,20 @@
 #include "WormsPlayer.h"
 #include "../Weapons/WeaponStrategy.h"
 #include "../Weapons/SimpleGun/SimpleGun.h"
+#include "Objects/Components/SShapeComponent.h"
 
 WormsPlayer::WormsPlayer() :
 	Player(),
 	currentHealth(100),
 	maxHealth(100),
-	weaponStrategy(nullptr)
+	weaponStrategy(nullptr),
+	RectangleComponent(CreateComponent<SRectangleComponent>("RectangleComponent"))
 {
-	Rectangle* newShape = new Rectangle();
-	newShape->ObjectColor = FColor::Green();
-	newShape->Type = FActorType::ActorType_Rectangle;
+	RectangleComponent->ObjectColor = FColor::Green();
 	//newShape->texturePath = "Ressources/WormsPlayer.png";
-	SetShape(newShape);
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
+	std::cout << GetClassName() << std::endl;
 
 	BindFunctionToInputAction(InputAction::Left, std::bind(&WormsPlayer::Move, this, std::placeholders::_1, -1.f));
 	BindFunctionToInputAction(InputAction::Right, std::bind(&WormsPlayer::Move, this, std::placeholders::_1, 1.f));

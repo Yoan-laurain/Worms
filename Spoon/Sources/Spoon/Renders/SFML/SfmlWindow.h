@@ -28,9 +28,9 @@ public:
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
 
-	void DrawRectangle(const SActor* _currentActor, sf::RectangleShape& _rectangle);
-	void DrawConvex(const SActor* _currentActor, sf::ConvexShape& _convex);
-	void DrawTexture(const SActor* _currentActor, sf::Sprite& _text);
+	void DrawRectangle(const class SRectangleComponent* _component, sf::RectangleShape& _rectangle);
+	void DrawConvex(const class SConvexComponent* _component, sf::ConvexShape& _convex);
+	void DrawTexture(class SSpriteComponent* _component, sf::Sprite& _text);
 
 private:
 	

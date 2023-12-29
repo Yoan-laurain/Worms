@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Library/TVector.h"
-#include "Objects/Components/CollisionShape.h"
+#include "Objects/Components/SCollisionComponent.h"
 
 class Collision
 {

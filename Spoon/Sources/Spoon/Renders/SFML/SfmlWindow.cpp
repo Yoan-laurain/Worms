@@ -3,6 +3,7 @@
 #include "Events/KeyEvent.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
+#include "Objects/Components/SShapeComponent.h"
 
 #ifndef DEBUG
 #include "imgui.h"
@@ -72,29 +73,32 @@ void SfmlWindow::OnRender()
 
 void SfmlWindow::Draw(const SActor* _currentActor)
 {
-	if (_currentActor == nullptr)
+	if (_currentActor == nullptr || WindowRef == nullptr)
 	{
 		return;
 	}
+	std::vector<SShapeComponent*> CompList;
+	if(!_currentActor->GetAllComponentType<SShapeComponent*>(CompList))
+		return;
 
-	if (WindowRef != nullptr)
+	for (SShapeComponent* comp : CompList)
 	{
-		if (_currentActor->GetType() == FActorType::ActorType_Rectangle)
+		if (comp->GetType() == FActorType::ActorType_Rectangle)
 		{
 			sf::RectangleShape drawShape;
-			DrawRectangle(_currentActor, drawShape);
+			DrawRectangle(static_cast<SRectangleComponent*>(comp), drawShape);
 			WindowRef->draw(drawShape);
 		}
-		else if (_currentActor->GetType() == FActorType::ActorType_Convex)
+		else if (comp->GetType() == FActorType::ActorType_Convex)
 		{
 			sf::ConvexShape drawShape;
-			DrawConvex(_currentActor, drawShape);
-			WindowRef->draw( drawShape);
+			DrawConvex(static_cast<SConvexComponent*>(comp), drawShape);
+			WindowRef->draw(drawShape);
 		}
-		else if (_currentActor->GetType() == FActorType::ActorType_Sprite)
+		else if (comp->GetType() == FActorType::ActorType_Sprite)
 		{
 			sf::Sprite drawSprite;
-			DrawTexture(_currentActor, drawSprite);	
+			DrawTexture(static_cast<SSpriteComponent*>(comp), drawSprite);
 			WindowRef->draw(drawSprite);
 		}
 	}
@@ -110,42 +114,38 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
-void SfmlWindow::DrawRectangle( const SActor* _currentActor, sf::RectangleShape& _currentShape)
+void SfmlWindow::DrawRectangle(const SRectangleComponent* _component, sf::RectangleShape& _currentShape)
 {
-	_currentShape.setSize(sf::Vector2f(_currentActor->GetSize().X, _currentActor->GetSize().Y));
-	_currentShape.setFillColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
-		_currentActor->GetColor().B, _currentActor->GetColor().A));
-	_currentShape.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
+	_currentShape.setSize(sf::Vector2f(_component->GetOwner()->GetSize().X, _component->GetOwner()->GetSize().Y));
+	_currentShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
+	_currentShape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 }
 
-void SfmlWindow::DrawConvex(const SActor* _currentActor, sf::ConvexShape& drawShape)
+void SfmlWindow::DrawConvex(const SConvexComponent* _component, sf::ConvexShape& drawShape)
 {
-	Convex* _currentShape = static_cast<Convex*>(_currentActor->GetShape());
+	drawShape.setPointCount(_component->Points.size());
 
-	drawShape.setPointCount(_currentShape->Points.size());
-
-	for (auto& point : _currentShape->Points)
+	for (auto& point : _component->Points)
 	{
 		drawShape.setPoint(point.first, sf::Vector2f(point.second.X, point.second.Y));
 	}
 
-	drawShape.setFillColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
-		_currentActor->GetColor().B, _currentActor->GetColor().A));
+	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
 }
 
-void SfmlWindow::DrawTexture(const SActor* _currentActor, sf::Sprite& sprite)
+void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
 {
-	Sprite* _currentShape = static_cast<Sprite*>(_currentActor->GetShape());
-	
 	Textures.push_back(sf::Texture());
 
-	Application::Get().GetTextureMgr()->LoadTexture(_currentShape->name, _currentShape->texturePath, Textures.back());
+	Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath, Textures.back());
 
-	sprite.setColor(sf::Color(_currentActor->GetColor().R, _currentActor->GetColor().G,
-		_currentActor->GetColor().B, _currentActor->GetColor().A));
+	sprite.setColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
 
 	//sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
-	sprite.setPosition(sf::Vector2f(_currentActor->GetLocation().X, _currentActor->GetLocation().Y));
+	sprite.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 
 	sprite.setTexture(Textures.back());
 }

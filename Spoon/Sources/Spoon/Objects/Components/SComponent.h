@@ -5,6 +5,9 @@
 class SPOON_API SComponent : public SObject
 {
 	friend class SActor;
+
+	GENERATE()
+
 public:
 
 	SComponent(class SActor* owner = nullptr);
@@ -17,12 +20,20 @@ public:
 		return (T*)Owner;
 	}
 
+	std::string GetName() const { return ComponentName; }
+
 protected:
 
 	virtual void OnUpdate(const float Deltatime) {};
 
 private:
 
+	void SetName(const std::string& name);
+
+private:
+
 	class SActor* Owner;
+
+	std::string ComponentName;
 
 };

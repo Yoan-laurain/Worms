@@ -1,22 +1,21 @@
 #include "Field.h"
 #include "../Config.h"
 #include "../Levels/WormLevel.h"
+#include "Objects/Components/SShapeComponent.h"
 #include <random>
 #include <cmath>
 
 Field::Field() : 
 		m_FieldPoint()
 {
-    Convex* newShape = new Convex();
-    newShape->Type = FActorType::ActorType_Convex;
-    newShape->ObjectColor = FColor(139, 69, 19);
-    SetShape(newShape);
+    CurrentShape = CreateComponent<SConvexComponent>("ShapeComponent");
+    CurrentShape->ObjectColor = FColor(139, 69, 19);
+
 }
 
 void Field::GenerateFieldCurve()
 {
-    Convex* pConvex = static_cast<Convex*>(GetShape());
-    pConvex->Points.clear();
+    CurrentShape->Points.clear();
 
     m_FieldPoint.clear();
 
@@ -47,16 +46,14 @@ void Field::GenerateFieldCurve()
 
         //m_FieldPoint.push_back(std::make_unique<FieldPoint>());
 
-        pConvex->Points.emplace(i, FVector2D(x, y));
-        pConvex->Points.emplace(numberOfCurvePoints * 2 - i, FVector2D(x, Config::WindowHeight));
+        CurrentShape->Points.emplace(i, FVector2D(x, y));
+        CurrentShape->Points.emplace(numberOfCurvePoints * 2 - i, FVector2D(x, Config::WindowHeight));
     }
 }
 
 FieldPoint::FieldPoint()
 {
-    Shape* newShape = new Shape();
-    newShape->Type = FActorType::ActorType_None;
-    SetShape(newShape);
+    ShapeComponent = CreateComponent<SShapeComponent>("Component");
 }
 
 void FieldPoint::OnCollide(SActor* pActor)

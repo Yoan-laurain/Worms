@@ -6,7 +6,9 @@
 
 class WormsPlayer : public Player, public ITurnObserver
 {
-public : 
+	GENERATE()
+
+public :
 
 		WormsPlayer();
 
@@ -21,6 +23,8 @@ public :
 
 		int currentHealth;
 		int maxHealth;
+
+		class SRectangleComponent* RectangleComponent; 
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet

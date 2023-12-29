@@ -7,10 +7,11 @@
 SActor::SActor() :
 	SObject(),
 	WorldRef(nullptr),
-	MyShape(nullptr),
 	bIsHovered(false),
 	bIsPressed(false)
 {
+
+	
 	//std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
 	//newShape->height = GetSize().Y;
 	//newShape->width = GetSize().X;
@@ -34,9 +35,9 @@ void SActor::BeginPlay()
 
 void SActor::Tick(float DeltaTime)
 {
-	for (int i = 0; i < ComposanList.size(); ++i)
+	for (int i = 0; i < ComponentList.size(); ++i)
 	{
-		ComposanList[i]->OnUpdate(DeltaTime);
+		ComponentList[i]->OnUpdate(DeltaTime);
 	}
 	if (bIsPressed)
 	{
@@ -84,16 +85,6 @@ void SActor::SetWorldRef(Level* parentRef)
 	WorldRef = parentRef;
 }
 
-FColor SActor::GetColor() const
-{
-	return MyShape->ObjectColor;
-}
-
-void SActor::SetColor(const FColor& color)
-{
-	MyShape->ObjectColor = color;
-}
-
 FVector2D SActor::GetLocation() const
 {
 	return ObjectTransform.Location;
@@ -138,20 +129,4 @@ bool SActor::IsInBound(const FVector2D& _loc) const
 		return true;
 	}
 	return false;
-}
-
-FActorType SActor::GetType() const
-{
-	return MyShape->Type;
-}
-
-Shape* SActor::GetShape() const
-{
-	return MyShape.get();
-}
-
-void SActor::SetShape(Shape* _newShape)
-{
-	MyShape.reset();
-	MyShape = std::unique_ptr<Shape>(_newShape);
 }
