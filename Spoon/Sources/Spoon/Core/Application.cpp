@@ -5,6 +5,7 @@
 #include "Events/KeyEvent.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/MouseEvent.h"
+#include "Inputs/InputMgr.h"
 
 Application* Application::s_Instance = nullptr;
 

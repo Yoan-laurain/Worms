@@ -2,7 +2,6 @@
 #include "Core.h"
 #include "Library/TVector.h"
 
-#include "Inputs/InputMgr.h"
 #include "Renders/SFML/TextureMgr.h"
 #include <snpch.h>
 
@@ -30,12 +29,12 @@ public:
 
 	static Application& Get() { return *s_Instance; }
 
-	InputMgr* GetInputMgr() const;
+	class InputMgr* GetInputMgr() const;
 	TextureMgr* GetTextureMgr() const;
 
 	void AddNewPlayer(class SPlayer* player);
 
-	bool BindAction(class SPlayer* player, InputAction inputAction, std::function<void(float)> func);
+	bool BindAction(class SPlayer* player, enum class InputAction inputAction, std::function<void(float)> func);
 
 protected:
 
@@ -72,7 +71,7 @@ private:
 	static Application* s_Instance;
 
 	std::vector<class SPlayer*> Players;
-	InputMgr* _InputMgr;
+	class InputMgr* _InputMgr;
 	TextureMgr* _TextureMgr;
 
 };

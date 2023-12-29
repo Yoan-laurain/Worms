@@ -7,5 +7,9 @@ SObject::SObject() : UniqueId(0)
 }
 
 SObject::~SObject()
-{}
+{
+#if DEBUG
+	std::cout << GetUniqueId() << " is destroyed" << std::endl;
+#endif
+}
 

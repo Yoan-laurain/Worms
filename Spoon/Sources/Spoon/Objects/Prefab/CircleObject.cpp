@@ -36,7 +36,8 @@ const FColor& SCircleObject::GetColor() const
 
 bool SCircleObject::IsInBound(const FVector2D& _loc) const
 {
-	FVector2D vecDirection = GetLocation() - _loc;
+	FVector2D Offset = (GetLocation() - GetSize()/2) + (GetSize() * CircleComponent->Origin);
+	FVector2D vecDirection = Offset - _loc;
 	float distance = vecDirection.GetLength();
 	return distance <= GetRadius();
 }

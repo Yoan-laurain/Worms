@@ -165,6 +165,12 @@ bool const OBJECT_API operator<=(const Vector2D<T>& left, const Vector2D<T>& rig
 	return left.X <= right.X && left.Y <= right.Y;
 }
 
+template <typename T>
+Vector2D<T> OBJECT_API operator*(const Vector2D<T>& right, const Vector2D<T>& left)
+{
+	return Vector2D<T>(right.X * left.X, right.Y * left.Y);
+}
+
 template <typename T, typename L = T>
 Vector2D<T> OBJECT_API operator*(const Vector2D<T>& right, const L& left)
 {
