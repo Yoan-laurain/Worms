@@ -20,7 +20,15 @@ public:
 
 	void GenerateFieldCurve();
 
+	FTransform GetTransformAt(float percent);
+
+	FTransform& GetSpawnPoint();
+
 private:
-	std::vector<std::unique_ptr<FieldPoint>> m_FieldPoint;
-	class SConvexComponent* CurrentShape;
+	void AddSpawnPoint(const FTransform& spawnPoint);
+
+	std::vector<FTransform> m_SpawnPoints;
+	std::vector<FieldPoint*> m_FieldPoint;
+
+	class SShapeComponent* ShapeComponent;
 };

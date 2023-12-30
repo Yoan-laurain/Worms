@@ -10,7 +10,7 @@ class WormLevel : public Level
 {
 	public:
 
-		void CreatePlayer();
+		void CreatePlayer(FTransform& SpawnLocation);
 
 		void BeginPlay() override;
 

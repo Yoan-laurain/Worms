@@ -52,7 +52,7 @@ class SPOON_API SConvexComponent : public SShapeComponent
 public:
 	SConvexComponent(class SActor* _owner) : SShapeComponent(_owner), Points() { Type = ActorType_Convex; };
 
-	std::unordered_map<int, FVector2D> Points;
+	std::map<int, FVector2D> Points;
 };
 
 class SPOON_API SSpriteComponent : public SShapeComponent

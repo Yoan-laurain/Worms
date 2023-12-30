@@ -7,14 +7,13 @@ WormsPlayer::WormsPlayer() :
 	currentHealth(100),
 	maxHealth(100),
 	weaponStrategy(nullptr),
-	CircleComponent(CreateComponent<SCircleComponent>("CircleComponent"))
+	SpriteComponent( nullptr )
 {
-	CircleComponent->ObjectColor = FColor::Green();
-	CircleComponent->Radius = 50.f;
-	//newShape->texturePath = "Ressources/WormsPlayer.png";
+	SpriteComponent = CreateComponent<SSpriteComponent>("SpriteComponent");
+	SpriteComponent->texturePath = "Ressources/WormsPlayer.png";
+	SpriteComponent->name = "WormsPlayer";
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
-	std::cout << GetClassName() << std::endl;
 
 	BindFunctionToInputAction(InputAction::Left, std::bind(&WormsPlayer::Move, this, std::placeholders::_1, -1.f));
 	BindFunctionToInputAction(InputAction::Right, std::bind(&WormsPlayer::Move, this, std::placeholders::_1, 1.f));

@@ -10,10 +10,10 @@ class SPOON_API SPlayer : public SActor
 public:
 	SPlayer();
 	virtual ~SPlayer();
-
 protected:
 
 	virtual void Tick(float DeltaTime) override;
+
 
 	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
 

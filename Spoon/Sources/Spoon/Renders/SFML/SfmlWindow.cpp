@@ -160,8 +160,9 @@ void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
 	sprite.setColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
 
-	//sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
+	sprite.setScale(sf::Vector2f(_component->GetOwner()->GetSize().X / Textures.back().getSize().x, _component->GetOwner()->GetSize().Y / Textures.back().getSize().y));
 	sprite.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+	sprite.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
 	sprite.setTexture(Textures.back());
 }
