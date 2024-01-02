@@ -4,7 +4,7 @@
 
 
 template <typename T>
-struct SPOON_API Vector2D
+struct OBJECT_API Vector2D
 {
 	T X;
 	T Y;
@@ -112,6 +112,25 @@ struct SPOON_API Vector2D
 	static Vector2D<T>& Lerp(const Vector2D<T>& _left, const Vector2D<T>& _right, const float& _alpha)
 	{
 		return Vector2D<T>(_left + (_alpha * (_right - _left)));
+	}
+
+	Vector2D<T> GetSafeNormal() 
+	{
+		const T squareSum = (X * X) + (Y * Y);
+		if (squareSum > 0)
+		{
+			const T scale = 1 / std::sqrt(squareSum);
+			return Vector2D<T>(X * scale, Y * scale);
+		}
+		else
+		{
+			return Vector2D<T>(0, 0);
+		}
+	}
+	
+	Vector2D<T> GetTangent() 
+	{
+		return Vector2D<T>(Y, -X).GetSafeNormal();
 	}
 
 };

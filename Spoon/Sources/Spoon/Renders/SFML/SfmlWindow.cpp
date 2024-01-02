@@ -142,13 +142,27 @@ void SfmlWindow::DrawConvex(const SConvexComponent* _component, sf::ConvexShape&
 {
 	drawShape.setPointCount(_component->Points.size());
 
-	for (auto& point : _component->Points)
+	for (int i = 0; i < _component->Points.size(); i++)
 	{
-		drawShape.setPoint(point.first, sf::Vector2f(point.second.X, point.second.Y));
+		drawShape.setPoint(i, sf::Vector2f(_component->Points[i].X, _component->Points[i].Y));
 	}
 
-	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
+	drawShape.setOutlineColor(sf::Color::Red);
+	drawShape.setOutlineThickness(5);
+	drawShape.setFillColor(sf::Color::Transparent);
+
+	/*drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));*/
+
+	//for (int i = 0; i < _component->Points.size(); i++)
+	//{
+	//	drawShape.append(sf::Vertex(sf::Vector2f(_component->Points[i].X, _component->Points[i].Y), sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+	//					_component->ObjectColor.B, _component->ObjectColor.A)));
+
+
+	//}
+
+	//drawShape.setPrimitiveType(sf::PrimitiveType::LinesStrip);
 }
 
 void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
@@ -160,8 +174,11 @@ void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
 	sprite.setColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
 
-	//sprite.setScale( _currentActor->GetSize().X / Textures.back().getSize().x, _currentActor->GetSize().Y / Textures.back().getSize().y);
+	sprite.setScale(sf::Vector2f(_component->GetOwner()->GetSize().X / Textures.back().getSize().x,
+		_component->GetOwner()->GetSize().Y / Textures.back().getSize().y));
+
 	sprite.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+	sprite.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
 	sprite.setTexture(Textures.back());
 }
