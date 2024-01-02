@@ -24,13 +24,14 @@ public :
 		int currentHealth;
 		int maxHealth;
 
-		class SCircleComponent* CircleComponent; 
+		class SSpriteComponent* SpriteComponent;
 
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
 	std::unique_ptr<WeaponStrategy> weaponStrategy; 
 
-	void Move(float value, float sign);
+	void MoveVertical(float value, float sign);
+	void MoveHorizontal(float value, float sign);
 
 protected : 
 	bool OnDamageTaken(int damage);

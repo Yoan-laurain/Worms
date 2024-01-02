@@ -10,10 +10,11 @@ class WormLevel : public Level
 {
 	public:
 
-		void CreatePlayer();
+		void CreatePlayer(FTransform& SpawnLocation);
 
 		void BeginPlay() override;
 
 		std::unique_ptr<TurnManager> m_TurnManager;
 		Field* m_Field;
+		FTransform SpawnLocation;
 };

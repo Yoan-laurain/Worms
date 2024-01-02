@@ -80,7 +80,7 @@ void Level::HandleCollision(SActor* obj)
 		{
 			if (Collision::CheckCollisionImpl(static_cast<SCircleObject*>(entity.get()), static_cast<SCircleObject*>(obj)))
 			{
-				std::cout << "Collision!!!!!" << std::endl;
+				//std::cout << "Collision!!!!!" << std::endl;
 			}
 		}
 	}
