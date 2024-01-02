@@ -10,6 +10,7 @@ struct OBJECT_API Transform
 	
 	Vector2D<T> Location;
 	Vector2D<T> Size;
+	float Rotation = 0.0f;
 };
 
 // template <typename T> struct Transform;

@@ -5,7 +5,13 @@
 
 void WormLevel::CreatePlayer()
 {
-	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(FTransform(FVector2D(50,50), FVector2D(20, 20))); // TODO : Adapt SpawnLocation
+	FTransform transform = SpawnLocation;
+	transform.Size = FVector2D(50.f, 50.f);
+	transform.Location.Y -= transform.Size.Y;
+	transform.Rotation = 0.f;
+
+	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
+
 	m_TurnManager->registerObserver(playerPtr);
 }
 
