@@ -29,13 +29,6 @@ include_directories(${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources
 ${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources/Spoon
 )
 
-if (MSVC)
-    # Set Multi-threaded DLL flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-endif()
-
 find_package(SFML CONFIG REQUIRED COMPONENTS system window graphics)
 find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
