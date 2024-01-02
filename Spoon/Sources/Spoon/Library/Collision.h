@@ -54,7 +54,14 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 	}
 	FVector2D normal;
 	float depth;
-	return Collision::IntersectCircles(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetRadius(), normal, depth);
+	const bool Result = Collision::IntersectCircles(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetRadius(), normal, depth);
+	if (Result)
+	{
+		first->SetLocation(first->GetLocation() - (normal * depth) / 2);
+		other->SetLocation(other->GetLocation() + (normal * depth) / 2);
+	}
+
+	return Result;
 }
 
 template <>

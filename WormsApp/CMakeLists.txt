@@ -29,13 +29,28 @@ include_directories(${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources
 ${CMAKE_SOURCE_DIR}/${DLL_NAME}/Sources/Spoon
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
+if (MSVC)
+    # Set Multi-threaded DLL flags
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+endif()
 
 find_package(SFML CONFIG REQUIRED COMPONENTS system window graphics)
+find_package(imgui CONFIG REQUIRED)
+find_package(ImGui-SFML CONFIG REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${DLL_NAME} sfml-system sfml-graphics sfml-window  )
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+	${DLL_NAME}
+        sfml-system sfml-graphics sfml-window  
+	imgui::imgui
+	ImGui-SFML::ImGui-SFML
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 

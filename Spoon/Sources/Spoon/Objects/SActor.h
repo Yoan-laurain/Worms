@@ -55,13 +55,13 @@ public:
 	/************************************************************************/
 
 	// Get the component type of with a specific name
-	template <typename T = SComponent*>
-	T GetComponent(const std::string& name)
+	template <typename T = SComponent>
+	T* GetComponent(const std::string& name = "")
 	{
 		for (auto& comp : ComponentList)
 		{
-			if (comp->GetName() == name)
-				if (T tmp = dynamic_cast<T>(comp.get()))
+			if ( name.empty() || comp->GetName() == name)
+				if (T* tmp = dynamic_cast<T*>(comp.get()))
 					return tmp;
 
 		}
@@ -139,3 +139,7 @@ private:
 
 };
 
+class SPOON_API IPrefab
+{
+	virtual class SShapeComponent* GetShapeComponent() const = 0;
+};
