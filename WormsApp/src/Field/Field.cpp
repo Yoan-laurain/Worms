@@ -4,6 +4,8 @@
 #include "Objects/Components/SShapeComponent.h"
 #include <random>
 #include <cmath>
+#include <Library/TVector.h>
+#include <Library/MathLibrary.h>
 
 
 Field::Field() : 
@@ -23,16 +25,18 @@ void Field::GenerateFieldCurve()
     int numberOfCurvePoints = Config::NumberOfCurvesPoints;
 
     // Points de contr�le pour la courbe de B�zier
-    FVector2D controlPoint1(0.0f, Config::WindowHeight / 2.0f);
-    FVector2D controlPoint2(Config::WindowWidth, Config::WindowHeight / 2.0f);
+    FVector2D controlPoint1(10.0f, Config::WindowHeight / 2.0f);
+    FVector2D controlPoint2(Config::WindowWidth-10, Config::WindowHeight / 2.0f);
 
-    float baseFrequency = 10.0f; 
+    float baseFrequency = 30.0f; 
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> frequencyDistribution(.0f, .0f);  
 
     baseFrequency += frequencyDistribution(gen);
+
+    int index = 0;
 
     for (int i = 0; i <= numberOfCurvePoints; ++i)
     {
@@ -43,16 +47,16 @@ void Field::GenerateFieldCurve()
 
         //y += Config::WindowHeight * 0.1f * std::sin(baseFrequency * x / Config::WindowWidth);  // Sine wave with random frequency variation
 
-        FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y), FVector2D(1, 1)));
+        FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y-10), FVector2D(1, 1)));
         m_FieldPoint.push_back(pFieldPoint);
 
-        pConvex->Points.emplace(i, FVector2D(x, y));
+        CurrentShape->Points.push_back(FVector2D(x, y-10));
     }
 
     // Add symetric points to close convex
     for (int i = 0; i <= numberOfCurvePoints; ++i)
     {
-        pConvex->Points.emplace(numberOfCurvePoints + 1 + i, FVector2D(pConvex->Points[numberOfCurvePoints - i].X, Config::WindowHeight));
+        CurrentShape->Points.push_back(FVector2D(CurrentShape->Points[numberOfCurvePoints - i].X, Config::WindowHeight-10));
     }
 
     AddSpawnPoint(GetTransformAt(0.25f));
@@ -71,14 +75,14 @@ FTransform Field::GetTransformAt(float percent)
 
     FVector2D position = pFieldPoint->GetTransform().Location;
 
-    //FVector2D tangent = position.GetTangent();
-    /*float angle = std::atan2(tangent.Y, tangent.X);
+    FVector2D tangent = position.GetTangent();
+    float angle = std::atan2(tangent.Y, tangent.X);
 
-    angle = FMath::RadiansToDegrees(angle);*/
+    angle = angle * 180 / MathLibrary::Pi();
 
     FTransform transform;
     transform.Location = position;
-    //transform.Rotation = angle;
+    transform.Rotation = angle;
 
     return transform;
 }
@@ -97,7 +101,10 @@ void Field::AddSpawnPoint(const FTransform& spawnPoint)
 
 FieldPoint::FieldPoint()
 {
-    ShapeComponent = CreateComponent<SShapeComponent>("Component");
+    ShapeComponent = CreateComponent<SCircleComponent>("CircleComponent");  
+    ShapeComponent->ObjectColor = FColor(255, 255, 255);
+    ShapeComponent->Radius = 5.0f;
+
 }
 
 void FieldPoint::OnCollide(SActor* pActor)

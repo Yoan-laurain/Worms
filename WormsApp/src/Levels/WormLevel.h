@@ -16,4 +16,5 @@ class WormLevel : public Level
 
 		std::unique_ptr<TurnManager> m_TurnManager;
 		Field* m_Field;
+		FTransform SpawnLocation;
 };

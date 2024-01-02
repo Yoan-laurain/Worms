@@ -8,6 +8,7 @@ void WormLevel::CreatePlayer(FTransform& SpawnLocation)
 	FTransform transform = SpawnLocation;
 	transform.Size = FVector2D(50.f, 50.f);
 	transform.Location.Y -= transform.Size.Y;
+	transform.Rotation = 0.f;
 
 	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
 

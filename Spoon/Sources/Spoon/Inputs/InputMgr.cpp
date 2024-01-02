@@ -12,20 +12,20 @@ bool InputMgr::Init()
 
 bool InputMgr::Update(float fDeltaTime)
 {
-	//for (const auto& p : InputBinds)
-	//{
-	//	const sf::Keyboard::Key& key = p.first;
-	//	const InputBindInfo& bindInfo = p.second;
+	for (const auto& p : InputBinds)
+	{
+		const sf::Keyboard::Key& key = p.first;
+		const InputBindInfo& bindInfo = p.second;
 
-	//	if (sf::Keyboard::isKeyPressed(key))
-	//	{
-	//		SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 1.f);
-	//	}
-	//	else
-	//	{
-	//		SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 0.f);
-	//	}
-	//}
+		if (sf::Keyboard::isKeyPressed(key))
+		{
+			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 1.f);
+		}
+		else
+		{
+			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 0.f);
+		}
+	}
 
 	return true;
 }

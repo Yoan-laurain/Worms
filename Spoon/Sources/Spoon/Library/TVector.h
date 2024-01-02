@@ -4,7 +4,7 @@
 
 
 template <typename T>
-struct SPOON_API Vector2D
+struct OBJECT_API Vector2D
 {
 	T X;
 	T Y;

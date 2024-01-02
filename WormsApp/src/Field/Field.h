@@ -9,7 +9,7 @@ public:
 
 protected:
 	void OnCollide(SActor* pActor);
-	class SShapeComponent* ShapeComponent;
+	class SCircleComponent* ShapeComponent;
 };
 
 class Field : public SActor
@@ -31,4 +31,5 @@ private:
 	std::vector<FieldPoint*> m_FieldPoint;
 
 	class SShapeComponent* ShapeComponent;
+
 };
