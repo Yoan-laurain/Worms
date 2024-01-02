@@ -45,18 +45,18 @@ void Field::GenerateFieldCurve()
         float x = pow(1 - t, 3) * controlPoint1.X + 3 * pow(1 - t, 2) * t * controlPoint1.X + 3 * (1 - t) * pow(t, 2) * controlPoint2.X + pow(t, 3) * controlPoint2.X;
         float y = pow(1 - t, 3) * controlPoint1.Y + 3 * pow(1 - t, 2) * t * controlPoint1.Y + 3 * (1 - t) * pow(t, 2) * controlPoint2.Y + pow(t, 3) * controlPoint2.Y;
 
-        //y += Config::WindowHeight * 0.1f * std::sin(baseFrequency * x / Config::WindowWidth);  // Sine wave with random frequency variation
+        y += Config::WindowHeight * 0.1f * std::sin(baseFrequency * x / Config::WindowWidth);  // Sine wave with random frequency variation
 
         FieldPoint* pFieldPoint = GetWorld()->SpawnActor<FieldPoint>(FTransform(FVector2D(x, y-10), FVector2D(1, 1)));
         m_FieldPoint.push_back(pFieldPoint);
 
-        CurrentShape->Points.push_back(FVector2D(x, y-10));
+        pConvex->Points.push_back(FVector2D(x, y-10));
     }
 
     // Add symetric points to close convex
     for (int i = 0; i <= numberOfCurvePoints; ++i)
     {
-        CurrentShape->Points.push_back(FVector2D(CurrentShape->Points[numberOfCurvePoints - i].X, Config::WindowHeight-10));
+        pConvex->Points.push_back(FVector2D(pConvex->Points[numberOfCurvePoints - i].X, Config::WindowHeight-10));
     }
 
     AddSpawnPoint(GetTransformAt(0.25f));
