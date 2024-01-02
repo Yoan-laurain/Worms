@@ -7,10 +7,10 @@
 #include "TextureMgr.h"
 
 #ifndef DEBUG
-#include "imgui.h"
-#include "imgui-SFML.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
 #endif // !DEBUG
-#include <Core/Application.h>
+#include "Core/Application.h"
 
 // Function call de maniere indirect lorsque j'ai besoin de la fenetre.
 Window* Window::Create(const WindowsProps& props)
