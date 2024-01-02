@@ -92,8 +92,11 @@ FVector2D SActor::GetLocation() const
 
 void SActor::SetLocation(const FVector2D& loc)
 {
-	std::unique_lock<std::mutex> _lock(_mutex);
-	ObjectTransform.Location = loc;
+	if (!bIsStatic)
+	{
+		std::unique_lock<std::mutex> _lock(_mutex);
+		ObjectTransform.Location = loc;
+	}
 }
 
 FVector2D SActor::GetSize() const

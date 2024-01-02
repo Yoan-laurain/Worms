@@ -104,7 +104,7 @@ FieldPoint::FieldPoint()
     ShapeComponent = CreateComponent<SCircleComponent>("CircleComponent");  
     ShapeComponent->ObjectColor = FColor(255, 255, 255);
     ShapeComponent->Radius = 5.0f;
-
+    bIsStatic = true;
 }
 
 void FieldPoint::OnCollide(SActor* pActor)

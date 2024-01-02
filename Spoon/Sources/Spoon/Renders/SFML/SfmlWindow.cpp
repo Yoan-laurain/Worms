@@ -180,6 +180,9 @@ void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
 	sprite.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 	sprite.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
+	sprite.setOrigin(sf::Vector2f(_component->Origin.X * Textures.back().getSize().x,
+				_component->Origin.Y * Textures.back().getSize().y));
+
 	sprite.setTexture(Textures.back());
 }
 

@@ -19,7 +19,7 @@ bool InputMgr::Update(float fDeltaTime)
 
 		if (sf::Keyboard::isKeyPressed(key))
 		{
-			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 1.f);
+			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 1.f * fDeltaTime);
 		}
 		else
 		{

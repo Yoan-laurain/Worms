@@ -117,7 +117,7 @@ private:
 
 public:
 
-	bool bIsStatic;
+	bool bIsStatic; // Can be moved
 
 protected:
 
