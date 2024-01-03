@@ -6,8 +6,8 @@
 
 SCircleObject::SCircleObject() : CircleComponent(CreateComponent<SCircleComponent>("VisualComponent"))
 {
-	CircleComponent->Radius = 50.0f;
-	CircleComponent->ObjectColor = FColor::White();
+	CircleComponent->Radius = 25.f;
+	CircleComponent->ObjectColor = FColor::Blue();
 }
 
 SCircleObject::~SCircleObject()

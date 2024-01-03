@@ -80,18 +80,18 @@ void Level::HandleCollision(SActor* obj)
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
 			// TODO : Revoir ce code
-			if (Collision::CheckCollisionImpl(static_cast<SCircleObject*>(entity.get()), static_cast<SCircleObject*>(obj)))
+			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
 			{
 				//std::cout << "Collision!!!!!" << std::endl;
 			}
-			//else if (Collision::CheckCollisionImpl(static_cast<SCircleObject*>(entity.get()), static_cast<SRectangleObject*>(obj)))
-			//{
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SRectangleObject*>(obj)))
+			{
 
-			//}
-			//else if (Collision::CheckCollisionImpl(static_cast<SRectangleObject*>(entity.get()), static_cast<SCircleObject*>(obj)))
-			//{
-			//	
-			//}
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SRectangleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
+			{
+				
+			}
 			else if (Collision::CheckCollisionImpl(dynamic_cast<SRectangleObject*>(entity.get()), dynamic_cast<SRectangleObject*>(obj)))
 			{
 				

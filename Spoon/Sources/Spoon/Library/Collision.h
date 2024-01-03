@@ -50,11 +50,11 @@ inline bool Collision::CheckCollisionImpl<SCircleObject, SRectangleObject>(SCirc
 	float depth;
 	const bool Result = Collision::IntersectCirclePolygon(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), normal, depth);
 
-	//if (Result)
-	//{
-	//	first->SetLocation(first->GetLocation() - (normal * depth) / 2.f); 
-	//	other->SetLocation(other->GetLocation() + (normal * depth) / 2.f); 
-	//}
+	if (Result)
+	{
+		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f); 
+		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f); 
+	}
 
 	return Result;
 }

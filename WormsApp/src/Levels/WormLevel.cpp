@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Player/WormsPlayer.h"
 #include "Objects/Prefab/RectangleObject.h"
+#include "Objects/Prefab/CircleObject.h"
 
 void WormLevel::CreatePlayer(FTransform& SpawnLocation)
 {
@@ -26,5 +27,6 @@ void WormLevel::BeginPlay()
 	{
 		//CreatePlayer(m_Field->GetSpawnPoint());
 		SpawnActor<SRectangleObject>(FTransform(FVector2D(50 * (i + 1), 50 * (1 + i)), FVector2D(50, 50)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D( 50 * (i + 1), 30 * (1 + i)), FVector2D(25, 25)));
 	}
 }

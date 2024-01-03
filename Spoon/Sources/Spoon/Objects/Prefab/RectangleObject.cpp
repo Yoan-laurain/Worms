@@ -23,6 +23,7 @@ SRectangleObject::~SRectangleObject()
 
 std::vector<FVector2D> SRectangleObject::GetVertices()
 {
+	FVector2D dt = GetSize() * RectangleComponent->Origin;
 	for (int i = 0; i < vertices.size(); i++)
 	{
 		if (i == 0)
@@ -41,6 +42,7 @@ std::vector<FVector2D> SRectangleObject::GetVertices()
 		{
 			vertices[i] = FVector2D(GetLocation().X - GetSize().X / 2, GetLocation().Y + GetSize().Y / 2);
 		}
+		vertices[i] += dt;
 	}
 
 	return vertices;
@@ -66,7 +68,7 @@ bool SRectangleObject::IsInBound(const FVector2D& _loc)
 
 	FVector2D normal;
 	float depth;
-	const bool Result = Collision::IntersectCirclePolygon(_loc, 20.0f, GetLocation(), GetVertices(), normal, depth);
+	const bool Result = Collision::IntersectCirclePolygon(_loc, 10.0f, GetLocation(), GetVertices(), normal, depth);
 
 	return Result;
 }
