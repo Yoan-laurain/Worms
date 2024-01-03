@@ -40,9 +40,9 @@ void SActor::Tick(float DeltaTime)
 	{
 		ComponentList[i]->OnUpdate(DeltaTime);
 	}
-	if (bIsPressed)
+	if (bIsPressed && bIsHovered)
 	{
-		SetLocation(mouseLoc - (GetSize() / 2));
+		SetLocation(mouseLoc - GetSize() / 2);
 	}
 }
 
@@ -62,7 +62,7 @@ bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 
 bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
 {
-	bIsPressed = bIsHovered;
+	bIsPressed = true;
 	return bIsHovered;
 }
 
@@ -121,7 +121,7 @@ void SActor::SetTransform(const FTransform& transform)
 	ObjectTransform = transform;
 }
 
-bool SActor::IsInBound(const FVector2D& _loc) const
+bool SActor::IsInBound(const FVector2D& _loc)
 {
 	FVector2D mintruc = GetLocation() + GetSize();
 	if (_loc.X >= GetLocation().X && _loc.X <= mintruc.X && _loc.Y >= GetLocation().Y && _loc.Y <= mintruc.Y)

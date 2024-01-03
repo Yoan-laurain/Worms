@@ -99,9 +99,10 @@ void Field::AddSpawnPoint(const FTransform& spawnPoint)
     m_SpawnPoints.push_back(spawnPoint);
 }
 
-FieldPoint::FieldPoint()
+FieldPoint::FieldPoint() : 
+    SActor(),
+    ShapeComponent(CreateComponent<SCircleComponent>("CircleComponent"))
 {
-    ShapeComponent = CreateComponent<SCircleComponent>("CircleComponent");  
     ShapeComponent->ObjectColor = FColor(255, 255, 255);
     ShapeComponent->Radius = 5.0f;
     bIsStatic = true;

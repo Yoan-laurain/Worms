@@ -34,7 +34,7 @@ const FColor& SCircleObject::GetColor() const
 	return CircleComponent->ObjectColor;
 }
 
-bool SCircleObject::IsInBound(const FVector2D& _loc) const
+bool SCircleObject::IsInBound(const FVector2D& _loc)
 {
 	FVector2D Offset = (GetLocation() - GetSize()/2) + (GetSize() * CircleComponent->Origin);
 	FVector2D vecDirection = Offset - _loc;

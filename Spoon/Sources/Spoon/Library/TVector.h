@@ -96,7 +96,7 @@ struct OBJECT_API Vector2D
 
 	static T DotProduct(const Vector2D<T>& _left, const Vector2D<T> _right)
 	{
-		return _left.X * _right.X + _left.X * _right.X;
+		return _left.X * _right.X + _left.Y * _right.Y;
 	}
 
 	static T Distance(const Vector2D<T>& _left, const Vector2D<T>& _right)

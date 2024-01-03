@@ -4,6 +4,7 @@
 #include "Objects/Components/SCollisionComponent.h"
 #include "Objects/SActor.h"
 #include "Objects/Prefab/CircleObject.h"
+#include "Objects/Prefab/RectangleObject.h"
 
 class Collision
 {
@@ -38,11 +39,24 @@ private:
 
 
 template <>
-inline bool Collision::CheckCollisionImpl<CircleShape, PolygonShape>(CircleShape* first, struct PolygonShape* other)
+inline bool Collision::CheckCollisionImpl<SCircleObject, SRectangleObject>(SCircleObject* first, SRectangleObject* other)
 {
+	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0)
+	{
+		return false;
+	}
+
 	FVector2D normal;
 	float depth;
-	return Collision::IntersectCirclePolygon(first->GetOwner()->GetLocation(), first->Radius, first->GetOwner()->GetLocation(), other->Vertices, normal, depth);
+	const bool Result = Collision::IntersectCirclePolygon(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), normal, depth);
+
+	//if (Result)
+	//{
+	//	first->SetLocation(first->GetLocation() - (normal * depth) / 2.f); 
+	//	other->SetLocation(other->GetLocation() + (normal * depth) / 2.f); 
+	//}
+
+	return Result;
 }
 
 template <>
@@ -52,22 +66,38 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 	{
 		return false;
 	}
+
 	FVector2D normal;
 	float depth;
 	const bool Result = Collision::IntersectCircles(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetRadius(), normal, depth);
+	
 	if (Result)
 	{
-		first->SetLocation(first->GetLocation() - (normal * depth) / 2);
-		other->SetLocation(other->GetLocation() + (normal * depth) / 2);
+		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f);
+		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f);
 	}
 
 	return Result;
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<PolygonShape>(PolygonShape* first, PolygonShape* other)
+inline bool Collision::CheckCollisionImpl<SRectangleObject>(SRectangleObject* first, SRectangleObject* other)
 {
+	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0 || first->GetVertices().size() == 0)
+	{
+		return false;
+	}
+
 	FVector2D normal;
 	float depth;
-	return Collision::IntersectPolygons(first->Vertices, other->Vertices, normal, depth);
+	const bool Result = Collision::IntersectPolygons(first->GetVertices(), other->GetVertices(), normal, depth);
+
+	if (Result)
+	{
+		std::cout << Result << std::endl;
+		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f);
+		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f);
+	}
+
+	return Result;
 }

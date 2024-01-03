@@ -34,6 +34,8 @@ public:
 
 	bool BindAction(class SPlayer* player, enum class InputAction inputAction, std::function<void(float)> func);
 
+	Window* m_WindowRef;
+
 protected:
 
 	void SetLevel(class Level* _newLevel, const bool DestroyPrevious = false);
@@ -58,9 +60,9 @@ private:
 
 	#pragma endregion
 
+
 private:
 
-	Window* m_WindowRef;
 
 	bool bIsRunning = true;
 
