@@ -20,8 +20,6 @@ public:
 
 protected:
 
-	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
-
 private:
 
 	class SCircleComponent* CircleComponent;

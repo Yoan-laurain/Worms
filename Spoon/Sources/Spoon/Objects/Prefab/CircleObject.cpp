@@ -2,12 +2,12 @@
 #include "Objects/Components/SShapeComponent.h"
 #include "snpch.h"
 #include "Events/MouseEvent.h"
-
+#include <Library/Collision.h>
 
 SCircleObject::SCircleObject() : CircleComponent(CreateComponent<SCircleComponent>("VisualComponent"))
 {
 	CircleComponent->Radius = 25.f;
-	CircleComponent->ObjectColor = FColor::Blue();
+	CircleComponent->ObjectColor = FColor(80, 40, 200);
 }
 
 SCircleObject::~SCircleObject()
@@ -36,17 +36,8 @@ const FColor& SCircleObject::GetColor() const
 
 bool SCircleObject::IsInBound(const FVector2D& _loc)
 {
-	FVector2D Offset = (GetLocation() - GetSize()/2) + (GetSize() * CircleComponent->Origin);
-	FVector2D vecDirection = Offset - _loc;
-	float distance = vecDirection.GetLength();
-	return distance <= GetRadius();
-}
+	FVector2D normal;
+	float depth;
 
-bool SCircleObject::OnMouseEvent(MouseMovedEvent& _event)
-{
-	bIsHovered = IsInBound(_event.GetLoc());
-
-	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
-
-	return false;
+	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, _loc, 5.f, normal, depth);
 }

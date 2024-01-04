@@ -66,6 +66,12 @@ struct OBJECT_API Vector2D
 		return *this;
 	}
 
+	Vector2D<T>& ReverseVector()
+	{
+		X = -X; Y = -Y;
+		return *this;
+	}
+
 	T GetSquareLength() const
 	{
 		return (X * X) + (Y * Y);
@@ -86,7 +92,7 @@ struct OBJECT_API Vector2D
 	/************************************************************************/
 
 	// Vector2D<T>D with 0 value
-	static Vector2D<T> const Zero() { return Vector2D<T>(0); }
+	static Vector2D<T> const Zero() { return Vector2D<T>(0.f); }
 
 	// Vector2D<T>D with 1, 0 value
 	static Vector2D<T> const Right() { return Vector2D<T>(1, 0); }

@@ -13,6 +13,7 @@ Field::Field() :
 {
     ShapeComponent = CreateComponent<SConvexComponent>("ShapeComponent");
     ShapeComponent->ObjectColor = FColor(139, 69, 19);
+    bIsStatic = true;
 }
 
 void Field::GenerateFieldCurve()
@@ -59,8 +60,11 @@ void Field::GenerateFieldCurve()
         pConvex->Points.push_back(FVector2D(pConvex->Points[numberOfCurvePoints - i].X, Config::WindowHeight-10));
     }
 
-    AddSpawnPoint(GetTransformAt(0.25f));
-    AddSpawnPoint(GetTransformAt(0.75f));
+    for (int i = 0; i < Config::MaxPlayers; ++i)
+    {
+        AddSpawnPoint(GetTransformAt(i / (Config::MaxPlayers * 1.f)));
+    }
+
 }
 
 FTransform Field::GetTransformAt(float percent)

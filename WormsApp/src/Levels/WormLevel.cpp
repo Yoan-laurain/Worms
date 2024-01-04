@@ -20,13 +20,13 @@ void WormLevel::BeginPlay()
 {
 	m_TurnManager = std::make_unique<TurnManager>();
 
-	m_Field = SpawnActor<Field>(FTransform());
-	m_Field->GenerateFieldCurve();
+	//m_Field = SpawnActor<Field>(FTransform());
+	//m_Field->GenerateFieldCurve();
 
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
 		//CreatePlayer(m_Field->GetSpawnPoint());
 		SpawnActor<SRectangleObject>(FTransform(FVector2D(50 * (i + 1), 50 * (1 + i)), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D( 50 * (i + 1), 30 * (1 + i)), FVector2D(25, 25)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D( 250 * (i + 1), 250 * (1 + i)), FVector2D(50, 50)));
 	}
 }

@@ -12,16 +12,6 @@ SActor::SActor() :
 	bIsStatic(false)
 {
 
-	
-	//std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
-	//newShape->height = GetSize().Y;
-	//newShape->width = GetSize().X;
-	//newShape->Type = FActorType::ActorType_Rectangle;
-	//newShape->ObjectColor = FColor::White();
-	//MyShape = std::move(newShape);
-	//bIsStatic = false;
-
-	//collisionShape = std::make_unique<CircleShape>(GetLocation(), 50);
 }
 
 SActor::~SActor()
@@ -53,7 +43,14 @@ void SActor::DestroyActor()
 
 bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 {
-	bIsHovered = IsInBound(_event.GetLoc());
+	if (bIsPressed)
+	{
+		bIsHovered = IsInBound(_event.GetLoc());
+	}
+	else
+	{
+		bIsHovered = false;
+	}
 
 	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
 

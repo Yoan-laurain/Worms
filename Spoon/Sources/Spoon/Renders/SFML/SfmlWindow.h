@@ -28,10 +28,13 @@ public:
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
 
-	void DrawRectangle(const class SRectangleComponent* _component, sf::RectangleShape& _rectangle);
-	void DrawCircle(const class SCircleComponent* _component, sf::CircleShape& _circle);
-	void DrawConvex(const class SConvexComponent* _component, sf::ConvexShape& _convex);
+	void DrawRectangle(class SRectangleComponent* _component, sf::RectangleShape& _rectangle);
+	void DrawCircle(class SCircleComponent* _component, sf::CircleShape& _circle);
+	void DrawConvex(class SConvexComponent* _component, sf::ConvexShape& _convex);
 	void DrawTexture(class SSpriteComponent* _component, sf::Sprite& _text);
+
+	void SetCollidingState(sf::Shape& _shape, SActor* _actor);
+	void SetCommonShapeProperties(sf::Shape& _shape, class SShapeComponent* _actor);
 
 private:
 	

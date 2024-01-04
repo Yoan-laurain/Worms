@@ -55,11 +55,11 @@ public:
 	std::vector<FVector2D> Points;
 };
 
-class SPOON_API SSpriteComponent : public SShapeComponent
+class SPOON_API SSpriteComponent : public SRectangleComponent
 {
 	GENERATE()
 public:
-	SSpriteComponent(class SActor* _owner) : SShapeComponent(_owner), texturePath("") { Type = ActorType_Sprite; };
+	SSpriteComponent(class SActor* _owner) : SRectangleComponent(_owner), texturePath("") { Type = ActorType_Sprite; };
 
 	std::string texturePath;
 	std::string name;

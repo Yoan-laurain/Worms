@@ -8,13 +8,16 @@ SRectangleObject::SRectangleObject() : SActor(),
 	RectangleComponent(CreateComponent<SRectangleComponent>("VisualComponent")),
 	vertices()
 {
-	RectangleComponent->ObjectColor = FColor::Green();
+	RectangleComponent->ObjectColor = FColor( 152, 251, 152, 255);
+	RectangleComponent->width = 50.f;
+	RectangleComponent->height = 50.f;
+		
+	//bIsStatic = true;
 
 	vertices.push_back(FVector2D(0.f,0.f));
 	vertices.push_back(FVector2D(0.f,0.f));
 	vertices.push_back(FVector2D(0.f,0.f));
 	vertices.push_back(FVector2D(0.f,0.f));
-
 }
 
 SRectangleObject::~SRectangleObject()
@@ -48,17 +51,6 @@ std::vector<FVector2D> SRectangleObject::GetVertices()
 	return vertices;
 }
 
-bool SRectangleObject::OnMouseEvent(MouseMovedEvent& _event)
-{
-	if (bIsPressed)
-	{
-		bIsHovered = IsInBound(_event.GetLoc());
-	}
-	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
-
-	return false;
-}
-
 bool SRectangleObject::IsInBound(const FVector2D& _loc)
 {
 	if (GetVertices().size() == 0)
@@ -68,7 +60,7 @@ bool SRectangleObject::IsInBound(const FVector2D& _loc)
 
 	FVector2D normal;
 	float depth;
-	const bool Result = Collision::IntersectCirclePolygon(_loc, 10.0f, GetLocation(), GetVertices(), normal, depth);
+	const bool Result = Collision::IntersectCirclePolygon(_loc, 5.0f, GetLocation(), GetVertices(), normal, depth);
 
 	return Result;
 }

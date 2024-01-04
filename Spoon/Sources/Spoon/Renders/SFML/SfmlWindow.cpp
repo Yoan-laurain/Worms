@@ -108,6 +108,8 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 			DrawCircle(static_cast<SCircleComponent*>(comp), drawShape);
 			WindowRef->draw(drawShape);
 		}
+
+		comp->GetOwner()->bIsColliding = false;
 	}
 }
 
@@ -121,24 +123,22 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
-void SfmlWindow::DrawRectangle(const SRectangleComponent* _component, sf::RectangleShape& _currentShape)
+void SfmlWindow::DrawRectangle( SRectangleComponent* _component, sf::RectangleShape& _currentShape)
 {
+	//_currentShape.setOrigin(sf::Vector2f(_component->Origin.X * _component->GetOwner()->GetSize().X, _component->Origin.Y * _component->GetOwner()->GetSize().Y));
 	_currentShape.setSize(sf::Vector2f(_component->GetOwner()->GetSize().X, _component->GetOwner()->GetSize().Y));
-	_currentShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
-	_currentShape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+	SetCommonShapeProperties(_currentShape, _component);
 }
 
-void SfmlWindow::DrawCircle(const SCircleComponent* _component, sf::CircleShape& _circle)
+void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
 {
-	_circle.setRadius(_component->Radius);
-	_circle.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
-	_circle.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
-	_circle.setOrigin(_component->Origin.X * _component->Radius*2, _component->Origin.Y * _component->Radius*2);
+	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
+	_circle.setRadius(_component->GetOwner()->GetSize().X / 2);
+
+	SetCommonShapeProperties(_circle, _component);
 }
 
-void SfmlWindow::DrawConvex(const SConvexComponent* _component, sf::ConvexShape& drawShape)
+void SfmlWindow::DrawConvex(SConvexComponent* _component, sf::ConvexShape& drawShape)
 {
 	drawShape.setPointCount(_component->Points.size());
 
@@ -184,6 +184,28 @@ void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
 				_component->Origin.Y * Textures.back().getSize().y));
 
 	sprite.setTexture(Textures.back());
+}
+
+void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
+{
+	if (_actor->bIsColliding)
+	{
+		_shape.setOutlineColor(sf::Color::Red);
+	}
+	else
+	{
+		_shape.setOutlineColor(sf::Color::Green);
+	}
+	_shape.setOutlineThickness(2);
+}
+
+void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
+{
+	_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
+	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+
+	SetCollidingState(_shape, _component->GetOwner());
 }
 
 void SfmlWindow::Init(const WindowsProps& props)

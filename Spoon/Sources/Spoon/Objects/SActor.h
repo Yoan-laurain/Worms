@@ -91,7 +91,7 @@ protected:
 	// Function called à chaque boucle du LogicThread
 	virtual void Tick(float DeltaTime);
 
-	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
+	bool OnMouseEvent(class MouseMovedEvent& _event);
 
 	virtual bool OnMousePressedEvent(class MouseButtonPressedEvent& _event);
 
@@ -118,6 +118,7 @@ private:
 public:
 
 	bool bIsStatic; // Can be moved
+	bool bIsColliding;
 
 protected:
 

@@ -23,6 +23,7 @@ public:
         const FVector2D& centerB, float radiusB,
         FVector2D& normal, float& depth);
 
+	static void ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth);
 public:
     static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
         FVector2D& normal, float& depth);
@@ -37,6 +38,27 @@ private:
     static FVector2D FindArithmeticMean(const std::vector<FVector2D>& vertices);
 };
 
+template <>
+inline bool Collision::CheckCollisionImpl<SRectangleObject, SCircleObject>(SRectangleObject* first, SCircleObject* other)
+{
+	if (first == nullptr || other == nullptr || first->GetVertices().size() == 0)
+	{
+		return false;
+	}
+
+	FVector2D normal;
+	float depth;
+	const bool Result = Collision::IntersectCirclePolygon(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), normal, depth);
+
+	if (Result)
+	{
+		ApplyCollision(other, first, normal, depth);
+	}
+	else
+	{ }
+
+	return Result;
+}
 
 template <>
 inline bool Collision::CheckCollisionImpl<SCircleObject, SRectangleObject>(SCircleObject* first, SRectangleObject* other)
@@ -52,8 +74,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject, SRectangleObject>(SCirc
 
 	if (Result)
 	{
-		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f); 
-		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f); 
+		ApplyCollision(first, other, normal, depth);
 	}
 
 	return Result;
@@ -73,8 +94,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 	
 	if (Result)
 	{
-		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f);
-		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f);
+		ApplyCollision(first, other, normal, depth);
 	}
 
 	return Result;
@@ -94,9 +114,7 @@ inline bool Collision::CheckCollisionImpl<SRectangleObject>(SRectangleObject* fi
 
 	if (Result)
 	{
-		std::cout << Result << std::endl;
-		first->SetLocation(first->GetLocation() - (normal * depth) / 2.f);
-		other->SetLocation(other->GetLocation() + (normal * depth) / 2.f);
+		ApplyCollision(first, other, normal, depth);
 	}
 
 	return Result;

@@ -2,6 +2,7 @@
 #include "../Weapons/WeaponStrategy.h"
 #include "../Weapons/SimpleGun/SimpleGun.h"
 #include "Objects/Components/SShapeComponent.h"
+#include "Objects/Components/SGravityComponent.h"
 
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
@@ -13,6 +14,9 @@ WormsPlayer::WormsPlayer() :
 	SpriteComponent->texturePath = "Ressources/WormsPlayer.png";
 	SpriteComponent->name = "WormsPlayer";
 	SpriteComponent->Origin = FVector2D(0.5f, 1.f);
+
+	SpriteComponent->width = 50.f;
+	SpriteComponent->height = 50.f;
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 

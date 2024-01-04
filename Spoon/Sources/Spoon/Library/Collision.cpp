@@ -1,7 +1,8 @@
 #include "Library/Collision.h"
 #include <snpch.h>
 
-bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
+bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
+    const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
 {
     normal = FVector2D::Zero();
     depth = std::numeric_limits<float>::max();
@@ -62,7 +63,7 @@ bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circ
 
     if (FVector2D::DotProduct(direction, normal) < 0.0f)
     {
-        normal -= normal;
+        normal.ReverseVector();
     }
 
     return true;
@@ -85,6 +86,29 @@ bool Collision::IntersectCircles(const FVector2D& centerA, float radiusA, const 
     depth = radii - distance;
 
     return true;
+}
+
+void Collision::ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth)
+{
+    if ( !first || !other )
+	{
+		return;
+	}
+
+    first->bIsColliding = true;
+    other->bIsColliding = true;
+
+    if ( !first->bIsStatic )
+    {
+        float divide = other->bIsStatic ? 1.f : 2.f;
+		first->SetLocation(first->GetLocation() - (normal * depth) / divide);
+	}
+
+    if ( !other->bIsStatic )
+	{   
+        float divide = first->bIsStatic ? 1.f : 2.f;
+        other->SetLocation(other->GetLocation() + (normal * depth) / divide);
+	}
 }
 
 bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& normal, float& depth)
@@ -155,7 +179,7 @@ bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const
 
     if (FVector2D::DotProduct(direction, normal) < 0.0f)
     {
-        normal -= normal;
+        normal.ReverseVector();
     }
 
     return true;

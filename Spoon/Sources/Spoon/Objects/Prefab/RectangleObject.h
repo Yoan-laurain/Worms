@@ -13,12 +13,7 @@ class SPOON_API SRectangleObject : public SActor
 
 		class SRectangleComponent* GetRectangleComponent() const { return RectangleComponent; };
 
-		// TODO : Factorize this method
 		virtual bool IsInBound(const FVector2D& _loc) override;
-
-	protected :
-		// TODO : Factorize this method
-		virtual bool OnMouseEvent(class MouseMovedEvent& _event);
 
 	private : 
 		class SRectangleComponent* RectangleComponent;
