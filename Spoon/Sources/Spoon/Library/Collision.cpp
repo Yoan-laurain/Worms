@@ -1,13 +1,14 @@
 #include "Library/Collision.h"
 #include <snpch.h>
 
-bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
+bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
+    const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
 {
     normal = FVector2D::Zero();
     depth = std::numeric_limits<float>::max();
 
     FVector2D axis = FVector2D::Zero();
-    float axisDepth = 0.0f;
+    float axisDepth = 0.f;
     float minA, maxA, minB, maxB;
 
     for (size_t i = 0; i < vertices.size(); ++i)
@@ -62,7 +63,7 @@ bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circ
 
     if (FVector2D::DotProduct(direction, normal) < 0.0f)
     {
-        normal -= normal;
+        normal.ReverseVector();
     }
 
     return true;
@@ -85,6 +86,32 @@ bool Collision::IntersectCircles(const FVector2D& centerA, float radiusA, const 
     depth = radii - distance;
 
     return true;
+}
+
+void Collision::ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth)
+{
+    if ( !first || !other )
+	{
+		return;
+	}
+
+    first->bIsColliding = true;
+    other->bIsColliding = true;
+
+    if ( !first->bIsStatic )
+    {
+        float divide = other->bIsStatic ? 1.f : 2.f;
+        FVector2D move = (normal * depth) / divide;
+        move.ReverseVector();
+		first->Move(move);
+	}
+
+    if ( !other->bIsStatic )
+	{   
+        float divide = first->bIsStatic ? 1.f : 2.f;
+        FVector2D move = (normal * depth) / divide;
+        other->Move(move);
+	}
 }
 
 bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& normal, float& depth)
@@ -118,49 +145,47 @@ bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const
             depth = axisDepth;
             normal = axis;
         }
-
-
-        for (size_t i = 0; i < verticesB.size(); ++i)
-        {
-            const FVector2D& va = verticesB[i];
-            const FVector2D& vb = verticesB[(i + 1) % verticesB.size()];
-
-            const FVector2D edge = vb - va;
-            FVector2D axis = FVector2D(-edge.Y, edge.X);
-            axis = FVector2D::Normalize(axis);
-
-            float minA, maxA, minB, maxB;
-
-            ProjectVertices(verticesA, axis, minA, maxA);
-            ProjectVertices(verticesB, axis, minB, maxB);
-
-            if (minA >= maxB || minB >= maxA)
-            {
-                return false;
-            }
-
-            const float axisDepth = std::min(maxB - minA, maxA - minB);
-
-            if (axisDepth < depth)
-            {
-                depth = axisDepth;
-                normal = axis;
-            }
-        }
-
-        const FVector2D centerA = FindArithmeticMean(verticesA);
-        const FVector2D centerB = FindArithmeticMean(verticesB);
-
-        const FVector2D direction = centerB - centerA;
-
-        if (FVector2D::DotProduct(direction, normal) < 0.0f)
-        {
-            normal -= normal;
-        }
-
-        return true;
     }
-    return false;
+
+    for (size_t i = 0; i < verticesB.size(); ++i)
+    {
+        const FVector2D& va = verticesB[i];
+        const FVector2D& vb = verticesB[(i + 1) % verticesB.size()];
+
+        const FVector2D edge = vb - va;
+        FVector2D axis = FVector2D(-edge.Y, edge.X);
+        axis = FVector2D::Normalize(axis);
+
+        float minA, maxA, minB, maxB;
+
+        ProjectVertices(verticesA, axis, minA, maxA);
+        ProjectVertices(verticesB, axis, minB, maxB);
+
+        if (minA >= maxB || minB >= maxA)
+        {
+            return false;
+        }
+
+        const float axisDepth = std::min(maxB - minA, maxA - minB);
+
+        if (axisDepth < depth)
+        {
+            depth = axisDepth;
+            normal = axis;
+        }
+    }
+
+    const FVector2D centerA = FindArithmeticMean(verticesA);
+    const FVector2D centerB = FindArithmeticMean(verticesB);
+
+    const FVector2D direction = centerB - centerA;
+
+    if (FVector2D::DotProduct(direction, normal) < 0.0f)
+    {
+        normal.ReverseVector();
+    }
+
+    return true;
 }
 
 void Collision::ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max)

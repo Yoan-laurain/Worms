@@ -35,6 +35,7 @@ public:
 	FVector2D GetLocation() const;
 
 	void SetLocation(const FVector2D& loc);
+	void Move(const FVector2D& loc);
 
 	FVector2D GetSize() const;
 
@@ -48,7 +49,7 @@ public:
 	/* Collision															*/
 	/************************************************************************/
 
-	virtual bool IsInBound(const FVector2D& _loc) const;
+	virtual bool IsInBound(const FVector2D& _loc);
 
 	/************************************************************************/
 	/* Component Getter														*/
@@ -91,7 +92,7 @@ protected:
 	// Function called à chaque boucle du LogicThread
 	virtual void Tick(float DeltaTime);
 
-	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
+	bool OnMouseEvent(class MouseMovedEvent& _event);
 
 	virtual bool OnMousePressedEvent(class MouseButtonPressedEvent& _event);
 
@@ -117,7 +118,8 @@ private:
 
 public:
 
-	bool bIsStatic;
+	bool bIsStatic; // Can be moved
+	bool bIsColliding;
 
 protected:
 

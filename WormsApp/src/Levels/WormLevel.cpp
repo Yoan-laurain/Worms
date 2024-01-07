@@ -1,6 +1,7 @@
 #include "WormLevel.h"
 #include "../Config.h"
 #include "../Player/WormsPlayer.h"
+#include "Objects/Prefab/RectangleObject.h"
 #include "Objects/Prefab/CircleObject.h"
 
 void WormLevel::CreatePlayer(FTransform& SpawnLocation)
@@ -19,11 +20,13 @@ void WormLevel::BeginPlay()
 {
 	m_TurnManager = std::make_unique<TurnManager>();
 
-	m_Field = SpawnActor<Field>(FTransform());
-	m_Field->GenerateFieldCurve();
+	//m_Field = SpawnActor<Field>(FTransform());
+	//m_Field->GenerateFieldCurve();
 
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
-		CreatePlayer(m_Field->GetSpawnPoint());
+		//CreatePlayer(m_Field->GetSpawnPoint());
+		SpawnActor<SRectangleObject>(FTransform(FVector2D(50, 25), FVector2D(50, 50)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D( 50, 76), FVector2D(50, 50)));
 	}
 }

@@ -12,16 +12,6 @@ SActor::SActor() :
 	bIsStatic(false)
 {
 
-	
-	//std::unique_ptr<Rectangle> newShape = std::make_unique<Rectangle>();
-	//newShape->height = GetSize().Y;
-	//newShape->width = GetSize().X;
-	//newShape->Type = FActorType::ActorType_Rectangle;
-	//newShape->ObjectColor = FColor::White();
-	//MyShape = std::move(newShape);
-	//bIsStatic = false;
-
-	//collisionShape = std::make_unique<CircleShape>(GetLocation(), 50);
 }
 
 SActor::~SActor()
@@ -40,9 +30,9 @@ void SActor::Tick(float DeltaTime)
 	{
 		ComponentList[i]->OnUpdate(DeltaTime);
 	}
-	if (bIsPressed)
+	if (bIsPressed && bIsHovered)
 	{
-		SetLocation(mouseLoc - (GetSize() / 2));
+		SetLocation(mouseLoc);
 	}
 }
 
@@ -53,7 +43,14 @@ void SActor::DestroyActor()
 
 bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 {
-	bIsHovered = IsInBound(_event.GetLoc());
+	if (bIsPressed)
+	{
+		bIsHovered = IsInBound(_event.GetLoc());
+	}
+	else
+	{
+		bIsHovered = false;
+	}
 
 	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
 
@@ -62,7 +59,7 @@ bool SActor::OnMouseEvent(MouseMovedEvent& _event)
 
 bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
 {
-	bIsPressed = bIsHovered;
+	bIsPressed = true;
 	return bIsHovered;
 }
 
@@ -96,6 +93,15 @@ void SActor::SetLocation(const FVector2D& loc)
 	ObjectTransform.Location = loc;
 }
 
+void SActor::Move(const FVector2D& loc)
+{
+	if (!bIsStatic)
+	{
+		std::unique_lock<std::mutex> _lock(_mutex);
+		ObjectTransform.Location += loc;
+	}
+}
+
 FVector2D SActor::GetSize() const
 {
 	return ObjectTransform.Size;
@@ -118,7 +124,7 @@ void SActor::SetTransform(const FTransform& transform)
 	ObjectTransform = transform;
 }
 
-bool SActor::IsInBound(const FVector2D& _loc) const
+bool SActor::IsInBound(const FVector2D& _loc)
 {
 	FVector2D mintruc = GetLocation() + GetSize();
 	if (_loc.X >= GetLocation().X && _loc.X <= mintruc.X && _loc.Y >= GetLocation().Y && _loc.Y <= mintruc.Y)

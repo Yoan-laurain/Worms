@@ -16,11 +16,9 @@ public:
 
 	class SCircleComponent* GetCircleComponent() const { return CircleComponent; };
 
-	virtual bool IsInBound(const FVector2D& _loc) const override;
+	virtual bool IsInBound(const FVector2D& _loc) override;
 
 protected:
-
-	virtual bool OnMouseEvent(class MouseMovedEvent& _event);
 
 private:
 

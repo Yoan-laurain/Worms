@@ -13,6 +13,7 @@ Field::Field() :
 {
     ShapeComponent = CreateComponent<SConvexComponent>("ShapeComponent");
     ShapeComponent->ObjectColor = FColor(139, 69, 19);
+    bIsStatic = true;
 }
 
 void Field::GenerateFieldCurve()
@@ -59,11 +60,14 @@ void Field::GenerateFieldCurve()
         pConvex->Points.push_back(FVector2D(pConvex->Points[numberOfCurvePoints - i].X, Config::WindowHeight-10));
     }
 
-    AddSpawnPoint(GetTransformAt(0.25f));
-    AddSpawnPoint(GetTransformAt(0.75f));
+    for (int i = 0; i < Config::MaxPlayers; ++i)
+    {
+        AddSpawnPoint(GetTransformAt(i / (Config::MaxPlayers * 1.f)));
+    }
+
 }
 
-FTransform Field::GetTransformAt(float percent)
+FTransform Field::GetTransformAt(const float percent)
 {
     if (m_FieldPoint.size() == 0)
     {
@@ -99,12 +103,12 @@ void Field::AddSpawnPoint(const FTransform& spawnPoint)
     m_SpawnPoints.push_back(spawnPoint);
 }
 
-FieldPoint::FieldPoint()
+FieldPoint::FieldPoint() : 
+    ShapeComponent(CreateComponent<SCircleComponent>("CircleComponent"))
 {
-    ShapeComponent = CreateComponent<SCircleComponent>("CircleComponent");  
     ShapeComponent->ObjectColor = FColor(255, 255, 255);
     ShapeComponent->Radius = 5.0f;
-
+    bIsStatic = true;
 }
 
 void FieldPoint::OnCollide(SActor* pActor)

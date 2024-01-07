@@ -2,6 +2,7 @@
 #include "../Weapons/WeaponStrategy.h"
 #include "../Weapons/SimpleGun/SimpleGun.h"
 #include "Objects/Components/SShapeComponent.h"
+#include "Objects/Components/SGravityComponent.h"
 
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
@@ -12,7 +13,10 @@ WormsPlayer::WormsPlayer() :
 	SpriteComponent = CreateComponent<SSpriteComponent>("SpriteComponent");
 	SpriteComponent->texturePath = "Ressources/WormsPlayer.png";
 	SpriteComponent->name = "WormsPlayer";
-	SpriteComponent->Origin = FVector2D(0.f, 0.f);
+	SpriteComponent->Origin = FVector2D(0.5f, 1.f);
+
+	SpriteComponent->width = 50.f;
+	SpriteComponent->height = 50.f;
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 
@@ -35,7 +39,8 @@ void WormsPlayer::onTurnChange(int currentWormsPlayer)
 
 void WormsPlayer::MoveVertical(float value, float sign)
 {
-	FVector2D direction = FVector2D(0.f, sign);
+	// TODO : Adapt object to world size
+	FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
 	FVector2D location = GetLocation();
 
 	SetLocation(location + direction * value);
@@ -43,7 +48,8 @@ void WormsPlayer::MoveVertical(float value, float sign)
 
 void WormsPlayer::MoveHorizontal(float value, float sign)
 {
-	FVector2D direction = FVector2D(sign, 0.f);
+	// TODO : Adapt object to world size
+	FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 	FVector2D location = GetLocation();
 
 	SetLocation(location + direction * value);
