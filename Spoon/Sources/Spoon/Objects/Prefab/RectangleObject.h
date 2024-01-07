@@ -7,7 +7,7 @@ class SPOON_API SRectangleObject : public SActor
 
 	public : 
 		SRectangleObject();
-		~SRectangleObject();
+		virtual ~SRectangleObject();
 
 		std::vector<FVector2D> GetVertices();
 

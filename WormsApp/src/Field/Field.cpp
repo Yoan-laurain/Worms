@@ -67,7 +67,7 @@ void Field::GenerateFieldCurve()
 
 }
 
-FTransform Field::GetTransformAt(float percent)
+FTransform Field::GetTransformAt(const float percent)
 {
     if (m_FieldPoint.size() == 0)
     {
@@ -104,7 +104,6 @@ void Field::AddSpawnPoint(const FTransform& spawnPoint)
 }
 
 FieldPoint::FieldPoint() : 
-    SActor(),
     ShapeComponent(CreateComponent<SCircleComponent>("CircleComponent"))
 {
     ShapeComponent->ObjectColor = FColor(255, 255, 255);

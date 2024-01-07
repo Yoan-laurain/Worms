@@ -101,13 +101,16 @@ void Collision::ApplyCollision(SActor* first, SActor* other, const FVector2D& no
     if ( !first->bIsStatic )
     {
         float divide = other->bIsStatic ? 1.f : 2.f;
-		first->SetLocation(first->GetLocation() - (normal * depth) / divide);
+        FVector2D move = (normal * depth) / divide;
+        move.ReverseVector();
+		first->Move(move);
 	}
 
     if ( !other->bIsStatic )
 	{   
         float divide = first->bIsStatic ? 1.f : 2.f;
-        other->SetLocation(other->GetLocation() + (normal * depth) / divide);
+        FVector2D move = (normal * depth) / divide;
+        other->Move(move);
 	}
 }
 

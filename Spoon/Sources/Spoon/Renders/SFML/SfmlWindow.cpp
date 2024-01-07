@@ -125,7 +125,8 @@ unsigned int SfmlWindow::GetHeight() const
 
 void SfmlWindow::DrawRectangle( SRectangleComponent* _component, sf::RectangleShape& _currentShape)
 {
-	//_currentShape.setOrigin(sf::Vector2f(_component->Origin.X * _component->GetOwner()->GetSize().X, _component->Origin.Y * _component->GetOwner()->GetSize().Y));
+	//_currentShape.setOrigin( _component->Origin.X * _component->GetOwner()->GetSize().X, _component->Origin.Y * _component->GetOwner()->GetSize().Y);
+	
 	_currentShape.setSize(sf::Vector2f(_component->GetOwner()->GetSize().X, _component->GetOwner()->GetSize().Y));
 	SetCommonShapeProperties(_currentShape, _component);
 }
@@ -133,8 +134,8 @@ void SfmlWindow::DrawRectangle( SRectangleComponent* _component, sf::RectangleSh
 void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
 {
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
-	_circle.setRadius(_component->GetOwner()->GetSize().X / 2);
 
+	_circle.setRadius(_component->GetOwner()->GetSize().X / 2);
 	SetCommonShapeProperties(_circle, _component);
 }
 

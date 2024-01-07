@@ -26,7 +26,7 @@ void WormLevel::BeginPlay()
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
 		//CreatePlayer(m_Field->GetSpawnPoint());
-		SpawnActor<SRectangleObject>(FTransform(FVector2D(50 * (i + 1), 50 * (1 + i)), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D( 250 * (i + 1), 250 * (1 + i)), FVector2D(50, 50)));
+		SpawnActor<SRectangleObject>(FTransform(FVector2D(50, 25), FVector2D(50, 50)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D( 50, 76), FVector2D(50, 50)));
 	}
 }

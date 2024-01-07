@@ -32,7 +32,7 @@ void SActor::Tick(float DeltaTime)
 	}
 	if (bIsPressed && bIsHovered)
 	{
-		SetLocation(mouseLoc - GetSize() / 2);
+		SetLocation(mouseLoc);
 	}
 }
 
@@ -89,10 +89,16 @@ FVector2D SActor::GetLocation() const
 
 void SActor::SetLocation(const FVector2D& loc)
 {
+	std::unique_lock<std::mutex> _lock(_mutex);
+	ObjectTransform.Location = loc;
+}
+
+void SActor::Move(const FVector2D& loc)
+{
 	if (!bIsStatic)
 	{
 		std::unique_lock<std::mutex> _lock(_mutex);
-		ObjectTransform.Location = loc;
+		ObjectTransform.Location += loc;
 	}
 }
 

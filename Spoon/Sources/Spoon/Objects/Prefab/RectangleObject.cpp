@@ -27,26 +27,11 @@ SRectangleObject::~SRectangleObject()
 std::vector<FVector2D> SRectangleObject::GetVertices()
 {
 	FVector2D dt = GetSize() * RectangleComponent->Origin;
-	for (int i = 0; i < vertices.size(); i++)
-	{
-		if (i == 0)
-		{
-			vertices[i] = FVector2D(GetLocation().X - GetSize().X / 2, GetLocation().Y - GetSize().Y / 2);
-		}
-		else if (i == 1)
-		{
-			vertices[i] = FVector2D(GetLocation().X + GetSize().X / 2, GetLocation().Y - GetSize().Y / 2);
-		}
-		else if (i == 2)
-		{
-			vertices[i] = FVector2D(GetLocation().X + GetSize().X / 2, GetLocation().Y + GetSize().Y / 2);
-		}
-		else if (i == 3)
-		{
-			vertices[i] = FVector2D(GetLocation().X - GetSize().X / 2, GetLocation().Y + GetSize().Y / 2);
-		}
-		vertices[i] += dt;
-	}
+
+	vertices[0] = FVector2D(GetLocation().X - GetSize().X / 2, GetLocation().Y - GetSize().Y / 2) + dt;
+	vertices[1] = FVector2D(GetLocation().X + GetSize().X / 2, GetLocation().Y - GetSize().Y / 2) + dt;
+	vertices[2] = FVector2D(GetLocation().X + GetSize().X / 2, GetLocation().Y + GetSize().Y / 2) + dt;
+	vertices[3] = FVector2D(GetLocation().X - GetSize().X / 2, GetLocation().Y + GetSize().Y / 2) + dt;
 
 	return vertices;
 }
