@@ -84,23 +84,11 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 
 	for (SShapeComponent* comp : CompList)
 	{
-		if (comp->GetType() == FActorType::ActorType_Rectangle)
-		{
-			sf::RectangleShape drawShape;
-			DrawRectangle(static_cast<SRectangleComponent*>(comp), drawShape);
-			WindowRef->draw(drawShape);
-		}
-		else if (comp->GetType() == FActorType::ActorType_Convex)
+		if (comp->GetType() == FActorType::ActorType_Polygon)
 		{
 			sf::ConvexShape drawShape;
-			DrawConvex(static_cast<SConvexComponent*>(comp), drawShape);
+			DrawConvex(static_cast<SPolygonComponent*>(comp), drawShape);
 			WindowRef->draw(drawShape);
-		}
-		else if (comp->GetType() == FActorType::ActorType_Sprite)
-		{
-			sf::Sprite drawSprite;
-			DrawTexture(static_cast<SSpriteComponent*>(comp), drawSprite);
-			WindowRef->draw(drawSprite);
 		}
 		else if(comp->GetType() == FActorType::ActorType_Circle)
 		{
@@ -123,68 +111,48 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
-void SfmlWindow::DrawRectangle( SRectangleComponent* _component, sf::RectangleShape& _currentShape)
-{
-	//_currentShape.setOrigin( _component->Origin.X * _component->GetOwner()->GetSize().X, _component->Origin.Y * _component->GetOwner()->GetSize().Y);
-	
-	_currentShape.setSize(sf::Vector2f(_component->GetOwner()->GetSize().X, _component->GetOwner()->GetSize().Y));
-	SetCommonShapeProperties(_currentShape, _component);
-}
-
 void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
 {
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
+	_circle.setRadius(_component->Radius);
 
-	_circle.setRadius(_component->GetOwner()->GetSize().X / 2);
 	SetCommonShapeProperties(_circle, _component);
 }
 
-void SfmlWindow::DrawConvex(SConvexComponent* _component, sf::ConvexShape& drawShape)
+void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& drawShape)
 {
-	drawShape.setPointCount(_component->Points.size());
+	drawShape.setPointCount(_component->Points.size());	
+
+	FVector2D ownerLocation = _component->GetOwner()->GetLocation();
 
 	for (int i = 0; i < _component->Points.size(); i++)
 	{
-		drawShape.setPoint(i, sf::Vector2f(_component->Points[i].X, _component->Points[i].Y));
+		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
+
+		// For debug purpose only
+		sf::CircleShape point(5);
+		point.setOrigin(5, 5);
+		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
+		point.setFillColor(sf::Color::Red);
+		WindowRef->draw(point);
+		// end debug
 	}
 
-	drawShape.setOutlineColor(sf::Color::Red);
-	drawShape.setOutlineThickness(5);
-	drawShape.setFillColor(sf::Color::Transparent);
+	SetCollidingState(drawShape, _component->GetOwner());
 
 	/*drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));*/
 
-	//for (int i = 0; i < _component->Points.size(); i++)
-	//{
-	//	drawShape.append(sf::Vertex(sf::Vector2f(_component->Points[i].X, _component->Points[i].Y), sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-	//					_component->ObjectColor.B, _component->ObjectColor.A)));
+	//fill transparent
+	drawShape.setFillColor(sf::Color(0, 0, 0, 0));
 
+	if (_component->texturePath != "")
+	{
+		Textures.push_back(sf::Texture());
 
-	//}
-
-	//drawShape.setPrimitiveType(sf::PrimitiveType::LinesStrip);
-}
-
-void SfmlWindow::DrawTexture(SSpriteComponent* _component, sf::Sprite& sprite)
-{
-	Textures.push_back(sf::Texture());
-
-	Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath, Textures.back());
-
-	sprite.setColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
-
-	sprite.setScale(sf::Vector2f(_component->GetOwner()->GetSize().X / Textures.back().getSize().x,
-		_component->GetOwner()->GetSize().Y / Textures.back().getSize().y));
-
-	sprite.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
-	sprite.setRotation(_component->GetOwner()->GetTransform().Rotation);
-
-	sprite.setOrigin(sf::Vector2f(_component->Origin.X * Textures.back().getSize().x,
-				_component->Origin.Y * Textures.back().getSize().y));
-
-	sprite.setTexture(Textures.back());
+		Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath, Textures.back());
+		drawShape.setTexture(&Textures.back());
+	}
 }
 
 void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
@@ -202,8 +170,10 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
 {
-	_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
+	//_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		//_component->ObjectColor.B, _component->ObjectColor.A));
+
+	_shape.setFillColor(sf::Color(0, 0, 0, 0));
 	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 
 	SetCollidingState(_shape, _component->GetOwner());

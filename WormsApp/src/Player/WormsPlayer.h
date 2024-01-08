@@ -24,8 +24,6 @@ public :
 		int currentHealth;
 		int maxHealth;
 
-		class SSpriteComponent* SpriteComponent;
-
 private :
 	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
 	std::unique_ptr<WeaponStrategy> weaponStrategy; 

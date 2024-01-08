@@ -7,16 +7,10 @@
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
 	maxHealth(100),
-	weaponStrategy(nullptr),
-	SpriteComponent(nullptr)
+	weaponStrategy(nullptr)
 {
-	SpriteComponent = CreateComponent<SSpriteComponent>("SpriteComponent");
-	SpriteComponent->texturePath = "Ressources/WormsPlayer.png";
-	SpriteComponent->name = "WormsPlayer";
-	SpriteComponent->Origin = FVector2D(0.5f, 1.f);
-
-	SpriteComponent->width = 50.f;
-	SpriteComponent->height = 50.f;
+	GetPolygonComponent()->texturePath = "Ressources/WormsPlayer.png";
+	GetPolygonComponent()->name = "WormsPlayer";
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 

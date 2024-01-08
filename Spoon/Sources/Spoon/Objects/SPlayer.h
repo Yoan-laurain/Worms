@@ -2,8 +2,9 @@
 
 #include "Objects/SActor.h"
 #include "Inputs/InputAction.h"
+#include "Objects/Prefab/PolygonObject.h"
 
-class SPOON_API SPlayer : public SActor
+class SPOON_API SPlayer : public SPolygonObject
 {
 	GENERATE()
 
