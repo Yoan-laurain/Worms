@@ -1,7 +1,6 @@
 #include "Level.h"
 #include "Objects/SActor.h"
 #include "Library/Collision.h"
-#include "Objects/Prefab/RectangleObject.h"
 #include <snpch.h>
 
 Level::~Level()
@@ -84,15 +83,15 @@ void Level::HandleCollision(SActor* obj)
 			{
 				//std::cout << "Collision!!!!!" << std::endl;
 			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SRectangleObject*>(obj)))
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
 			{
 
 			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SRectangleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
 			{
 				
 			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SRectangleObject*>(entity.get()), dynamic_cast<SRectangleObject*>(obj)))
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
 			{
 				
 			}

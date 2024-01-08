@@ -6,8 +6,7 @@ enum SPOON_API FActorType
 {
 	ActorType_None,
 	ActorType_Circle,
-	ActorType_Rectangle,
-	ActorType_Convex,
+	ActorType_Polygon,
 	ActorType_Sprite
 };
 
@@ -20,7 +19,6 @@ public:
 	FActorType GetType() const { return Type; }
 
 	FColor ObjectColor;
-
 	FVector2D Origin;
 
 protected:
@@ -37,31 +35,13 @@ public:
 	float Radius;
 };
 
-class SPOON_API SRectangleComponent : public SShapeComponent
+class SPOON_API SPolygonComponent : public SShapeComponent
 {
 	GENERATE()
 public:
-	SRectangleComponent(class SActor* _owner) : SShapeComponent(_owner), width(0), height(0) { Type = ActorType_Rectangle; };
-	float width;
-	float height;
-};
-
-class SPOON_API SConvexComponent : public SShapeComponent
-{
-	GENERATE()
-public:
-	SConvexComponent(class SActor* _owner) : SShapeComponent(_owner), Points() { Type = ActorType_Convex; };
+	SPolygonComponent(class SActor* _owner) : SShapeComponent(_owner), Points(), texturePath(""), name("") { Type = ActorType_Polygon; };
 
 	std::vector<FVector2D> Points;
-};
-
-class SPOON_API SSpriteComponent : public SRectangleComponent
-{
-	GENERATE()
-public:
-	SSpriteComponent(class SActor* _owner) : SRectangleComponent(_owner), texturePath("") { Type = ActorType_Sprite; };
-
 	std::string texturePath;
 	std::string name;
 };
-

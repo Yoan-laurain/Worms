@@ -7,16 +7,10 @@
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
 	maxHealth(100),
-	weaponStrategy(nullptr),
-	SpriteComponent(nullptr)
+	weaponStrategy(nullptr)
 {
-	SpriteComponent = CreateComponent<SSpriteComponent>("SpriteComponent");
-	SpriteComponent->texturePath = "Ressources/WormsPlayer.png";
-	SpriteComponent->name = "WormsPlayer";
-	SpriteComponent->Origin = FVector2D(0.5f, 1.f);
-
-	SpriteComponent->width = 50.f;
-	SpriteComponent->height = 50.f;
+	GetPolygonComponent()->texturePath = "Ressources/WormsPlayer.png";
+	GetPolygonComponent()->name = "WormsPlayer";
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 
@@ -39,20 +33,24 @@ void WormsPlayer::onTurnChange(int currentWormsPlayer)
 
 void WormsPlayer::MoveVertical(float value, float sign)
 {
-	// TODO : Adapt object to world size
-	FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
-	FVector2D location = GetLocation();
+	if (value > 0.f)
+	{	
+		// TODO : Adapt object to world size
+		FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
 
-	SetLocation(location + direction * value);
+		Move(direction * value);
+	}
 }
 
 void WormsPlayer::MoveHorizontal(float value, float sign)
 {
-	// TODO : Adapt object to world size
-	FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
-	FVector2D location = GetLocation();
+	if (value > 0.f)
+	{	
+		// TODO : Adapt object to world size
+		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 
-	SetLocation(location + direction * value);
+		Move(direction * value);
+	}
 }
 
 bool WormsPlayer::OnDamageTaken(int damage)

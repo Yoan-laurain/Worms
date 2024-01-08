@@ -1,18 +1,8 @@
 #pragma once
 
-#include "Objects/SActor.h"
+#include "Objects/Prefab/PolygonObject.h"
 
-class FieldPoint : public SActor 
-{
-public:
-	FieldPoint();
-
-protected:
-	void OnCollide(SActor* pActor);
-	class SCircleComponent* ShapeComponent;
-};
-
-class Field : public SActor
+class Field : public SPolygonObject
 {
 public:
 
@@ -20,16 +10,10 @@ public:
 
 	void GenerateFieldCurve();
 
-	FTransform GetTransformAt(const float percent);
-
 	FTransform& GetSpawnPoint();
 
 private:
 	void AddSpawnPoint(const FTransform& spawnPoint);
 
 	std::vector<FTransform> m_SpawnPoints;
-	std::vector<FieldPoint*> m_FieldPoint;
-
-	class SShapeComponent* ShapeComponent;
-
 };

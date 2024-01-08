@@ -3,7 +3,7 @@
 #include "Components/SGravityComponent.h"
 #include "Components/SCollisionComponent.h"
 
-SPlayer::SPlayer() : SActor()
+SPlayer::SPlayer() : SPolygonObject()
 {
 	Application::Get().AddNewPlayer(this);
 	GravityComponent = CreateComponent<SGravityComponent>("Gravity Component");

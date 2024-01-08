@@ -4,7 +4,7 @@
 #include "Objects/Components/SCollisionComponent.h"
 #include "Objects/SActor.h"
 #include "Objects/Prefab/CircleObject.h"
-#include "Objects/Prefab/RectangleObject.h"
+#include "Objects/Prefab/PolygonObject.h"
 
 class Collision
 {
@@ -39,7 +39,7 @@ private:
 };
 
 template <>
-inline bool Collision::CheckCollisionImpl<SRectangleObject, SCircleObject>(SRectangleObject* first, SCircleObject* other)
+inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygonObject* first, SCircleObject* other)
 {
 	if (first == nullptr || other == nullptr || first->GetVertices().size() == 0)
 	{
@@ -61,7 +61,7 @@ inline bool Collision::CheckCollisionImpl<SRectangleObject, SCircleObject>(SRect
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<SCircleObject, SRectangleObject>(SCircleObject* first, SRectangleObject* other)
+inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircleObject* first, SPolygonObject* other)
 {
 	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0)
 	{
@@ -101,7 +101,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<SRectangleObject>(SRectangleObject* first, SRectangleObject* other)
+inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* first, SPolygonObject* other)
 {
 	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0 || first->GetVertices().size() == 0)
 	{

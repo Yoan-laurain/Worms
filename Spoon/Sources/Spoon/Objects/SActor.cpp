@@ -32,7 +32,10 @@ void SActor::Tick(float DeltaTime)
 	}
 	if (bIsPressed && bIsHovered)
 	{
-		SetLocation(mouseLoc);
+		if (!bIsStatic)
+		{
+			SetLocation(mouseLoc);
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ public:
 	FVector2D GetLocation() const;
 
 	void SetLocation(const FVector2D& loc);
-	void Move(const FVector2D& loc);
+	virtual void Move(const FVector2D& loc);
 
 	FVector2D GetSize() const;
 
