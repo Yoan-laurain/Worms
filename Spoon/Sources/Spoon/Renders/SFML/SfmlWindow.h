@@ -39,8 +39,6 @@ private:
 	sf::Clock clock;
 
 	sf::RenderWindow* WindowRef;
-
-	std::vector<sf::Texture> Textures;
 	
 	virtual void Init(const WindowsProps& props);
 

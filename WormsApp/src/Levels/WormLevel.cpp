@@ -9,11 +9,10 @@ void WormLevel::CreatePlayer(FTransform& SpawnLocation)
 {
 	FTransform transform = SpawnLocation;
 	transform.Size = FVector2D(50.f, 50.f);
-	//transform.Location.Y -= transform.Size.Y;
-	transform.Rotation = 0.f;
+	transform.Location += transform.Size / 2.f;
 
 	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
-	playerPtr->GetPolygonComponent()->Points = {FVector2D(-50, -50), FVector2D(50, -50), FVector2D(50, 50), FVector2D(-50, 50)};
+	playerPtr->GetPolygonComponent()->Points = {FVector2D(-25, -25), FVector2D(25, -25), FVector2D(25, 25), FVector2D(-25, 25)};
 
 	m_TurnManager->registerObserver(playerPtr);
 }
@@ -22,25 +21,25 @@ void WormLevel::BeginPlay()
 {
 	m_TurnManager = std::make_unique<TurnManager>();
 
-	m_Field = SpawnActor<Field>(FTransform( FVector2D(Config::WindowWidth / 2, Config::WindowHeight), FVector2D(Config::WindowWidth, Config::WindowHeight / 2)));
+	FVector2D spawnLocation = FVector2D(Config::WindowWidth / 2, (Config::WindowHeight * 75 ) /100.f);
+
+	m_Field = SpawnActor<Field>(FTransform(spawnLocation, FVector2D(Config::WindowWidth, Config::WindowHeight / 2)));
 	m_Field->GenerateFieldCurve();
 
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
-		//CreatePlayer(m_Field->GetSpawnPoint());
-		FTransform transform = FTransform(FTransform(FVector2D(200, 100), FVector2D(50, 50)));
-		CreatePlayer(transform);
+		CreatePlayer(m_Field->GetSpawnPoint());
 
-		SPolygonObject* polygon = SpawnActor<SPolygonObject>(FTransform(FVector2D(400, 100), FVector2D(50, 50)));
-		std::vector<FVector2D> points; 
-		points.push_back(FVector2D(-50, -50));
-		points.push_back(FVector2D( 50, -50));
-		points.push_back(FVector2D( 50, 50));
-		points.push_back(FVector2D(-50, 50)); 
-		polygon->GetPolygonComponent()->Points = points; 
+		//SPolygonObject* polygon = SpawnActor<SPolygonObject>(FTransform(FVector2D(250, 100), FVector2D(50, 50)));
+		//std::vector<FVector2D> points; 
+		//points.push_back(FVector2D(-25, -25));
+		//points.push_back(FVector2D( 25, -25));
+		//points.push_back(FVector2D( 25, 25));
+		//points.push_back(FVector2D(-25, 25)); 
+		//polygon->GetPolygonComponent()->Points = points; 
 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(600, 100), FVector2D(50, 50))); // bug here 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(800, 100), FVector2D(50, 50))); // bug here 
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(50, 50))); 
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(350, 100), FVector2D(50, 50))); 
 		 
 	}
 }

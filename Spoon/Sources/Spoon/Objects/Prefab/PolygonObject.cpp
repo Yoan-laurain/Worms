@@ -4,7 +4,8 @@
 
 SPolygonObject::SPolygonObject() : SActor(),
 	PolygonComponent(CreateComponent<SPolygonComponent>("VisualComponent")),
-	Vertices()
+	Vertices(),
+	bUpdateVerticesRequired(true)
 {
 	PolygonComponent->ObjectColor = FColor(152, 251, 152, 255);
 }
@@ -15,16 +16,18 @@ SPolygonObject::~SPolygonObject()
 
 std::vector<FVector2D> SPolygonObject::GetVertices()
 {
-	FVector2D dt = GetSize() * PolygonComponent->Origin;
-
-	for (int i = 0; i < PolygonComponent->Points.size(); i++)
+	if (bUpdateVerticesRequired)
 	{
-		if (Vertices.size() <= i)
+		for (int i = 0; i < PolygonComponent->Points.size(); i++)
 		{
-			Vertices.push_back(FVector2D());
-		}
+			if (Vertices.size() <= i)
+			{
+				Vertices.push_back(FVector2D());
+			}
 
-		Vertices[i] = GetLocation() + PolygonComponent->Points[i] + dt;
+			Vertices[i] = GetLocation() + PolygonComponent->Points[i];
+		}
+		bUpdateVerticesRequired = false;
 	}
 
 	return Vertices;
@@ -42,4 +45,10 @@ bool SPolygonObject::IsInBound(const FVector2D& _loc)
 	const bool Result = Collision::IntersectCirclePolygon(_loc, 5.0f, GetLocation(), GetVertices(), normal, depth);
 
 	return Result;
+}
+
+void SPolygonObject::Move(const FVector2D& loc)
+{
+	SActor::Move(loc);
+	bUpdateVerticesRequired = true;
 }

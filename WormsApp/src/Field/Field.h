@@ -10,8 +10,6 @@ public:
 
 	void GenerateFieldCurve();
 
-	FTransform GetTransformAt(const float percent);
-
 	FTransform& GetSpawnPoint();
 
 private:

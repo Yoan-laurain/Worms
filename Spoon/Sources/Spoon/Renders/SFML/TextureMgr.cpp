@@ -1,14 +1,15 @@
 #include "TextureMgr.h"
 
-bool TextureMgr::LoadTexture(const std::string& name, std::string& fileName, sf::Texture& texture)
+bool TextureMgr::LoadTexture(const std::string& name, std::string& fileName)
 {
-	if (_textures.find(name) != _textures.end())
+	if (IsTextureLoaded(name))
 	{
-		texture = GetTexture(name);
 		return true;
 	}
 
-	if (texture.loadFromFile(fileName))
+	sf::Texture texture;
+
+	if ( texture.loadFromFile(fileName) )
 	{
 		_textures[name] = texture;
 	}
@@ -28,6 +29,15 @@ sf::Texture& TextureMgr::GetTexture(const std::string& name)
 	}
 
 	return _textures.at(name);
+}
+
+bool TextureMgr::IsTextureLoaded(const std::string& name)
+{
+	if (_textures.find(name) == _textures.end())
+	{
+		return false;
+	}
+	return true;
 }
 
 void TextureMgr::LoadFont(const std::string& name, const std::string& fileName)

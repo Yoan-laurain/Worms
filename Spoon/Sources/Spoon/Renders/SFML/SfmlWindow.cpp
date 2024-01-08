@@ -57,7 +57,6 @@ void SfmlWindow::OnRender()
 #endif // !DEBUG
 
 	WindowRef->clear();
-	Textures.clear();
 
 #ifndef DEBUG
 	DrawImGuiWin();
@@ -140,18 +139,18 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	SetCollidingState(drawShape, _component->GetOwner());
 
-	/*drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));*/
-
-	//fill transparent
-	drawShape.setFillColor(sf::Color(0, 0, 0, 0));
+	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+		_component->ObjectColor.B, _component->ObjectColor.A));
 
 	if (_component->texturePath != "")
 	{
-		Textures.push_back(sf::Texture());
-
-		Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath, Textures.back());
-		drawShape.setTexture(&Textures.back());
+		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->name))
+		{
+			Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath);
+		}
+		
+		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->name);
+		drawShape.setTexture(texture);
 	}
 }
 

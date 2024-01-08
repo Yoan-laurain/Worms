@@ -33,20 +33,24 @@ void WormsPlayer::onTurnChange(int currentWormsPlayer)
 
 void WormsPlayer::MoveVertical(float value, float sign)
 {
-	// TODO : Adapt object to world size
-	FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
-	FVector2D location = GetLocation();
+	if (value > 0.f)
+	{	
+		// TODO : Adapt object to world size
+		FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
 
-	SetLocation(location + direction * value);
+		Move(direction * value);
+	}
 }
 
 void WormsPlayer::MoveHorizontal(float value, float sign)
 {
-	// TODO : Adapt object to world size
-	FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
-	FVector2D location = GetLocation();
+	if (value > 0.f)
+	{	
+		// TODO : Adapt object to world size
+		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 
-	SetLocation(location + direction * value);
+		Move(direction * value);
+	}
 }
 
 bool WormsPlayer::OnDamageTaken(int damage)

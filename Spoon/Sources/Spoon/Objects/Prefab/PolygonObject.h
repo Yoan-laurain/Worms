@@ -11,8 +11,11 @@ class SPOON_API SPolygonObject : public SActor
 		class SPolygonComponent* GetPolygonComponent() const { return PolygonComponent; };
 
 		virtual bool IsInBound(const FVector2D& _loc) override;
+		virtual void Move(const FVector2D& loc) override;
 
 		std::vector<FVector2D> GetVertices();
+
+		bool bUpdateVerticesRequired;
 
 	private:
 		
