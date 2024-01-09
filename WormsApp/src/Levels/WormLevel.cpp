@@ -43,7 +43,6 @@ void WormLevel::BeginPlay()
 		polygon->bIsStatic = true;
 
 		SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(50, 50))); 
-		//SpawnActor<SCircleObject>(FTransform(FVector2D(350, 100), FVector2D(50, 50))); 
-		 
+		SpawnActor<SCircleObject>(FTransform(FVector2D(350, 150), FVector2D(50, 50))); 		 
 	}
 }

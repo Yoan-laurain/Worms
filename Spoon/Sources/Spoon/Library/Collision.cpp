@@ -1,5 +1,6 @@
 #include "Library/Collision.h"
 #include <snpch.h>
+#include "Manifold.h"
 
 bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
     const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
@@ -93,6 +94,11 @@ void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& no
     first.bIsColliding = true;
     other.bIsColliding = true;
 
+    if (first.bIsStatic && other.bIsStatic)
+    {
+        return;
+    }
+
     if (first.bIsStatic)
     {
         other.Move(normal * depth);
@@ -103,30 +109,9 @@ void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& no
     }
     else
     {
-        first.Move(normal * depth / 2.f);
-        other.Move(FVector2D(normal * depth / 2.f).ReverseVector());
+        first.Move(FVector2D(normal * depth / 2.f).ReverseVector());
+        other.Move(normal * depth / 2.f);
     }
-
-    ResolveCollision(first, other, normal, depth);
-}
-
-void Collision::ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& normal, float depth)
-{
-    FVector2D relativeVelocity = bodyB.LinearVelocity - bodyA.LinearVelocity;
-
-    if (FVector2D::DotProduct(relativeVelocity,normal) > 0.f ) {
-        return;
-    }
-
-    float e = fminf(bodyA.Restitution, bodyB.Restitution);
-
-    float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
-    j /= bodyA.InvMass + bodyB.InvMass;
-
-    FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
-
-    bodyA.LinearVelocity -= impulse * bodyA.InvMass;
-    bodyB.LinearVelocity += impulse * bodyB.InvMass;
 }
 
 bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB, const FVector2D& polygonCenterB, FVector2D& normal, float& depth)
@@ -256,4 +241,11 @@ size_t Collision::FindClosestPointOnPolygon(const FVector2D& circleCenter, const
     }
 
     return result;
+}
+
+void Collision::FindContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp)
+{
+    FVector2D ab = centerB - centerA;
+    FVector2D dir = FVector2D::Normalize(ab);
+    cp = centerA + dir * radiusA;
 }

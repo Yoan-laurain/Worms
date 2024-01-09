@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "Objects/SActor.h"
+#include "Library/Manifold.h"
 
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
@@ -13,6 +14,7 @@ class SPOON_API Level
 
 public:
 
+	Level();
 	virtual ~Level();
 
 	// Le DestroyObject might not work so be carefull
@@ -32,6 +34,9 @@ public:
 		return tmp;
 	}
 
+	std::vector<Manifold> contactList;
+	std::vector<FVector2D> contactPointList;
+
 protected:
 	
 	void HandleCollision(class SActor* obj);
@@ -40,6 +45,7 @@ protected:
 private:
 
 	void UpdateEntity(double deltatime);
+	static void ResolveCollision(Manifold& contact);
 
 	AlignAxisBoundingBox GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	

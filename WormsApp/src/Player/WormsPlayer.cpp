@@ -39,7 +39,7 @@ void WormsPlayer::MoveVertical(float value, float sign)
 		// TODO : Adapt object to world size
 		FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
 
-		AddForce(direction * value * 50000.f);
+		AddForce(direction * value * 5000.f);
 	}
 }
 
@@ -50,7 +50,7 @@ void WormsPlayer::MoveHorizontal(float value, float sign)
 		// TODO : Adapt object to world size
 		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 
-		AddForce(direction * value * 50000.f); 
+		AddForce(direction * value * 5000.f); 
 	}
 }
 

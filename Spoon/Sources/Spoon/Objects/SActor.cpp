@@ -52,9 +52,8 @@ void SActor::Tick(float DeltaTime)
 			SetLocation(mouseLoc);
 		}
 	}
+
 	Step(DeltaTime);
-
-
 }
 
 void SActor::DestroyActor()
@@ -110,7 +109,8 @@ void SActor::Step(float DeltaTime)
 		return;
 	}
 
-	LinearVelocity += Gravity * DeltaTime;
+	// TODO : Get a list of forces
+	LinearVelocity += (Gravity + Force) * DeltaTime;
 
 	if (LinearVelocity != FVector2D::Zero())
 	{

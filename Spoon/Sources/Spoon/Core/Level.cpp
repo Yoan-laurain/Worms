@@ -3,6 +3,13 @@
 #include "Library/Collision.h"
 #include <snpch.h>
 
+Level::Level() : 
+	bIsListBeingEdit(false),
+	contactList(),
+	contactPointList()
+{
+}
+
 Level::~Level()
 {}
 
@@ -23,6 +30,9 @@ void Level::UpdateEntity(double deltatime)
 		bIsListBeingEdit = false;
 	}
 
+	contactList.clear();
+	contactPointList.clear();
+
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != nullptr)
@@ -37,6 +47,30 @@ void Level::UpdateEntity(double deltatime)
 			HandleObjectOutOfWindow(entity.get());
 		}
 	}
+}
+
+void Level::ResolveCollision(Manifold& contact)
+{
+	SActor* bodyA = contact.BodyA;
+	SActor* bodyB = contact.BodyB;
+	const FVector2D normal = contact.Normal;
+	float depth = contact.Depth;
+
+	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
+
+	if (FVector2D::DotProduct(relativeVelocity, normal) > 0.f) {
+		return;
+	}
+
+	float e = fminf(bodyA->Restitution, bodyB->Restitution);
+
+	float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
+	j /= bodyA->InvMass + bodyB->InvMass;
+
+	FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+
+	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
+	bodyB->LinearVelocity += impulse * bodyB->InvMass;
 }
 
 AlignAxisBoundingBox Level::GetAABB(SActor* obj)
@@ -135,14 +169,39 @@ void Level::HandleCollision(SActor* obj)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
-			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj))) 
-			{}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
-			{}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
-			{}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
-			{}
+			Manifold collision;
+			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj),collision)) 
+			{
+				contactList.push_back(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj), collision))
+			{
+				contactList.push_back(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj), collision))
+			{
+				contactList.push_back(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj), collision))
+			{
+				contactList.push_back(collision);
+			}
+		}
+	}
+
+	for (int i = 0; i < contactList.size(); i++)
+	{
+		Manifold contact = contactList[i];
+		ResolveCollision(contact);
+
+		if (contact.ContactCount > 0)
+		{
+			contactPointList.push_back(contact.Contact1);
+
+			if (contact.ContactCount > 1)
+			{
+				contactPointList.push_back(contact.Contact2);
+			}
 		}
 	}
 }
