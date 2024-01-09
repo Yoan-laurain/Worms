@@ -9,9 +9,20 @@ SActor::SActor() :
 	WorldRef(nullptr),
 	bIsHovered(false),
 	bIsPressed(false),
-	bIsStatic(false)
+	bIsStatic(false),
+	Mass(1.f),
+	LinearVelocity(FVector2D::Zero()),
+	Restitution(0.5f),
+	InvMass(1.f / Mass),
+	Force(FVector2D::Zero()),
+	bIsColliding(false),
+	RotationalVelocity(0.f),
+	Magnitude(8.f)
 {
-
+	if (bIsStatic)
+	{
+		InvMass = 0.f;
+	}
 }
 
 SActor::~SActor()
@@ -37,6 +48,7 @@ void SActor::Tick(float DeltaTime)
 			SetLocation(mouseLoc);
 		}
 	}
+	Step(DeltaTime);
 }
 
 void SActor::DestroyActor()
@@ -83,6 +95,24 @@ void SActor::OnEvent(SpoonEvent& event)
 void SActor::SetWorldRef(Level* parentRef)
 {
 	WorldRef = parentRef;
+}
+
+void SActor::Step(float DeltaTime)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+
+	LinearVelocity += Force * DeltaTime;
+	ObjectTransform.Location += LinearVelocity * DeltaTime;
+	ObjectTransform.Rotation += RotationalVelocity * DeltaTime;
+	Force = FVector2D::Zero();
+}
+
+void SActor::AddForce(const FVector2D& force)
+{
+	Force = force;
 }
 
 FVector2D SActor::GetLocation() const

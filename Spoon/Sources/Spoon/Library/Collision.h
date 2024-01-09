@@ -23,7 +23,8 @@ public:
         const FVector2D& centerB, float radiusB,
         FVector2D& normal, float& depth);
 
-	static void ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth);
+	static void ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth);
+	static void ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& normal, float depth);
 public:
     static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
         FVector2D& normal, float& depth);
@@ -52,10 +53,8 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygo
 
 	if (Result)
 	{
-		ApplyCollision(other, first, normal, depth);
+		ApplyCollision(*other, *first, normal, depth);
 	}
-	else
-	{ }
 
 	return Result;
 }
@@ -74,7 +73,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircle
 
 	if (Result)
 	{
-		ApplyCollision(first, other, normal, depth);
+		ApplyCollision(*first, *other, normal, depth);
 	}
 
 	return Result;
@@ -94,7 +93,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 	
 	if (Result)
 	{
-		ApplyCollision(first, other, normal, depth);
+		ApplyCollision(*first, *other, normal, depth);
 	}
 
 	return Result;
@@ -114,7 +113,7 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* first,
 
 	if (Result)
 	{
-		ApplyCollision(first, other, normal, depth);
+		ApplyCollision(*first, *other, normal, depth);
 	}
 
 	return Result;

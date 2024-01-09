@@ -116,10 +116,23 @@ private:
 
 	void SetWorldRef(class Level* parentRef);
 
+	void Step(float DeltaTime);
+
 public:
 
 	bool bIsStatic; // Can be moved
 	bool bIsColliding;
+
+	// physics
+	FVector2D LinearVelocity;
+	float RotationalVelocity;
+	float Restitution;
+	float Mass;
+	float InvMass;
+	float Magnitude;
+	FVector2D Force;
+
+	virtual void AddForce(const FVector2D& force);
 
 protected:
 

@@ -88,30 +88,46 @@ bool Collision::IntersectCircles(const FVector2D& centerA, float radiusA, const 
     return true;
 }
 
-void Collision::ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth)
+void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth)
 {
-    if ( !first || !other )
-	{
-		return;
-	}
+    first.bIsColliding = true;
+    other.bIsColliding = true;
 
-    first->bIsColliding = true;
-    other->bIsColliding = true;
-
-    if ( !first->bIsStatic )
+    if ( !first.bIsStatic )
     {
-        float divide = other->bIsStatic ? 1.f : 2.f;
+        float divide = other.bIsStatic ? 1.f : 2.f;
         FVector2D move = (normal * depth) / divide;
         move.ReverseVector();
-		first->Move(move);
+		first.Move(move);
 	}
 
-    if ( !other->bIsStatic )
+    if ( !other.bIsStatic )
 	{   
-        float divide = first->bIsStatic ? 1.f : 2.f;
+        float divide = first.bIsStatic ? 1.f : 2.f;
         FVector2D move = (normal * depth) / divide;
-        other->Move(move);
+        other.Move(move);
 	}
+
+    ResolveCollision(first, other, normal, depth);
+}
+
+void Collision::ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& normal, float depth)
+{
+    FVector2D relativeVelocity = bodyB.LinearVelocity - bodyA.LinearVelocity;
+
+    if (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y > 0.f) {
+        return;
+    }
+
+    float e = fminf(bodyA.Restitution, bodyB.Restitution);
+
+    float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
+    j /= bodyA.InvMass + bodyB.InvMass;
+
+    FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+
+    bodyA.LinearVelocity -= impulse * bodyA.InvMass;
+    bodyB.LinearVelocity += impulse * bodyB.InvMass;
 }
 
 bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& normal, float& depth)

@@ -52,3 +52,19 @@ void SPolygonObject::Move(const FVector2D& loc)
 	SActor::Move(loc);
 	bUpdateVerticesRequired = true;
 }
+
+void SPolygonObject::AddForce(const FVector2D& force)
+{
+	SActor::AddForce(force);
+	bUpdateVerticesRequired = true;
+}
+
+void SPolygonObject::Tick(float DeltaTime)
+{
+	SActor::Tick(DeltaTime);
+
+	if (LinearVelocity != FVector2D::Zero())
+	{
+		bUpdateVerticesRequired = true;
+	}
+}

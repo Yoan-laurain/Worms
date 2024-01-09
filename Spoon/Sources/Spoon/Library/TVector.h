@@ -180,7 +180,7 @@ bool const OBJECT_API operator==(const Vector2D<T>& left, const Vector2D<T>& rig
 template <typename T>
 bool const OBJECT_API operator!=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
-	return !(left == right);
+	return left.X != right.X || left.Y != right.Y;
 }
 
 // This operation doesn't really have sense cause it suppose that X1 and Y1 will always be inferior or equal to X2 and Y2.

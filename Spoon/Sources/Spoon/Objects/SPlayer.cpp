@@ -16,7 +16,7 @@ SPlayer::~SPlayer()
 
 void SPlayer::Tick(float DeltaTime)
 {
-	SActor::Tick(DeltaTime);
+	SPolygonObject::Tick(DeltaTime);
 	//GravityComponent->Simulated(true);
 }
 
