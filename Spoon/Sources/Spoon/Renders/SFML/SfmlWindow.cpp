@@ -164,7 +164,13 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 	{
 		_shape.setOutlineColor(sf::Color::Green);
 	}
-	_shape.setOutlineThickness(2);
+
+	if ( _actor->bIsStatic )
+	{
+		_shape.setOutlineColor(sf::Color::Magenta);
+	}
+
+	_shape.setOutlineThickness(3);
 }
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)

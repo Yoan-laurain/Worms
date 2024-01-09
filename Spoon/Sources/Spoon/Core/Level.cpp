@@ -22,6 +22,7 @@ void Level::UpdateEntity(double deltatime)
 		AddEntityList.clear();
 		bIsListBeingEdit = false;
 	}
+
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != nullptr)
@@ -32,7 +33,63 @@ void Level::UpdateEntity(double deltatime)
 			{
 				 HandleCollision(entity.get());
 			}
+
+			HandleObjectOutOfWindow(entity.get());
 		}
+	}
+}
+
+AlignAxisBoundingBox Level::GetAABB(SActor* obj)
+{
+	if (obj->bNeedToUpdateBoundingBox)
+	{
+		float minX = std::numeric_limits<float>::max();
+		float minY = std::numeric_limits<float>::max();
+		float maxX = std::numeric_limits<float>::min();
+		float maxY = std::numeric_limits<float>::min();
+
+		SPolygonObject* poly = dynamic_cast<SPolygonObject*>(obj);
+		SCircleObject* circle = dynamic_cast<SCircleObject*>(obj);
+
+		if ( poly )
+		{
+			std::vector<FVector2D> vertices = poly->GetVertices();
+
+			for (const auto& v : vertices)
+			{
+				if (v.X < minX) { minX = v.X; }
+				if (v.X > maxX) { maxX = v.X; }
+				if (v.Y < minY) { minY = v.Y; }
+				if (v.Y > maxY) { maxY = v.Y; }
+			}
+		}
+		else if (circle)
+		{
+			minX = circle->GetLocation().X - circle->GetRadius();
+			minY = circle->GetLocation().Y - circle->GetRadius();
+			maxX = circle->GetLocation().X + circle->GetRadius();
+			maxY = circle->GetLocation().Y + circle->GetRadius();
+		}
+		else
+		{
+			throw std::runtime_error("Unknown ShapeType.");
+		}
+
+		obj->AABB = AlignAxisBoundingBox(minX, minY, maxX, maxY);
+	}
+
+	obj->bNeedToUpdateBoundingBox = false;
+	return obj->AABB;
+}
+
+void Level::HandleObjectOutOfWindow(SActor* obj)
+{
+	AlignAxisBoundingBox AABB = GetAABB(obj);
+	
+	// TODO : Retrieve window size
+	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > 1280 || AABB.Min.Y > 720)
+	{
+		obj->DestroyActor();
 	}
 }
 

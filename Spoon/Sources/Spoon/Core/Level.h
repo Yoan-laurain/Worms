@@ -41,6 +41,9 @@ private:
 
 	void UpdateEntity(double deltatime);
 
+	AlignAxisBoundingBox GetAABB(SActor* obj);
+	void HandleObjectOutOfWindow(SActor* obj);	
+
 	// TODO Change to be able to change the ownership
 	void RemoveObject(class SActor* obj);
 

@@ -7,7 +7,5 @@ namespace Config {
 
     constexpr int NumberOfCurvesPoints = 10;
 
-    constexpr int MaxPlayers = 2;
-    constexpr double Gravity = 9.8;
-
+    constexpr int MaxPlayers = 1;
 }

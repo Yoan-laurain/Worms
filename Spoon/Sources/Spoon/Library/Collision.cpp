@@ -93,20 +93,19 @@ void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& no
     first.bIsColliding = true;
     other.bIsColliding = true;
 
-    if ( !first.bIsStatic )
+    if (first.bIsStatic)
     {
-        float divide = other.bIsStatic ? 1.f : 2.f;
-        FVector2D move = (normal * depth) / divide;
-        move.ReverseVector();
-		first.Move(move);
-	}
-
-    if ( !other.bIsStatic )
-	{   
-        float divide = first.bIsStatic ? 1.f : 2.f;
-        FVector2D move = (normal * depth) / divide;
-        other.Move(move);
-	}
+        other.Move(normal * depth);
+    }
+    else if (other.bIsStatic)
+    {
+        first.Move(FVector2D(normal * depth).ReverseVector());
+    }
+    else
+    {
+        first.Move(normal * depth / 2.f);
+        other.Move(FVector2D(normal * depth / 2.f).ReverseVector());
+    }
 
     ResolveCollision(first, other, normal, depth);
 }
@@ -115,7 +114,7 @@ void Collision::ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& 
 {
     FVector2D relativeVelocity = bodyB.LinearVelocity - bodyA.LinearVelocity;
 
-    if (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y > 0.f) {
+    if (FVector2D::DotProduct(relativeVelocity,normal) > 0.f ) {
         return;
     }
 
@@ -130,7 +129,7 @@ void Collision::ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& 
     bodyB.LinearVelocity += impulse * bodyB.InvMass;
 }
 
-bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& normal, float& depth)
+bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB, const FVector2D& polygonCenterB, FVector2D& normal, float& depth)
 {
     normal = FVector2D::Zero();
     depth = std::numeric_limits<float>::max();
@@ -191,10 +190,7 @@ bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const
         }
     }
 
-    const FVector2D centerA = FindArithmeticMean(verticesA);
-    const FVector2D centerB = FindArithmeticMean(verticesB);
-
-    const FVector2D direction = centerB - centerA;
+    const FVector2D direction = polygonCenterB - polygonCenterA;
 
     if (FVector2D::DotProduct(direction, normal) < 0.0f)
     {
@@ -260,18 +256,4 @@ size_t Collision::FindClosestPointOnPolygon(const FVector2D& circleCenter, const
     }
 
     return result;
-}
-
-FVector2D Collision::FindArithmeticMean(const std::vector<FVector2D>& vertices)
-{
-    float sumX = 0.0f;
-    float sumY = 0.0f;
-
-    for (const FVector2D& v : vertices)
-    {
-        sumX += v.X;
-        sumY += v.Y;
-    }
-
-    return FVector2D(sumX / static_cast<float>(vertices.size()), sumY / static_cast<float>(vertices.size()));
 }

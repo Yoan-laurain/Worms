@@ -2,6 +2,7 @@
 #include "Core/Level.h"
 #include "Events/MouseEvent.h"
 #include "Components/SComponent.h"
+#include "Library/MathLibrary.h"
 #include <snpch.h>
 
 SActor::SActor() :
@@ -17,7 +18,10 @@ SActor::SActor() :
 	Force(FVector2D::Zero()),
 	bIsColliding(false),
 	RotationalVelocity(0.f),
-	Magnitude(8.f)
+	Magnitude(8.f),
+	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
+	AABB(FVector2D::Zero(), FVector2D::Zero()),
+	bNeedToUpdateBoundingBox(true)
 {
 	if (bIsStatic)
 	{
@@ -49,6 +53,8 @@ void SActor::Tick(float DeltaTime)
 		}
 	}
 	Step(DeltaTime);
+
+
 }
 
 void SActor::DestroyActor()
@@ -104,7 +110,13 @@ void SActor::Step(float DeltaTime)
 		return;
 	}
 
-	LinearVelocity += Force * DeltaTime;
+	LinearVelocity += Gravity * DeltaTime;
+
+	if (LinearVelocity != FVector2D::Zero())
+	{
+		bNeedToUpdateBoundingBox = true;
+	}
+
 	ObjectTransform.Location += LinearVelocity * DeltaTime;
 	ObjectTransform.Rotation += RotationalVelocity * DeltaTime;
 	Force = FVector2D::Zero();

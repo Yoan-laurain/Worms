@@ -26,8 +26,8 @@ public:
 	static void ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth);
 	static void ResolveCollision(SActor& bodyA, SActor& bodyB, const FVector2D& normal, float depth);
 public:
-    static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
-        FVector2D& normal, float& depth);
+    static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB,
+		const FVector2D& polygonCenterB,FVector2D& normal, float& depth);
 
 private:
     static void ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max);
@@ -35,8 +35,6 @@ private:
     static void ProjectCircle(const FVector2D& center, float radius, const FVector2D& axis, float& min, float& max);
 
     static size_t FindClosestPointOnPolygon(const FVector2D& circleCenter, const std::vector<FVector2D>& vertices);
-
-    static FVector2D FindArithmeticMean(const std::vector<FVector2D>& vertices);
 };
 
 template <>
@@ -109,7 +107,7 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* first,
 
 	FVector2D normal;
 	float depth;
-	const bool Result = Collision::IntersectPolygons(first->GetVertices(), other->GetVertices(), normal, depth);
+	const bool Result = Collision::IntersectPolygons(first->GetVertices(),first->GetLocation(), other->GetVertices(),other->GetLocation(), normal, depth);
 
 	if (Result)
 	{

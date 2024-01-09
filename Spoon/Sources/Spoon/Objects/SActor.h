@@ -4,6 +4,7 @@
 #include "Library/TColor.h"
 #include "Library/TStruct.h"
 #include "Components/SComponent.h"
+#include <Library/AlignAxisBoudingBox.h>
 
 class SPOON_API SActor : public SObject
 {
@@ -131,6 +132,10 @@ public:
 	float InvMass;
 	float Magnitude;
 	FVector2D Force;
+	FVector2D Gravity;
+
+	bool bNeedToUpdateBoundingBox;
+	AlignAxisBoundingBox AABB;
 
 	virtual void AddForce(const FVector2D& force);
 
