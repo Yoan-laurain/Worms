@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include <snpch.h>
 
+const float VerySmallAmount = 0.0005f;
 
 template <typename T>
 struct OBJECT_API Vector2D
@@ -143,6 +144,16 @@ struct OBJECT_API Vector2D
 	Vector2D<T> GetTangent() 
 	{
 		return Vector2D<T>(Y, -X).GetSafeNormal();
+	}
+
+	static bool NearlyEqual(float a, float b)
+	{
+		return std::abs(a - b) < VerySmallAmount; 
+	}
+
+	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return NearlyEqual(_left.X, _right.X) && NearlyEqual(_left.Y, _right.Y); 
 	}
 
 };

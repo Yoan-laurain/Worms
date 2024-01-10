@@ -311,3 +311,71 @@ void Collision::PointSegmentDistance(const FVector2D& p, const FVector2D& a, con
 
     distanceSquared = FVector2D::GetSquareLength(p, cp);
 }
+
+void Collision::FindContactPoints(
+    const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
+    FVector2D& contact1, FVector2D& contact2, int& contactCount)
+{
+    contact1 = FVector2D::Zero();
+    contact2 = FVector2D::Zero();
+    contactCount = 0;
+
+    float minDistSq = std::numeric_limits<float>::max();
+
+    for (const auto& p : verticesA)
+    {
+        for (size_t j = 0; j < verticesB.size(); j++)
+        {
+            const FVector2D& va = verticesB[j];
+            const FVector2D& vb = verticesB[(j + 1) % verticesB.size()];
+
+            float distSq;
+            FVector2D cp;
+
+            PointSegmentDistance(p, va, vb, distSq, cp);
+
+            if (FVector2D::NearlyEqual( distSq, minDistSq))
+            {
+                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                {
+                    contact2 = cp;
+                    contactCount = 2;
+                }
+            }
+            else if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                contactCount = 1;
+                contact1 = cp;
+            }
+        }
+    }
+
+    for (const auto& p : verticesB)
+    {
+        for (size_t j = 0; j < verticesA.size(); j++)
+        {
+            const FVector2D& va = verticesA[j];
+            const FVector2D& vb = verticesA[(j + 1) % verticesA.size()];
+
+            float distSq;
+            FVector2D cp;
+            PointSegmentDistance(p, va, vb, distSq, cp);
+
+            if (FVector2D::NearlyEqual(distSq, minDistSq))
+            {
+                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                {
+                    contact2 = cp;
+                    contactCount = 2;
+                }
+            }
+            else if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                contactCount = 1;
+                contact1 = cp;
+            }
+        }
+    }
+}

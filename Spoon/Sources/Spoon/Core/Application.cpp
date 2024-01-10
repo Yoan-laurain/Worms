@@ -194,7 +194,7 @@ void Application::TickRun()
 		auto end = std::chrono::high_resolution_clock::now();
 		time = std::chrono::duration<double, std::milli>(end - start).count();
 
-		system("cls");
+		//system("cls");
 		std::string text = "Time to compute : " + std::to_string(time) + " ms with : " + std::to_string(CurrentLevel->EntityList.size()) + " entity";
 		std::cout << text << std::endl;
 	}
