@@ -30,7 +30,7 @@ void WormLevel::BeginPlay()
 	{
 		//CreatePlayer(m_Field->GetSpawnPoint());
 		FTransform transform;
-		transform.Location = FVector2D(100, 100);
+		transform.Location = FVector2D(100, 200);
 		CreatePlayer( transform );
 
 		SPolygonObject* polygon = SpawnActor<SPolygonObject>(FTransform(FVector2D(250, 100), FVector2D(50, 50)));
@@ -42,12 +42,12 @@ void WormLevel::BeginPlay()
 		polygon->GetPolygonComponent()->Points = points; 
 		polygon->bIsStatic = true;
 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(50, 50))); 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(350, 150), FVector2D(50, 50))); 	
-		SpawnActor<SCircleObject>(FTransform(FVector2D(400, 200), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(450, 250), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(500, 300), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(550, 350), FVector2D(50, 50)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(600, 400), FVector2D(50, 50)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(20, 20))); 
+		SpawnActor<SCircleObject>(FTransform(FVector2D(350, 150), FVector2D(20, 20)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(400, 200), FVector2D(20, 20)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(450, 250), FVector2D(20, 20)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(500, 300), FVector2D(20, 20)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(550, 350), FVector2D(20, 20)));
+		SpawnActor<SCircleObject>(FTransform(FVector2D(600, 400), FVector2D(20, 20)));
 	}
 }

@@ -243,7 +243,7 @@ size_t Collision::FindClosestPointOnPolygon(const FVector2D& circleCenter, const
     return result;
 }
 
-void Collision::FindContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp)
+void Collision::FindCirclesContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp)
 {
     FVector2D ab = centerB - centerA;
     FVector2D dir = FVector2D::Normalize(ab);
@@ -261,7 +261,7 @@ bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
     return true;
 }
 
-void Collision::FindContactPoint(
+void Collision::FindCirclePolygonContactPoint(
     const FVector2D& circleCenter, float circleRadius,
     const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices,
     FVector2D& cp)
@@ -312,7 +312,7 @@ void Collision::PointSegmentDistance(const FVector2D& p, const FVector2D& a, con
     distanceSquared = FVector2D::GetSquareLength(p, cp);
 }
 
-void Collision::FindContactPoints(
+void Collision::FindPolygonsContactPoints(
     const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
     FVector2D& contact1, FVector2D& contact2, int& contactCount)
 {

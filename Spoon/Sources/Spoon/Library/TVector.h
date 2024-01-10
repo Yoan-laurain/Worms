@@ -153,7 +153,7 @@ struct OBJECT_API Vector2D
 
 	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right)
 	{
-		return NearlyEqual(_left.X, _right.X) && NearlyEqual(_left.Y, _right.Y); 
+		return GetSquareLength(_left, _right) < VerySmallAmount * VerySmallAmount;
 	}
 
 };

@@ -141,6 +141,7 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
+	drawShape.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
 	if (_component->texturePath != "")
 	{
@@ -170,7 +171,7 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 		_shape.setOutlineColor(sf::Color::Magenta);
 	}
 
-	_shape.setOutlineThickness(3);
+	_shape.setOutlineThickness(1);
 }
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
@@ -180,6 +181,7 @@ void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _c
 
 	_shape.setFillColor(sf::Color(0, 0, 0, 0));
 	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
+	_shape.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
 	SetCollidingState(_shape, _component->GetOwner());
 }

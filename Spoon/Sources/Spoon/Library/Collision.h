@@ -38,16 +38,16 @@ public:
 		const FVector2D& polygonCenterB,FVector2D& normal, float& depth);
 
 	static bool IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b);
-	static void FindContactPoint(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices, FVector2D& cp);
+	static void FindCirclePolygonContactPoint(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices, FVector2D& cp);
 	static void PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp);
-	static void FindContactPoints(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& contact1, FVector2D& contact2, int& contactCount);
+	static void FindPolygonsContactPoints(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& contact1, FVector2D& contact2, int& contactCount);
 private:
     static void ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max);
 
     static void ProjectCircle(const FVector2D& center, float radius, const FVector2D& axis, float& min, float& max);
 
     static size_t FindClosestPointOnPolygon(const FVector2D& circleCenter, const std::vector<FVector2D>& vertices);
-	static void FindContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp);
+	static void FindCirclesContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp);
 };
 
 template <>
@@ -74,7 +74,7 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygo
 		collision.Contact2 = FVector2D::Zero();
 		collision.ContactCount = 1;
 
-		FindContactPoint(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), collision.Contact1);
+		FindCirclePolygonContactPoint(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), collision.Contact1);
 	}
 
 	return Result;
@@ -104,7 +104,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircle
 		collision.Contact2 = FVector2D::Zero();
 		collision.ContactCount = 1;
 
-		FindContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), collision.Contact1);
+		FindCirclePolygonContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), collision.Contact1);
 	}
 
 	return Result;
@@ -134,7 +134,7 @@ inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, S
 		collision.Contact2 = FVector2D::Zero();
 		collision.ContactCount = 1;
 
-		FindContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), collision.Contact1);
+		FindCirclesContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), collision.Contact1);
 	}
 
 	return Result;
@@ -164,7 +164,7 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* first,
 		collision.Contact2 = FVector2D::Zero();
 		collision.ContactCount = 0;
 
-		FindContactPoints(first->GetVertices(), other->GetVertices(), collision.Contact1, collision.Contact2, collision.ContactCount);
+		FindPolygonsContactPoints(first->GetVertices(), other->GetVertices(), collision.Contact1, collision.Contact2, collision.ContactCount);
 	}
 
 	return Result;

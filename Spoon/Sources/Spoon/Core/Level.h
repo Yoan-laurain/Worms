@@ -34,9 +34,6 @@ public:
 		return tmp;
 	}
 
-	std::vector<Manifold> contactList;
-	std::vector<FVector2D> contactPointList;
-
 protected:
 	
 	void HandleCollision(class SActor* obj);
@@ -47,14 +44,15 @@ private:
 	void UpdateEntity(double deltatime);
 	static void ResolveCollision(Manifold& contact);
 
-	AlignAxisBoundingBox GetAABB(SActor* obj);
+	AlignAxisBoundingBox& GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	
 
 	// TODO Change to be able to change the ownership
 	void RemoveObject(class SActor* obj);
 
 	void AddObject(class SActor* obj);
-	
+
+
 protected:
 
 	// Entity actuellement dans le world.

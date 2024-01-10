@@ -6,7 +6,6 @@
 
 SCircleObject::SCircleObject() : CircleComponent(CreateComponent<SCircleComponent>("VisualComponent"))
 {
-	CircleComponent->Radius = 25.f;
 	CircleComponent->ObjectColor = FColor(80, 40, 200);
 }
 
@@ -40,4 +39,16 @@ bool SCircleObject::IsInBound(const FVector2D& _loc)
 	float depth;
 
 	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, _loc, 5.f, normal, depth);
+}
+
+float SCircleObject::CalculateInertia()
+{
+	float radius = GetSize().X / 2.f;
+	return (1.f / 2.f) * Mass * ( radius * radius );
+}
+
+void SCircleObject::SetTransform(const FTransform& transform)
+{
+	SActor::SetTransform(transform);
+	CircleComponent->Radius = transform.Size.X / 2.f;
 }

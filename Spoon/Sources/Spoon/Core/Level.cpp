@@ -4,9 +4,7 @@
 #include <snpch.h>
 
 Level::Level() : 
-	bIsListBeingEdit(false),
-	contactList(),
-	contactPointList()
+	bIsListBeingEdit(false)
 {
 }
 
@@ -30,8 +28,6 @@ void Level::UpdateEntity(double deltatime)
 		bIsListBeingEdit = false;
 	}
 
-	contactList.clear();
-	contactPointList.clear();
 
 	for (const auto& entity : EntityList)
 	{
@@ -73,7 +69,7 @@ void Level::ResolveCollision(Manifold& contact)
 	bodyB->LinearVelocity += impulse * bodyB->InvMass;
 }
 
-AlignAxisBoundingBox Level::GetAABB(SActor* obj)
+AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 {
 	if (obj->bNeedToUpdateBoundingBox)
 	{
@@ -163,59 +159,47 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
-void Level::HandleCollision(SActor* obj)
+void Level::HandleCollision( SActor* obj )
 {
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
-			AlignAxisBoundingBox firstAABB = GetAABB(entity.get());
-			AlignAxisBoundingBox secondAABB = GetAABB(obj);
-
-			// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
-			if (Collision::IntersectAABBs( firstAABB, secondAABB) == false)
+			if (entity->bIsStatic && obj->bIsStatic)
 			{
 				continue;
 			}
 
+			AlignAxisBoundingBox& firstAABB = GetAABB(entity.get());
+			AlignAxisBoundingBox& secondAABB = GetAABB(obj);
+
+			// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
+			if (Collision::IntersectAABBs(firstAABB, secondAABB) == false)
+			{
+				continue;
+			}
+
+			SActor* bodyA = entity.get();
+			SActor* bodyB = obj;
+
 			Manifold collision;
-			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj),collision)) 
-			{
-				contactList.push_back(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj), collision))
-			{
-				contactList.push_back(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj), collision))
-			{
-				contactList.push_back(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj), collision))
-			{
-				contactList.push_back(collision);
-			}
-		}
-	}
 
-	for (int i = 0; i < contactList.size(); i++)
-	{
-		Manifold contact = contactList[i];
-		ResolveCollision(contact);
-
-		if (contact.ContactCount > 0)
-		{
-			if (std::find(contactPointList.begin(), contactPointList.end(), contact.Contact1) == contactPointList.end())
+			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
 			{
-				contactPointList.push_back(contact.Contact1);
+				ResolveCollision(collision);
 			}
-
-			if (contact.ContactCount > 1)
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
 			{
-				if (std::find(contactPointList.begin(), contactPointList.end(), contact.Contact2) == contactPointList.end())
-				{
-					contactPointList.push_back(contact.Contact2);
-				}
+				ResolveCollision(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
+			{
+
+				ResolveCollision(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
+			{
+				ResolveCollision(collision);
 			}
 		}
 	}

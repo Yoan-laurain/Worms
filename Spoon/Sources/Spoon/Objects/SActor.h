@@ -44,7 +44,10 @@ public:
 
 	FTransform GetTransform() const;
 
-	void SetTransform(const FTransform& transform);
+	virtual void SetTransform(const FTransform& transform);
+
+	void SetInertia(float inertia);
+	void SetMass(float density);
 
 	/************************************************************************/
 	/* Collision															*/
@@ -99,6 +102,8 @@ protected:
 
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
+	virtual float CalculateInertia();
+
 	// Function à called pour cree un component
 	template<typename T>
 	T* CreateComponent(const std::string& name)
@@ -134,6 +139,7 @@ public:
 	FVector2D Force;
 	FVector2D Gravity;
 
+
 	bool bNeedToUpdateBoundingBox;
 	AlignAxisBoundingBox AABB;
 
@@ -156,6 +162,9 @@ private:
 	std::vector<class SComponent> TickableComponent;
 
 	class Level* WorldRef;
+
+	float Inertia;
+	float InvInertia;
 
 };
 

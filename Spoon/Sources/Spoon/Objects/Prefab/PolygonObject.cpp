@@ -68,3 +68,11 @@ void SPolygonObject::Tick(float DeltaTime)
 		bUpdateVerticesRequired = true;
 	}
 }
+
+float SPolygonObject::CalculateInertia()
+{
+	float widthSquared = GetSize().X * GetSize().X;
+	float heightSquared = GetSize().Y * GetSize().Y;
+
+	return (1.f / 12.f) * Mass * ( widthSquared + heightSquared );
+}
