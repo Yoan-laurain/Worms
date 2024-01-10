@@ -37,6 +37,7 @@ public:
     static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB,
 		const FVector2D& polygonCenterB,FVector2D& normal, float& depth);
 
+	static bool IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b);
 private:
     static void ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max);
 

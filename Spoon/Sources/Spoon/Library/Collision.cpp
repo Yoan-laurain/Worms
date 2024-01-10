@@ -249,3 +249,14 @@ void Collision::FindContactPoint(const FVector2D& centerA, float radiusA, const 
     FVector2D dir = FVector2D::Normalize(ab);
     cp = centerA + dir * radiusA;
 }
+
+bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
+{
+    if (a.Max.X <= b.Min.X || b.Max.X <= a.Min.X ||
+        a.Max.Y <= b.Min.Y || b.Max.Y <= a.Min.Y)
+    {
+        return false;
+    }
+
+    return true;
+}

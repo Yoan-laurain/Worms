@@ -42,7 +42,15 @@ bool TextureMgr::IsTextureLoaded(const std::string& name)
 
 void TextureMgr::LoadFont(const std::string& name, const std::string& fileName)
 {
-	if (sf::Font font; font.loadFromFile(fileName))
+	// if already loaded, do nothing
+	if (_fonts.find(name) != _fonts.end())
+	{
+		return;
+	}
+
+	sf::Font font;
+
+	if (font.loadFromFile(fileName))
 	{
 		_fonts[name] = font;
 	}

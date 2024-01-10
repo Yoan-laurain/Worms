@@ -41,7 +41,7 @@ void Level::UpdateEntity(double deltatime)
 
 			if (!entity->bIsStatic)
 			{
-				 HandleCollision(entity.get());
+				HandleCollision(entity.get());
 			}
 
 			HandleObjectOutOfWindow(entity.get());
@@ -169,6 +169,15 @@ void Level::HandleCollision(SActor* obj)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
+			AlignAxisBoundingBox firstAABB = GetAABB(entity.get());
+			AlignAxisBoundingBox secondAABB = GetAABB(obj);
+
+			// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
+			if (Collision::IntersectAABBs( firstAABB, secondAABB) == false)
+			{
+				continue;
+			}
+
 			Manifold collision;
 			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj),collision)) 
 			{
