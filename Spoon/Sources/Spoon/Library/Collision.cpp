@@ -260,3 +260,54 @@ bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
 
     return true;
 }
+
+void Collision::FindContactPoint(
+    const FVector2D& circleCenter, float circleRadius,
+    const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices,
+    FVector2D& cp)
+{
+    cp = FVector2D::Zero();
+
+    float minDistSq = std::numeric_limits<float>::max();
+
+    for (size_t i = 0; i < polygonVertices.size(); i++)
+    {
+        const FVector2D& va = polygonVertices[i];
+        const FVector2D& vb = polygonVertices[(i + 1) % polygonVertices.size()];
+
+        float distSq;
+        FVector2D contact;
+        PointSegmentDistance(circleCenter, va, vb, distSq, contact);
+
+        if (distSq < minDistSq)
+        {
+            minDistSq = distSq;
+            cp = contact;
+        }
+    }
+}
+
+void Collision::PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp)
+{
+    FVector2D ab = b - a;
+    FVector2D ap = p - a;
+
+    float proj = FVector2D::DotProduct(ap, ab);
+    float abLenSq = ab.GetSquareLength();
+    float d = proj / abLenSq;
+
+    if (d <= 0.0f)
+    {
+        cp = a;
+    }
+    else if (d >= 1.0f)
+    {
+        cp = b;
+    }
+    else
+    {
+        cp = a + ab * d;
+    }
+
+    distanceSquared = FVector2D::GetSquareLength(p, cp);
+}

@@ -38,6 +38,8 @@ public:
 		const FVector2D& polygonCenterB,FVector2D& normal, float& depth);
 
 	static bool IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b);
+	static void FindContactPoint(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices, FVector2D& cp);
+	static void PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp);
 private:
     static void ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max);
 
@@ -69,7 +71,9 @@ inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygo
 		collision.Depth = depth;
 		collision.Contact1 = FVector2D::Zero();
 		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 0;
+		collision.ContactCount = 1;
+
+		FindContactPoint(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), collision.Contact1);
 	}
 
 	return Result;
@@ -97,7 +101,9 @@ inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircle
 		collision.Depth = depth;
 		collision.Contact1 = FVector2D::Zero();
 		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 0;
+		collision.ContactCount = 1;
+
+		FindContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), collision.Contact1);
 	}
 
 	return Result;

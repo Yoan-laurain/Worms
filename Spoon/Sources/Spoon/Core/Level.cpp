@@ -205,11 +205,17 @@ void Level::HandleCollision(SActor* obj)
 
 		if (contact.ContactCount > 0)
 		{
-			contactPointList.push_back(contact.Contact1);
+			if (std::find(contactPointList.begin(), contactPointList.end(), contact.Contact1) == contactPointList.end())
+			{
+				contactPointList.push_back(contact.Contact1);
+			}
 
 			if (contact.ContactCount > 1)
 			{
-				contactPointList.push_back(contact.Contact2);
+				if (std::find(contactPointList.begin(), contactPointList.end(), contact.Contact2) == contactPointList.end())
+				{
+					contactPointList.push_back(contact.Contact2);
+				}
 			}
 		}
 	}

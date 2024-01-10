@@ -77,6 +77,12 @@ struct OBJECT_API Vector2D
 		return (X * X) + (Y * Y);
 	}
 
+	static T GetSquareLength(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return ((_left.X - _right.X) * (_left.X - _right.X)) + ((_left.Y - _right.Y) * (_left.Y - _right.Y));
+	}
+
+
 	T GetLength() const
 	{
 		return std::sqrt(GetSquareLength());

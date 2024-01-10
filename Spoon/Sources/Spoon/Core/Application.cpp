@@ -187,7 +187,6 @@ void Application::TickRun()
 		time = 0.f;
 		auto start = std::chrono::high_resolution_clock::now();
 
-
 		if (m_WindowRef)
 		{
 			m_WindowRef->OnUpdate();
