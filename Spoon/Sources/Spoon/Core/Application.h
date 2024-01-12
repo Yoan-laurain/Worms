@@ -34,6 +34,8 @@ public:
 
 	bool BindAction(class SPlayer* player, enum class InputAction inputAction, std::function<void(float)> func);
 
+	FVector2D GetScreenSize() const;
+
 protected:
 
 	void SetLevel(class Level* _newLevel, const bool DestroyPrevious = false);

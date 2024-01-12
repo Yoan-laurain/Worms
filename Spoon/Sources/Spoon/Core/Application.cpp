@@ -131,6 +131,11 @@ void Application::AddNewPlayer(SPlayer* player)
 	_InputMgr->AddNewPlayer();
 }
 
+FVector2D Application::GetScreenSize() const
+{ 
+	return ScreenSize;
+}
+
 bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func)
 {
 	int index = -1;
@@ -181,10 +186,22 @@ bool Application::OnMouseMoved(MouseMovedEvent& e)
 
 void Application::TickRun()
 {
+	double time = 0.0f;
 	while (bIsRunning)
 	{
-		if(m_WindowRef)
+		time = 0.f;
+		auto start = std::chrono::high_resolution_clock::now();
+
+		if (m_WindowRef)
+		{
 			m_WindowRef->OnUpdate();
+		}
+		auto end = std::chrono::high_resolution_clock::now();
+		time = std::chrono::duration<double, std::milli>(end - start).count();
+
+		//system("cls");
+		std::string text = "Time to compute : " + std::to_string(time) + " ms with : " + std::to_string(CurrentLevel->EntityList.size()) + " entity";
+		std::cout << text << std::endl;
 	}
 }
 

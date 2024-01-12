@@ -2,6 +2,7 @@
 #include "Core/Level.h"
 #include "Events/MouseEvent.h"
 #include "Components/SComponent.h"
+#include "Library/MathLibrary.h"
 #include <snpch.h>
 
 SActor::SActor() :
@@ -9,9 +10,21 @@ SActor::SActor() :
 	WorldRef(nullptr),
 	bIsHovered(false),
 	bIsPressed(false),
-	bIsStatic(false)
+	bIsStatic(false),
+	Mass(1.f),
+	LinearVelocity(FVector2D::Zero()),
+	Restitution(0.5f),
+	InvMass(1.f / Mass),
+	Force(FVector2D::Zero()),
+	bIsColliding(false),
+	RotationalVelocity(0.f),
+	Magnitude(8.f),
+	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
+	AABB(FVector2D::Zero(), FVector2D::Zero()),
+	bNeedToUpdateBoundingBox(true),
+	Inertia(0.f),
+	InvInertia(0.f)
 {
-
 }
 
 SActor::~SActor()
@@ -37,6 +50,8 @@ void SActor::Tick(float DeltaTime)
 			SetLocation(mouseLoc);
 		}
 	}
+
+	Step(DeltaTime);
 }
 
 void SActor::DestroyActor()
@@ -85,6 +100,36 @@ void SActor::SetWorldRef(Level* parentRef)
 	WorldRef = parentRef;
 }
 
+void SActor::Step(float DeltaTime)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+
+	// TODO : Get a list of forces
+	LinearVelocity += (Gravity + Force) * DeltaTime;
+
+	if (LinearVelocity != FVector2D::Zero())
+	{
+		bNeedToUpdateBoundingBox = true;
+	}
+
+	ObjectTransform.Location += LinearVelocity * DeltaTime;
+	ObjectTransform.Rotation += RotationalVelocity * DeltaTime;
+	Force = FVector2D::Zero();
+}
+
+float SActor::CalculateRotationInertia()
+{
+	return 0.f;
+}
+
+void SActor::AddForce(const FVector2D& force)
+{
+	Force = force;
+}
+
 FVector2D SActor::GetLocation() const
 {
 	return ObjectTransform.Location;
@@ -125,6 +170,47 @@ void SActor::SetTransform(const FTransform& transform)
 {
 	std::unique_lock<std::mutex> _lock(_mutex);
 	ObjectTransform = transform;
+
+	SetMass(1.f); // TODO : Set mass with density
+	SetInertia(CalculateRotationInertia());
+}
+
+void SActor::SetInertia(float inertia)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+
+	Inertia = inertia;
+
+	if (bIsStatic)
+	{
+		InvInertia = 0.f;
+	}
+	else
+	{
+		InvInertia = 1.f / Inertia;
+	}
+}
+
+void SActor::SetMass(float density)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+
+	Mass = density * ObjectTransform.Size.X * ObjectTransform.Size.Y;
+
+	if (bIsStatic)
+	{
+		InvMass = 0.f;
+	}
+	else
+	{
+		InvMass = 1.f / Mass;
+	}
 }
 
 bool SActor::IsInBound(const FVector2D& _loc)

@@ -1,5 +1,6 @@
 #include "Library/Collision.h"
 #include <snpch.h>
+#include "Manifold.h"
 
 bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
     const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
@@ -88,33 +89,32 @@ bool Collision::IntersectCircles(const FVector2D& centerA, float radiusA, const 
     return true;
 }
 
-void Collision::ApplyCollision(SActor* first, SActor* other, const FVector2D& normal, float depth)
+void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth)
 {
-    if ( !first || !other )
-	{
-		return;
-	}
+    first.bIsColliding = true;
+    other.bIsColliding = true;
 
-    first->bIsColliding = true;
-    other->bIsColliding = true;
-
-    if ( !first->bIsStatic )
+    if (first.bIsStatic && other.bIsStatic)
     {
-        float divide = other->bIsStatic ? 1.f : 2.f;
-        FVector2D move = (normal * depth) / divide;
-        move.ReverseVector();
-		first->Move(move);
-	}
+        return;
+    }
 
-    if ( !other->bIsStatic )
-	{   
-        float divide = first->bIsStatic ? 1.f : 2.f;
-        FVector2D move = (normal * depth) / divide;
-        other->Move(move);
-	}
+    if (first.bIsStatic)
+    {
+        other.Move(normal * depth);
+    }
+    else if (other.bIsStatic)
+    {
+        first.Move(FVector2D(normal * depth).ReverseVector());
+    }
+    else
+    {
+        first.Move(FVector2D(normal * depth / 2.f).ReverseVector());
+        other.Move(normal * depth / 2.f);
+    }
 }
 
-bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& normal, float& depth)
+bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB, const FVector2D& polygonCenterB, FVector2D& normal, float& depth)
 {
     normal = FVector2D::Zero();
     depth = std::numeric_limits<float>::max();
@@ -175,10 +175,7 @@ bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const
         }
     }
 
-    const FVector2D centerA = FindArithmeticMean(verticesA);
-    const FVector2D centerB = FindArithmeticMean(verticesB);
-
-    const FVector2D direction = centerB - centerA;
+    const FVector2D direction = polygonCenterB - polygonCenterA;
 
     if (FVector2D::DotProduct(direction, normal) < 0.0f)
     {
@@ -246,16 +243,139 @@ size_t Collision::FindClosestPointOnPolygon(const FVector2D& circleCenter, const
     return result;
 }
 
-FVector2D Collision::FindArithmeticMean(const std::vector<FVector2D>& vertices)
+void Collision::FindCirclesContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp)
 {
-    float sumX = 0.0f;
-    float sumY = 0.0f;
+    FVector2D ab = centerB - centerA;
+    FVector2D dir = FVector2D::Normalize(ab);
+    cp = centerA + dir * radiusA;
+}
 
-    for (const FVector2D& v : vertices)
+bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
+{
+    if (a.Max.X <= b.Min.X || b.Max.X <= a.Min.X ||
+        a.Max.Y <= b.Min.Y || b.Max.Y <= a.Min.Y)
     {
-        sumX += v.X;
-        sumY += v.Y;
+        return false;
     }
 
-    return FVector2D(sumX / static_cast<float>(vertices.size()), sumY / static_cast<float>(vertices.size()));
+    return true;
+}
+
+void Collision::FindCirclePolygonContactPoint(
+    const FVector2D& circleCenter, float circleRadius,
+    const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices,
+    FVector2D& cp)
+{
+    cp = FVector2D::Zero();
+
+    float minDistSq = std::numeric_limits<float>::max();
+
+    for (size_t i = 0; i < polygonVertices.size(); i++)
+    {
+        const FVector2D& va = polygonVertices[i];
+        const FVector2D& vb = polygonVertices[(i + 1) % polygonVertices.size()];
+
+        float distSq;
+        FVector2D contact;
+        PointSegmentDistance(circleCenter, va, vb, distSq, contact);
+
+        if (distSq < minDistSq)
+        {
+            minDistSq = distSq;
+            cp = contact;
+        }
+    }
+}
+
+void Collision::PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp)
+{
+    FVector2D ab = b - a;
+    FVector2D ap = p - a;
+
+    float proj = FVector2D::DotProduct(ap, ab);
+    float abLenSq = ab.GetSquareLength();
+    float d = proj / abLenSq;
+
+    if (d <= 0.0f)
+    {
+        cp = a;
+    }
+    else if (d >= 1.0f)
+    {
+        cp = b;
+    }
+    else
+    {
+        cp = a + ab * d;
+    }
+
+    distanceSquared = FVector2D::GetSquareLength(p, cp);
+}
+
+void Collision::FindPolygonsContactPoints(
+    const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
+    FVector2D& contact1, FVector2D& contact2, int& contactCount)
+{
+    contact1 = FVector2D::Zero();
+    contact2 = FVector2D::Zero();
+    contactCount = 0;
+
+    float minDistSq = std::numeric_limits<float>::max();
+
+    for (const auto& p : verticesA)
+    {
+        for (size_t j = 0; j < verticesB.size(); ++j)
+        {
+            const FVector2D& va = verticesB[j];
+            const FVector2D& vb = verticesB[(j + 1) % verticesB.size()];
+
+            float distSq;
+            FVector2D cp;
+
+            PointSegmentDistance(p, va, vb, distSq, cp);
+
+            if (FVector2D::NearlyEqual( distSq, minDistSq))
+            {
+                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                {
+                    contact2 = cp;
+                    contactCount = 2;
+                }
+            }
+            else if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                contactCount = 1;
+                contact1 = cp;
+            }
+        }
+    }
+
+    for (const auto& p : verticesB)
+    {
+        for (size_t j = 0; j < verticesA.size(); ++j)
+        {
+            const FVector2D& va = verticesA[j];
+            const FVector2D& vb = verticesA[(j + 1) % verticesA.size()];
+
+            float distSq;
+            FVector2D cp;
+            PointSegmentDistance(p, va, vb, distSq, cp);
+
+            if (FVector2D::NearlyEqual(distSq, minDistSq))
+            {
+                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                {
+                    contact2 = cp;
+                    contactCount = 2;
+                }
+            }
+            else if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                contactCount = 1;
+                contact1 = cp;
+            }
+        }
+    }
 }

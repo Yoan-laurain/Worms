@@ -19,8 +19,6 @@ protected:
 	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
 
 private:
-
-	class SGravityComponent* GravityComponent;
 	
 	class CircleShape* CollisionComponent;
 

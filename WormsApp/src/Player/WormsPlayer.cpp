@@ -11,6 +11,7 @@ WormsPlayer::WormsPlayer() :
 {
 	GetPolygonComponent()->texturePath = "Ressources/WormsPlayer.png";
 	GetPolygonComponent()->name = "WormsPlayer";
+	Mass = 2.f;
 
 	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 
@@ -38,7 +39,7 @@ void WormsPlayer::MoveVertical(float value, float sign)
 		// TODO : Adapt object to world size
 		FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
 
-		Move(direction * value);
+		AddForce(direction * value * 500.f);
 	}
 }
 
@@ -49,7 +50,7 @@ void WormsPlayer::MoveHorizontal(float value, float sign)
 		// TODO : Adapt object to world size
 		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 
-		Move(direction * value);
+		AddForce(direction * value * 500.f); 
 	}
 }
 

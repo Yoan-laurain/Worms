@@ -2,6 +2,12 @@
 #include "Objects/SActor.h"
 #include "Library/Collision.h"
 #include <snpch.h>
+#include "Application.h"
+
+Level::Level() : 
+	bIsListBeingEdit(false)
+{
+}
 
 Level::~Level()
 {}
@@ -22,6 +28,8 @@ void Level::UpdateEntity(double deltatime)
 		AddEntityList.clear();
 		bIsListBeingEdit = false;
 	}
+
+
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != nullptr)
@@ -30,9 +38,84 @@ void Level::UpdateEntity(double deltatime)
 
 			if (!entity->bIsStatic)
 			{
-				 HandleCollision(entity.get());
+				HandleCollision(entity.get());
+			}
+
+			HandleObjectOutOfWindow(entity.get());
+		}
+	}
+}
+
+void Level::ResolveCollision(Manifold& contact)
+{
+	SActor* bodyA = contact.BodyA;
+	SActor* bodyB = contact.BodyB;
+	const FVector2D normal = contact.Normal;
+
+	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
+
+	if (FVector2D::DotProduct(relativeVelocity, normal) > 0.f) {
+		return;
+	}
+
+	float e = fminf(bodyA->Restitution, bodyB->Restitution);
+
+	float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
+	j /= bodyA->InvMass + bodyB->InvMass;
+
+	FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+
+	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
+	bodyB->LinearVelocity += impulse * bodyB->InvMass;
+}
+
+AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
+{
+	if (obj->bNeedToUpdateBoundingBox)
+	{
+		float minX = std::numeric_limits<float>::max();
+		float minY = std::numeric_limits<float>::max();
+		float maxX = std::numeric_limits<float>::min();
+		float maxY = std::numeric_limits<float>::min();
+
+		if (SPolygonObject* poly = dynamic_cast<SPolygonObject*>(obj))
+		{
+			std::vector<FVector2D> vertices = poly->GetVertices();
+
+			for (const auto& v : vertices)
+			{
+				if (v.X < minX) { minX = v.X; }
+				if (v.X > maxX) { maxX = v.X; }
+				if (v.Y < minY) { minY = v.Y; }
+				if (v.Y > maxY) { maxY = v.Y; }
 			}
 		}
+		else if (SCircleObject* circle = dynamic_cast<SCircleObject*>(obj))
+		{
+			minX = circle->GetLocation().X - circle->GetRadius();
+			minY = circle->GetLocation().Y - circle->GetRadius();
+			maxX = circle->GetLocation().X + circle->GetRadius();
+			maxY = circle->GetLocation().Y + circle->GetRadius();
+		}
+		else
+		{
+			throw std::runtime_error("Unknown ShapeType.");
+		}
+
+		obj->AABB = AlignAxisBoundingBox(minX, minY, maxX, maxY);
+	}
+
+	obj->bNeedToUpdateBoundingBox = false;
+	return obj->AABB;
+}
+
+void Level::HandleObjectOutOfWindow(SActor* obj)
+{
+	AlignAxisBoundingBox AABB = GetAABB(obj);
+
+	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > Application::Get().GetScreenSize().X || AABB.Min.Y > Application::Get().GetScreenSize().Y)
+	{
+		obj->DestroyActor();
 	}
 }
 
@@ -72,28 +155,47 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
-void Level::HandleCollision(SActor* obj)
+void Level::HandleCollision( SActor* obj )
 {
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
 		{
-			// TODO : Revoir ce code
-			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
+			if (entity->bIsStatic && obj->bIsStatic)
 			{
-				//std::cout << "Collision!!!!!" << std::endl;
+				continue;
 			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
+
+			AlignAxisBoundingBox& firstAABB = GetAABB(entity.get());
+			AlignAxisBoundingBox& secondAABB = GetAABB(obj);
+
+			// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
+			if (Collision::IntersectAABBs(firstAABB, secondAABB) == false)
+			{
+				continue;
+			}
+
+			SActor* bodyA = entity.get();
+			SActor* bodyB = obj;
+
+			Manifold collision;
+
+			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
+			{
+				ResolveCollision(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
+			{
+				ResolveCollision(collision);
+			}
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
 			{
 
+				ResolveCollision(collision);
 			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SCircleObject*>(obj)))
+			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
 			{
-				
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity.get()), dynamic_cast<SPolygonObject*>(obj)))
-			{
-				
+				ResolveCollision(collision);
 			}
 		}
 	}

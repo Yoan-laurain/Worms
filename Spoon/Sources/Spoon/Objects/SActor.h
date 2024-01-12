@@ -4,6 +4,7 @@
 #include "Library/TColor.h"
 #include "Library/TStruct.h"
 #include "Components/SComponent.h"
+#include <Library/AlignAxisBoudingBox.h>
 
 class SPOON_API SActor : public SObject
 {
@@ -43,7 +44,11 @@ public:
 
 	FTransform GetTransform() const;
 
-	void SetTransform(const FTransform& transform);
+	virtual void SetTransform(const FTransform& transform);
+
+	void SetInertia(float inertia);
+	void SetMass(float density);
+	virtual void AddForce(const FVector2D& force);
 
 	/************************************************************************/
 	/* Collision															*/
@@ -98,6 +103,8 @@ protected:
 
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
+	virtual float CalculateRotationInertia();
+
 	// Function à called pour cree un component
 	template<typename T>
 	T* CreateComponent(const std::string& name)
@@ -116,10 +123,26 @@ private:
 
 	void SetWorldRef(class Level* parentRef);
 
+	void Step(float DeltaTime);
+
 public:
 
 	bool bIsStatic; // Can be moved
 	bool bIsColliding;
+
+	// physics
+	FVector2D LinearVelocity;
+	float RotationalVelocity;
+	float Restitution;
+	float Mass;
+	float InvMass;
+	float Magnitude;
+	FVector2D Force;
+	FVector2D Gravity;
+
+
+	bool bNeedToUpdateBoundingBox;
+	AlignAxisBoundingBox AABB;
 
 protected:
 
@@ -138,6 +161,9 @@ private:
 	std::vector<class SComponent> TickableComponent;
 
 	class Level* WorldRef;
+
+	float Inertia;
+	float InvInertia;
 
 };
 

@@ -17,6 +17,8 @@ public:
 	class SCircleComponent* GetCircleComponent() const { return CircleComponent; };
 
 	virtual bool IsInBound(const FVector2D& _loc) override;
+	virtual float CalculateRotationInertia() override;
+	virtual void SetTransform(const FTransform& transform) override;
 
 protected:
 

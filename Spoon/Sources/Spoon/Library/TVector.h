@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include <snpch.h>
 
+const float VerySmallAmount = 0.0005f;
 
 template <typename T>
 struct OBJECT_API Vector2D
@@ -77,6 +78,12 @@ struct OBJECT_API Vector2D
 		return (X * X) + (Y * Y);
 	}
 
+	static T GetSquareLength(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return ((_left.X - _right.X) * (_left.X - _right.X)) + ((_left.Y - _right.Y) * (_left.Y - _right.Y));
+	}
+
+
 	T GetLength() const
 	{
 		return std::sqrt(GetSquareLength());
@@ -139,6 +146,16 @@ struct OBJECT_API Vector2D
 		return Vector2D<T>(Y, -X).GetSafeNormal();
 	}
 
+	static bool NearlyEqual(float a, float b,float amount = VerySmallAmount)
+	{
+		return std::abs(a - b) < amount;
+	}
+
+	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return GetSquareLength(_left, _right) < VerySmallAmount * VerySmallAmount;
+	}
+
 };
 
 template <typename T, typename L = T>
@@ -180,7 +197,7 @@ bool const OBJECT_API operator==(const Vector2D<T>& left, const Vector2D<T>& rig
 template <typename T>
 bool const OBJECT_API operator!=(const Vector2D<T>& left, const Vector2D<T>& right)
 {
-	return !(left == right);
+	return left.X != right.X || left.Y != right.Y;
 }
 
 // This operation doesn't really have sense cause it suppose that X1 and Y1 will always be inferior or equal to X2 and Y2.
