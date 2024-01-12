@@ -2,6 +2,7 @@
 #include "Objects/SActor.h"
 #include "Library/Collision.h"
 #include <snpch.h>
+#include "Application.h"
 
 Level::Level() : 
 	bIsListBeingEdit(false)
@@ -115,9 +116,8 @@ AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 void Level::HandleObjectOutOfWindow(SActor* obj)
 {
 	AlignAxisBoundingBox AABB = GetAABB(obj);
-	
-	// TODO : Retrieve window size
-	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > 1280 || AABB.Min.Y > 720)
+
+	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > Application::Get().GetScreenSize().X || AABB.Min.Y > Application::Get().GetScreenSize().Y)
 	{
 		obj->DestroyActor();
 	}

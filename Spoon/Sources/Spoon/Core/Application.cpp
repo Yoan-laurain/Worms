@@ -131,6 +131,11 @@ void Application::AddNewPlayer(SPlayer* player)
 	_InputMgr->AddNewPlayer();
 }
 
+FVector2D Application::GetScreenSize() const
+{ 
+	return ScreenSize;
+}
+
 bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func)
 {
 	int index = -1;
