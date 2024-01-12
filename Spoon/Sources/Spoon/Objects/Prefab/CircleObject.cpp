@@ -41,8 +41,9 @@ bool SCircleObject::IsInBound(const FVector2D& _loc)
 	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, _loc, 5.f, normal, depth);
 }
 
-float SCircleObject::CalculateInertia()
+float SCircleObject::CalculateRotationInertia()
 {
+	// Formule is : 1/2 * m * R^2
 	float radius = GetSize().X / 2.f;
 	return (1.f / 2.f) * Mass * ( radius * radius );
 }

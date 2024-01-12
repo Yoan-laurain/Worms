@@ -146,9 +146,9 @@ struct OBJECT_API Vector2D
 		return Vector2D<T>(Y, -X).GetSafeNormal();
 	}
 
-	static bool NearlyEqual(float a, float b)
+	static bool NearlyEqual(float a, float b,float amount = VerySmallAmount)
 	{
-		return std::abs(a - b) < VerySmallAmount; 
+		return std::abs(a - b) < amount;
 	}
 
 	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right)

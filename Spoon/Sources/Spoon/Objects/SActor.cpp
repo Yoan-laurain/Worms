@@ -120,7 +120,7 @@ void SActor::Step(float DeltaTime)
 	Force = FVector2D::Zero();
 }
 
-float SActor::CalculateInertia()
+float SActor::CalculateRotationInertia()
 {
 	return 0.f;
 }
@@ -171,8 +171,8 @@ void SActor::SetTransform(const FTransform& transform)
 	std::unique_lock<std::mutex> _lock(_mutex);
 	ObjectTransform = transform;
 
-	SetMass(1.f);
-	SetInertia(CalculateInertia());
+	SetMass(1.f); // TODO : Set mass with density
+	SetInertia(CalculateRotationInertia());
 }
 
 void SActor::SetInertia(float inertia)

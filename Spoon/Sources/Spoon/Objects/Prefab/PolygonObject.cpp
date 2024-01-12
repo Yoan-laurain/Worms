@@ -69,7 +69,7 @@ void SPolygonObject::Tick(float DeltaTime)
 	}
 }
 
-float SPolygonObject::CalculateInertia()
+float SPolygonObject::CalculateRotationInertia()
 {
 	float widthSquared = GetSize().X * GetSize().X;
 	float heightSquared = GetSize().Y * GetSize().Y;

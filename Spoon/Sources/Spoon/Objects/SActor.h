@@ -48,6 +48,7 @@ public:
 
 	void SetInertia(float inertia);
 	void SetMass(float density);
+	virtual void AddForce(const FVector2D& force);
 
 	/************************************************************************/
 	/* Collision															*/
@@ -102,7 +103,7 @@ protected:
 
 	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
 
-	virtual float CalculateInertia();
+	virtual float CalculateRotationInertia();
 
 	// Function à called pour cree un component
 	template<typename T>
@@ -142,8 +143,6 @@ public:
 
 	bool bNeedToUpdateBoundingBox;
 	AlignAxisBoundingBox AABB;
-
-	virtual void AddForce(const FVector2D& force);
 
 protected:
 

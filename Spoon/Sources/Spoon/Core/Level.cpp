@@ -51,7 +51,6 @@ void Level::ResolveCollision(Manifold& contact)
 	SActor* bodyA = contact.BodyA;
 	SActor* bodyB = contact.BodyB;
 	const FVector2D normal = contact.Normal;
-	float depth = contact.Depth;
 
 	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 
@@ -79,10 +78,7 @@ AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 		float maxX = std::numeric_limits<float>::min();
 		float maxY = std::numeric_limits<float>::min();
 
-		SPolygonObject* poly = dynamic_cast<SPolygonObject*>(obj);
-		SCircleObject* circle = dynamic_cast<SCircleObject*>(obj);
-
-		if ( poly )
+		if (SPolygonObject* poly = dynamic_cast<SPolygonObject*>(obj))
 		{
 			std::vector<FVector2D> vertices = poly->GetVertices();
 
@@ -94,7 +90,7 @@ AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 				if (v.Y > maxY) { maxY = v.Y; }
 			}
 		}
-		else if (circle)
+		else if (SCircleObject* circle = dynamic_cast<SCircleObject*>(obj))
 		{
 			minX = circle->GetLocation().X - circle->GetRadius();
 			minY = circle->GetLocation().Y - circle->GetRadius();

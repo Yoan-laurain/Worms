@@ -324,7 +324,7 @@ void Collision::FindPolygonsContactPoints(
 
     for (const auto& p : verticesA)
     {
-        for (size_t j = 0; j < verticesB.size(); j++)
+        for (size_t j = 0; j < verticesB.size(); ++j)
         {
             const FVector2D& va = verticesB[j];
             const FVector2D& vb = verticesB[(j + 1) % verticesB.size()];
@@ -353,7 +353,7 @@ void Collision::FindPolygonsContactPoints(
 
     for (const auto& p : verticesB)
     {
-        for (size_t j = 0; j < verticesA.size(); j++)
+        for (size_t j = 0; j < verticesA.size(); ++j)
         {
             const FVector2D& va = verticesA[j];
             const FVector2D& vb = verticesA[(j + 1) % verticesA.size()];
