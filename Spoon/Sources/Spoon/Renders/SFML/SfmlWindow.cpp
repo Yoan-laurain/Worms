@@ -6,11 +6,17 @@
 #include "Objects/Components/SShapeComponent.h"
 #include "TextureMgr.h"
 
-#ifndef DEBUG
 #include <imgui.h>
 #include <imgui-SFML.h>
-#endif // !DEBUG
+#include <implot.h>
+
 #include "Core/Application.h"
+
+namespace Configuration
+{
+	int FrameRate = 120;
+	bool VerticalSync = false;
+}
 
 // Function call de maniere indirect lorsque j'ai besoin de la fenetre.
 Window* Window::Create(const WindowsProps& props)
@@ -33,10 +39,10 @@ void SfmlWindow::OnUpdate()
 {
 	// Tick
 	std::unique_lock<std::mutex> _lock(_mutex);
-	sf::Time time = clock.getElapsedTime();
-	clock.restart();
+	m_TimeLogic = m_ClockLogic.getElapsedTime();
+	m_ClockLogic.restart();
 	_lock.unlock();
-	AppTickEvent TickEvent(time.asSeconds());
+	AppTickEvent TickEvent(m_TimeLogic.asSeconds());
 	EventCallBack(TickEvent);
 }
 
@@ -45,29 +51,15 @@ void SfmlWindow::OnRender()
 	sf::Event event;
 	while (WindowRef->pollEvent(event))
 	{
-#ifndef DEBUG
 		ImGui::SFML::ProcessEvent(event);
-#endif // !DEBUG
 		// Todo maybe this function can be thread so the logic will still be separt with the render?
 		HandleEvent(event);
 	}
-
-#ifndef DEBUG
-	ImGui::SFML::Update(*WindowRef, clock.getElapsedTime());
-#endif // !DEBUG
-
+	ImGui::SFML::Update(*WindowRef, m_ClockDraw.getElapsedTime());
 	WindowRef->clear();
-
-#ifndef DEBUG
 	DrawImGuiWin();
-#endif // !DEBUG
-
 	EventRenderBack();
-
-#ifndef DEBUG
 	ImGui::SFML::Render(*WindowRef);
-#endif // !DEBUG
-
 	WindowRef->display();
 }
 
@@ -193,23 +185,36 @@ void SfmlWindow::Init(const WindowsProps& props)
 	m_Data.Width = props.Width;
 
 	WindowRef = new sf::RenderWindow(sf::VideoMode(m_Data.Width, m_Data.Height), m_Data.Title);
-	WindowRef->setFramerateLimit(60);
-	WindowRef->setVerticalSyncEnabled(true);
+	WindowRef->setFramerateLimit(Configuration::FrameRate);
+	WindowRef->setVerticalSyncEnabled(Configuration::VerticalSync);
 
 	// TODO faire la window imgui here so it will be better for setting and get the button.
-#ifndef DEBUG
 	ImGui::SFML::Init(*WindowRef);
-#endif // !DEBUG
-
+	ImPlot::CreateContext();
 }
 
 void SfmlWindow::Shutdown()
 {
-#ifndef DEBUG
+	ImPlot::DestroyContext();
 	ImGui::SFML::Shutdown();
-#endif // !DEBUG
 	WindowRef->close();
 }
+
+// utility structure for realtime plot
+struct RollingBuffer {
+	float Span;
+	ImVector<ImVec2> Data;
+	RollingBuffer() {
+		Span = 10.0f;
+		Data.reserve(2000);
+	}
+	void AddPoint(float x, float y) {
+		float xmod = fmodf(x, Span);
+		if (!Data.empty() && xmod < Data.back().x)
+			Data.shrink(0);
+		Data.push_back(ImVec2(xmod, y));
+	}
+};
 
 void SfmlWindow::HandleEvent(sf::Event& event)
 {
@@ -246,7 +251,8 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 	// TODO mettre le reste des events qui pourrais servire ici.
 }
 
-#ifndef DEBUG
+
+// TODO faire des classe et fonction plus jolie pour nos bouton ImGui
 void SfmlWindow::DrawImGuiWin()
 {
 	ImGuiWindowFlags imFlags =
@@ -256,14 +262,63 @@ void SfmlWindow::DrawImGuiWin()
 		| ImGuiWindowFlags_NoSavedSettings
 		| ImGuiWindowFlags_NoFocusOnAppearing
 		| ImGuiWindowFlags_NoNav;
-	ImGui::SetNextWindowSize(sf::Vector2f(50,50));
+	//ImGui::SetNextWindowSize(sf::Vector2f(200, 200));
 	ImGui::SetNextWindowPos(sf::Vector2f(0,0));
-	ImGui::SetNextWindowBgAlpha(0.5f);
+	ImGui::SetNextWindowBgAlpha(0.0f);
 
-	ImGui::Begin("Tools");
+	ImGui::Begin("Debugs");
 
-	ImGui::Button("Tile Type");
+	// ImGui::Button("Tile Type");
+	sf::Time currentTime = m_ClockDraw.getElapsedTime();
+	m_ClockDraw.restart();
+	const int DrawTime = currentTime.asMilliseconds();
+	const int TickTime = m_TimeLogic.asMilliseconds();
+	double curr = ImGui::GetTime();
+	const int targetSec = 2;
+
+	ImGui::Text("Draw Time : %d ms", DrawTime);
+	ImGui::Text("Logic Time : %d ms", TickTime);
+
+	ImGui::Separator();
+
+	bool vertSync = Configuration::VerticalSync;
+	ImGui::Checkbox("Vertical Sync", &vertSync);
+	if (vertSync != Configuration::VerticalSync)
+	{
+		Configuration::VerticalSync = vertSync;
+		WindowRef->setVerticalSyncEnabled(Configuration::VerticalSync);
+	}
+	int frameRate = Configuration::FrameRate; 
+	ImGui::InputInt("Frame rate", &frameRate);
+	if (frameRate != Configuration::FrameRate)
+	{
+		Configuration::FrameRate = frameRate;
+		WindowRef->setFramerateLimit(Configuration::FrameRate);
+	}
+
+	ImGui::Separator();
+
+	Graph.push_back(FVector2D(curr, DrawTime));
+	if (Graph.size() > Configuration::FrameRate * targetSec)
+	{
+		Graph.erase(Graph.begin());
+	}
+	TickGraph.push_back(FVector2D(curr, TickTime));
+	if (TickGraph.size() > Configuration::FrameRate * targetSec)
+	{
+		TickGraph.erase(TickGraph.begin());
+	}
+
+	// Begin the ImPlot graph
+	if(ImPlot::BeginPlot("Perf Graph", "Time", "Milliseconds"))
+	{
+		ImPlot::SetupAxisScale(ImAxis_X1, 10);
+		ImPlot::SetupAxisLimits(ImAxis_X1, curr - targetSec, curr + 0.1, ImGuiCond_Always);
+		ImPlot::SetupAxisLimits(ImAxis_Y1, -0.5, 25, ImGuiCond_Always);
+		ImPlot::PlotLine("Draw Time", &Graph[0].X, &Graph[0].Y, Graph.size() - 1, 0, 0, sizeof(FVector2D));
+		ImPlot::PlotLine("Tick Time", &TickGraph[0].X, &TickGraph[0].Y, TickGraph.size() - 1, 0, 0, sizeof(FVector2D));
+		ImPlot::EndPlot();
+	}
 
 	ImGui::End();
 }
-#endif // !DEBUG

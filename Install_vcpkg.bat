@@ -15,6 +15,7 @@ cd vcpkg
 vcpkg install sfml
 vcpkg install imgui
 vcpkg install imgui-SFML
+vcpkg install implot
 
 ECHO Initializing CMake project
 ECHO =============================

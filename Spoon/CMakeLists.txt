@@ -42,12 +42,13 @@ find_package(Threads REQUIRED)
 find_package(SFML CONFIG REQUIRED COMPONENTS system window graphics )
 find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
 
 if (MSVC)
     # Set Multi-threaded DLL flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
     # target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
 endif()
 
@@ -60,6 +61,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-graphics sfml-window
 	    imgui::imgui
+        implot::implot
 	    ImGui-SFML::ImGui-SFML
 )
 
