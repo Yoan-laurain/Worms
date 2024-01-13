@@ -1,3 +1,4 @@
+#pragma once
 #include "SpoonEvent.h"
 
 class WindowResizeEvent : public SpoonEvent

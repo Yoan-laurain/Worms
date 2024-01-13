@@ -4,8 +4,13 @@
 #include "Objects/Prefab/CircleObject.h"
 #include "Objects/Prefab/PolygonObject.h"
 #include "Objects/Components/SShapeComponent.h"
+#include "../Field/Field.h"
 
-void WormLevel::CreatePlayer(FTransform& SpawnLocation)
+WormLevel::WormLevel() : m_Field(nullptr)
+{
+}
+
+void WormLevel::CreatePlayer(const FTransform& SpawnLocation)
 {
 	FTransform transform = SpawnLocation;
 	transform.Size = FVector2D(50.f, 50.f);
@@ -29,6 +34,9 @@ void WormLevel::BeginPlay()
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
 		//CreatePlayer(m_Field->GetSpawnPoint());
+		
+		/* This is for debug purpose and need to be removed before release */
+
 		FTransform transform;
 		transform.Location = FVector2D(100, 200);
 		CreatePlayer( transform );
@@ -49,5 +57,7 @@ void WormLevel::BeginPlay()
 		SpawnActor<SCircleObject>(FTransform(FVector2D(500, 300), FVector2D(20, 20)));
 		SpawnActor<SCircleObject>(FTransform(FVector2D(550, 350), FVector2D(20, 20)));
 		SpawnActor<SCircleObject>(FTransform(FVector2D(600, 400), FVector2D(20, 20)));
+
+		/* This is for debug purpose and need to be removed before release */
 	}
 }

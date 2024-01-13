@@ -1,8 +1,5 @@
 #include "PlayerInputAction.h"
-
 #include "InputAction.h"
-
-#include <iostream>
 
 PlayerInputAction::PlayerInputAction(unsigned playerIndex): PlayerIndex(playerIndex)
 {

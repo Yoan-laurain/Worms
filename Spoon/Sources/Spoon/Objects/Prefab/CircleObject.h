@@ -2,11 +2,13 @@
 
 #include "Objects/SActor.h"
 
+class SCircleComponent;
+
 class SPOON_API SCircleObject : public SActor
 {
 public:
 	SCircleObject();
-	~SCircleObject();
+	virtual ~SCircleObject() override;
 
 	void SetRadius(const float radius);
 	float GetRadius() const;
@@ -14,16 +16,14 @@ public:
 	void SetColor(const FColor& color);
 	const FColor& GetColor() const;
 
-	class SCircleComponent* GetCircleComponent() const { return CircleComponent; };
-
+	SCircleComponent* GetCircleComponent() const { return CircleComponent; };
+	
+	/* SActor IMPLEMENTATION */
 	virtual bool IsInBound(const FVector2D& _loc) override;
 	virtual float CalculateRotationInertia() override;
 	virtual void SetTransform(const FTransform& transform) override;
-
-protected:
-
+	/* END SActor IMPLEMENTATION */
+	
 private:
-
-	class SCircleComponent* CircleComponent;
-
+	SCircleComponent* CircleComponent;
 };

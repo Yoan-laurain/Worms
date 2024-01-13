@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 
 class ITurnObserver;
 
@@ -17,8 +16,8 @@ class TurnManager
         void nextTurn();
 
     private:
+        void notifyObservers();
+    
         int currentPlayer;
         std::vector<ITurnObserver*> observers;
-
-        void notifyObservers();
 };

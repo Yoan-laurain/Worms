@@ -1,8 +1,7 @@
 #include "Objects/SPlayer.h"
 #include "Core/Application.h"
-#include "Components/SCollisionComponent.h"
 
-SPlayer::SPlayer() : SPolygonObject()
+SPlayer::SPlayer()
 {
 	Application::Get().AddNewPlayer(this);
 }

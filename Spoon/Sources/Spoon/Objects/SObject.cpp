@@ -12,4 +12,3 @@ SObject::~SObject()
 	std::cout << GetUniqueId() << " is destroyed" << std::endl;
 #endif
 }
-

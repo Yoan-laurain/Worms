@@ -12,24 +12,23 @@ public :
 
 		WormsPlayer();
 
-
 		/* Begin ITurnObserver Implementation */
-
 		void onTurnChange(int currentPlayer) override;
-
 		/* End ITurnObserver Implementation */
 
 		void SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy);
 
-		int currentHealth;
-		int maxHealth;
-
 private :
-	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
-	std::unique_ptr<WeaponStrategy> weaponStrategy; 
 
 	void MoveVertical(float value, float sign);
 	void MoveHorizontal(float value, float sign);
+	void ApplyBinding();
+	
+	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
+	std::unique_ptr<WeaponStrategy> weaponStrategy;
+
+	int currentHealth;
+	int maxHealth;
 
 protected : 
 	bool OnDamageTaken(int damage);

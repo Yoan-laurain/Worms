@@ -4,6 +4,8 @@
 #include "Objects/SActor.h"
 #include "Library/Manifold.h"
 
+class SActor;
+
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
 // Faire en sorte d'avoir un objet levels qui gere tous seul les entités qui seront crée.
@@ -18,7 +20,7 @@ public:
 	virtual ~Level();
 
 	// Le DestroyObject might not work so be carefull
-	void DestroyObject(class SActor* _actor);
+	void DestroyObject(SActor* _actor);
 
 	template<typename T>
 	T* SpawnActor(const FTransform& transform)
@@ -36,7 +38,7 @@ public:
 
 protected:
 	
-	void HandleCollision(class SActor* obj);
+	void HandleCollision(SActor* obj);
 	virtual void BeginPlay() = 0;
 
 private:
@@ -48,19 +50,17 @@ private:
 	void HandleObjectOutOfWindow(SActor* obj);	
 
 	// TODO Change to be able to change the ownership
-	void RemoveObject(class SActor* obj);
+	void RemoveObject(SActor* obj);
 
-	void AddObject(class SActor* obj);
-
+	void AddObject(SActor* obj);
 
 protected:
 
 	// Entity actuellement dans le world.
-	std::vector<std::unique_ptr<class SActor>> EntityList;
+	std::vector<std::unique_ptr<SActor>> EntityList;
 
-	std::vector<std::unique_ptr<class SActor>> AddEntityList;
+	std::vector<std::unique_ptr<SActor>> AddEntityList;
 
 	bool bIsListBeingEdit = false;
 
 };
-
