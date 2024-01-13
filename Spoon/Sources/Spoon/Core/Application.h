@@ -70,16 +70,16 @@ private:
 
 private:
 
-	Window* m_WindowRef{};
+	Window* m_WindowRef;
 
 	bool bIsRunning = true;
 
-	Level* CurrentLevel{};
+	Level* CurrentLevel;
 
 	static Application* s_Instance;
 
 	std::vector<SPlayer*> Players;
-	InputMgr* _InputMgr{};
-	TextureMgr* _TextureMgr{};
+	InputMgr* _InputMgr;
+	TextureMgr* _TextureMgr;
 
 };

@@ -32,11 +32,7 @@ sf::Texture& TextureMgr::GetTexture(const std::string& name)
 
 bool TextureMgr::IsTextureLoaded(const std::string& name)
 {
-	if (_textures.find(name) == _textures.end())
-	{
-		return false;
-	}
-	return true;
+	return _textures.find(name) == _textures.end();
 }
 
 void TextureMgr::LoadFont(const std::string& name, const std::string& fileName)
@@ -70,9 +66,5 @@ sf::Font& TextureMgr::GetFont(const std::string& name)
 
 bool TextureMgr::IsFontLoaded(const std::string& name)
 {
-	if (_fonts.find(name) == _fonts.end())
-	{
-		return false;
-	}
-	return true;
+	return _fonts.find(name) == _fonts.end()
 }

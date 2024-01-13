@@ -10,7 +10,7 @@ public:
 	SCircleObject();
 	virtual ~SCircleObject() override;
 
-	void SetRadius(float radius);
+	void SetRadius(const float radius);
 	float GetRadius() const;
 
 	void SetColor(const FColor& color);
