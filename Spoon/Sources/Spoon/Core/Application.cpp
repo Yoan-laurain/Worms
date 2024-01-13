@@ -121,6 +121,14 @@ void Application::OnRender()
 		if(m_WindowRef)
 			m_WindowRef->Draw(CurrentActor.get());
 	}
+
+#if DEBUG
+	if (m_WindowRef)
+		m_WindowRef->DrawAllDebugs(GetWorld()->DebugShapes);
+
+	GetWorld()->ClearDebugShapes();
+#endif
+		
 	return;
 }
 

@@ -2,7 +2,9 @@
 #include "Core/Core.h"
 #include "Events/SpoonEvent.h"
 #include "Library/TVector.h"
+#include "Library/TStruct.h"
 
+enum DebugShape;
 
 struct WindowsProps
 {
@@ -35,5 +37,10 @@ public:
 	virtual unsigned int GetHeight() const = 0;
 
 	static Window* Create(const WindowsProps& props = WindowsProps());
+
+#if DEBUG
+	virtual void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>> DebugShapes) = 0;
+	virtual void DrawDebugPoint(const FTransform& transform) = 0;
+#endif
 };
 

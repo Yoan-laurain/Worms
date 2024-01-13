@@ -37,24 +37,24 @@ void WormLevel::BeginPlay()
 		
 		/* This is for debug purpose and need to be removed before release */
 
-		FTransform transform;
-		transform.Location = FVector2D(100, 200);
-		CreatePlayer( transform );
+		//FTransform transform;
+		//transform.Location = FVector2D(100, 200);
+		//CreatePlayer( transform );
 
-		SPolygonObject* polygon = SpawnActor<SPolygonObject>(FTransform(FVector2D(250, 100), FVector2D(50, 50)));
-		std::vector<FVector2D> points; 
-		points.push_back(FVector2D(-25, -25));
-		points.push_back(FVector2D( 25, -25));
-		points.push_back(FVector2D( 25, 25));
-		points.push_back(FVector2D(-25, 25)); 
-		polygon->GetPolygonComponent()->Points = points; 
-		polygon->bIsStatic = true;
+		//SPolygonObject* polygon = SpawnActor<SPolygonObject>(FTransform(FVector2D(250, 100), FVector2D(50, 50)));
+		//std::vector<FVector2D> points; 
+		//points.push_back(FVector2D(-25, -25));
+		//points.push_back(FVector2D( 25, -25));
+		//points.push_back(FVector2D( 25, 25));
+		//points.push_back(FVector2D(-25, 25)); 
+		//polygon->GetPolygonComponent()->Points = points; 
+		//polygon->bIsStatic = true;
 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(20, 20))); 
-		SpawnActor<SCircleObject>(FTransform(FVector2D(350, 150), FVector2D(20, 20)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(400, 200), FVector2D(20, 20)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(450, 250), FVector2D(20, 20)));
-		SpawnActor<SCircleObject>(FTransform(FVector2D(500, 300), FVector2D(20, 20)));
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(305, 100), FVector2D(20, 20))); 
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(350, 150), FVector2D(20, 20)));
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(400, 200), FVector2D(20, 20)));
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(450, 250), FVector2D(20, 20)));
+		//SpawnActor<SCircleObject>(FTransform(FVector2D(500, 300), FVector2D(20, 20)));
 		SpawnActor<SCircleObject>(FTransform(FVector2D(550, 350), FVector2D(20, 20)));
 		SpawnActor<SCircleObject>(FTransform(FVector2D(600, 400), FVector2D(20, 20)));
 

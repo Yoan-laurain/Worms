@@ -103,6 +103,40 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 
 }
 
+#if DEBUG
+void SfmlWindow::DrawDebugPoint(const FTransform& transform)
+{
+	sf::CircleShape circle;
+	circle.setRadius(transform.Size.X);
+	circle.setOrigin(transform.Size.X, transform.Size.Y);
+	circle.setPosition(sf::Vector2f(transform.Location.X, transform.Location.Y));
+	circle.setFillColor(sf::Color::Red);
+	circle.setOutlineColor(sf::Color::Green);
+	circle.setOutlineThickness(1);
+	WindowRef->draw(circle);
+}
+
+void SfmlWindow::DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>> DebugShapes)
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+	for (auto& shape : DebugShapes)
+	{
+		for (auto& transform : shape.second)
+		{
+			switch (shape.first)
+			{
+				case DebugShape::SPHERE :
+						DrawDebugPoint(transform);
+						break;
+					default:
+						break;
+			}
+		}
+	}
+}
+
+#endif
+
 unsigned int SfmlWindow::GetWidth() const
 {
 	return m_Data.Width;

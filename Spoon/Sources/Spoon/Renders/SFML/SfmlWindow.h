@@ -22,6 +22,11 @@ public:
 
 	virtual void Draw(const class SActor* _currentActor);
 
+#if DEBUG
+	void DrawDebugPoint(const FTransform& transforme);
+	void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>> DebugShapes) override;
+#endif
+
 	inline void SetEventCallback(const EventCallBackFn& callback) override { EventCallBack = callback;};
 
 	inline void SetEventRenderBack(const std::function<void()>& callback) override { EventRenderBack = callback; }
@@ -41,7 +46,7 @@ private:
 	std::vector<FVector2D> Graph;
 	std::vector<FVector2D> TickGraph;
 
-	bool m_bFrameLimitActivated = false;
+	bool m_bFrameLimitActivated = true;
 	
 	sf::Clock m_ClockLogic;
 

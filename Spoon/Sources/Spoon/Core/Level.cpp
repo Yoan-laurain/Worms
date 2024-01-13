@@ -6,7 +6,8 @@
 #include <snpch.h>
 
 Level::Level() : 
-	bIsListBeingEdit(false)
+	bIsListBeingEdit(false),
+	DebugShapes()
 {
 }
 
@@ -30,7 +31,6 @@ void Level::UpdateEntity(double deltatime)
 		bIsListBeingEdit = false;
 	}
 
-
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != nullptr)
@@ -52,6 +52,16 @@ void Level::ResolveCollision(Manifold& contact)
 	SActor* bodyA = contact.BodyA;
 	SActor* bodyB = contact.BodyB;
 	const FVector2D normal = contact.Normal;
+
+#if DEBUG
+	AddDebugShape(FTransform(contact.Contact1, FVector2D(2.f, 2.f)), DebugShape::SPHERE);
+
+	if (contact.ContactCount > 1)
+	{
+		AddDebugShape(FTransform(contact.Contact2, FVector2D(2.f, 2.f)), DebugShape::SPHERE);
+	}
+
+#endif
 
 	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 
@@ -154,6 +164,23 @@ void Level::AddObject(SActor* obj)
 	}
 
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
+}
+
+void Level::AddDebugShape(const FTransform& transform, const DebugShape& shape)
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+	DebugShapes[shape].push_back(transform);
+}
+
+void Level::ClearDebugShapes()
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+
+	for (auto& shape : DebugShapes)
+	{
+		shape.second.clear();
+	}
+	DebugShapes.clear();
 }
 
 void Level::HandleCollision( SActor* obj )

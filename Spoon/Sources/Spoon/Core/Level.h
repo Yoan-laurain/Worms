@@ -6,6 +6,15 @@
 
 class SActor;
 
+enum DebugShape
+{
+	BOX,
+	SPHERE,
+	CAPSULE,
+	LINE,
+	POINT
+};
+
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
 // Faire en sorte d'avoir un objet levels qui gere tous seul les entités qui seront crée.
@@ -53,6 +62,8 @@ private:
 	void RemoveObject(SActor* obj);
 
 	void AddObject(SActor* obj);
+	void AddDebugShape(const FTransform& transform,const DebugShape& shape);
+	void ClearDebugShapes();
 
 	void NarrowPhase(SActor* entity, SActor* obj);
 
@@ -63,6 +74,7 @@ protected:
 
 	std::vector<std::unique_ptr<SActor>> AddEntityList;
 
-	bool bIsListBeingEdit = false;
+	std::map<DebugShape,std::vector<FTransform>> DebugShapes;
 
+	bool bIsListBeingEdit;
 };
