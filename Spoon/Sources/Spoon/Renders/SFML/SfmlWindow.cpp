@@ -106,6 +106,7 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 #if DEBUG
 void SfmlWindow::DrawDebugPoint(const FTransform& transform)
 {
+	std::unique_lock<std::mutex> lock(_mutex);
 	sf::CircleShape circle;
 	circle.setRadius(transform.Size.X);
 	circle.setOrigin(transform.Size.X, transform.Size.Y);
@@ -116,9 +117,8 @@ void SfmlWindow::DrawDebugPoint(const FTransform& transform)
 	WindowRef->draw(circle);
 }
 
-void SfmlWindow::DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>> DebugShapes)
+void SfmlWindow::DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>>& DebugShapes)
 {
-	std::unique_lock<std::mutex> lock(_mutex);
 	for (auto& shape : DebugShapes)
 	{
 		for (auto& transform : shape.second)

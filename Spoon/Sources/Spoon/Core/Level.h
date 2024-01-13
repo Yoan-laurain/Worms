@@ -45,6 +45,8 @@ public:
 		return tmp;
 	}
 
+	void ClearDebugShapes();
+
 protected:
 	
 	void HandleCollision(SActor* obj);
@@ -63,7 +65,7 @@ private:
 
 	void AddObject(SActor* obj);
 	void AddDebugShape(const FTransform& transform,const DebugShape& shape);
-	void ClearDebugShapes();
+	
 
 	void NarrowPhase(SActor* entity, SActor* obj);
 

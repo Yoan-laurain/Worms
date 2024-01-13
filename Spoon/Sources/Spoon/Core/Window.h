@@ -39,7 +39,7 @@ public:
 	static Window* Create(const WindowsProps& props = WindowsProps());
 
 #if DEBUG
-	virtual void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>> DebugShapes) = 0;
+	virtual void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>>& DebugShapes) = 0;
 	virtual void DrawDebugPoint(const FTransform& transform) = 0;
 #endif
 };

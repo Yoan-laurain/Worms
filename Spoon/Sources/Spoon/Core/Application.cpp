@@ -124,9 +124,11 @@ void Application::OnRender()
 
 #if DEBUG
 	if (m_WindowRef)
+	{
 		m_WindowRef->DrawAllDebugs(GetWorld()->DebugShapes);
+		GetWorld()->ClearDebugShapes();
+	}
 
-	GetWorld()->ClearDebugShapes();
 #endif
 		
 	return;

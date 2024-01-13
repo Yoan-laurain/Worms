@@ -169,6 +169,17 @@ void Level::AddObject(SActor* obj)
 void Level::AddDebugShape(const FTransform& transform, const DebugShape& shape)
 {
 	std::unique_lock<std::mutex> lock(_mutex);
+	if (DebugShapes.find(shape) != DebugShapes.end())
+	{
+		for (const auto& t : DebugShapes[shape])
+		{
+			if (t.Location == transform.Location && t.Size == transform.Size && t.Rotation == transform.Rotation)
+			{
+				return;
+			}
+		}
+	}
+
 	DebugShapes[shape].push_back(transform);
 }
 
