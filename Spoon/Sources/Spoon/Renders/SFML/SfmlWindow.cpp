@@ -12,6 +12,7 @@
 
 #include "Core/Application.h"
 
+// Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
 {
 	int FrameRate = 120;
