@@ -15,7 +15,7 @@
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
 {
-	int FrameRate = 120;
+	int FrameRate = 60;
 	bool VerticalSync = false;
 }
 
@@ -56,11 +56,19 @@ void SfmlWindow::OnRender()
 		// Todo maybe this function can be thread so the logic will still be separt with the render?
 		HandleEvent(event);
 	}
-	ImGui::SFML::Update(*WindowRef, m_ClockDraw.getElapsedTime());
+
+	m_ClockDraw.restart();
+
 	WindowRef->clear();
-	DrawImGuiWin();
 	EventRenderBack();
+
+	ImGui::SFML::Update(*WindowRef, m_GlobalClock.getElapsedTime());
+	m_GlobalClock.restart();
+
+	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
+	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
+
 	WindowRef->display();
 }
 
@@ -201,22 +209,6 @@ void SfmlWindow::Shutdown()
 	WindowRef->close();
 }
 
-// utility structure for realtime plot
-struct RollingBuffer {
-	float Span;
-	ImVector<ImVec2> Data;
-	RollingBuffer() {
-		Span = 10.0f;
-		Data.reserve(2000);
-	}
-	void AddPoint(float x, float y) {
-		float xmod = fmodf(x, Span);
-		if (!Data.empty() && xmod < Data.back().x)
-			Data.shrink(0);
-		Data.push_back(ImVec2(xmod, y));
-	}
-};
-
 void SfmlWindow::HandleEvent(sf::Event& event)
 {
 	if (event.type == sf::Event::KeyPressed)
@@ -269,16 +261,16 @@ void SfmlWindow::DrawImGuiWin()
 
 	ImGui::Begin("Debugs");
 
-	// ImGui::Button("Tile Type");
-	sf::Time currentTime = m_ClockDraw.getElapsedTime();
-	m_ClockDraw.restart();
-	const int DrawTime = currentTime.asMilliseconds();
-	const int TickTime = m_TimeLogic.asMilliseconds();
+	const float TickTime = m_TimeLogic.asSeconds() * 1000.f;
 	double curr = ImGui::GetTime();
 	const int targetSec = 2;
-
-	ImGui::Text("Draw Time : %d ms", DrawTime);
-	ImGui::Text("Logic Time : %d ms", TickTime);
+	int currFrameRate = 1000.f / m_DrawTime;
+	if (m_bFrameLimitActivated)
+	{
+		currFrameRate = std::clamp(currFrameRate, 0, Configuration::FrameRate);
+	}
+	ImGui::Text("Draw Time : %.2f ms, FPS : %d", m_DrawTime, currFrameRate);
+	ImGui::Text("Logic Time : %.2f ms", TickTime);
 
 	ImGui::Separator();
 
@@ -289,17 +281,24 @@ void SfmlWindow::DrawImGuiWin()
 		Configuration::VerticalSync = vertSync;
 		WindowRef->setVerticalSyncEnabled(Configuration::VerticalSync);
 	}
-	int frameRate = Configuration::FrameRate; 
-	ImGui::InputInt("Frame rate", &frameRate);
-	if (frameRate != Configuration::FrameRate)
+
+	ImGui::Checkbox("Frame Limit", &m_bFrameLimitActivated);
+	if (m_bFrameLimitActivated)
 	{
-		Configuration::FrameRate = frameRate;
-		WindowRef->setFramerateLimit(Configuration::FrameRate);
+		int frameRate = Configuration::FrameRate;
+		ImGui::InputInt("Frame rate", &frameRate);
+		if (frameRate != Configuration::FrameRate)
+		{
+			Configuration::FrameRate = frameRate;
+			WindowRef->setFramerateLimit(Configuration::FrameRate);
+		}
 	}
 
 	ImGui::Separator();
 
-	Graph.push_back(FVector2D(curr, DrawTime));
+	// Ici y a un pb avec le faite de pouvoir changer le frame rate.
+	Graph.push_back(FVector2D(curr, m_DrawTime));
+	ImGui::Text("Graph Size : %f", curr);
 	if (Graph.size() > Configuration::FrameRate * targetSec)
 	{
 		Graph.erase(Graph.begin());
@@ -313,9 +312,9 @@ void SfmlWindow::DrawImGuiWin()
 	// Begin the ImPlot graph
 	if(ImPlot::BeginPlot("Perf Graph", "Time", "Milliseconds"))
 	{
-		ImPlot::SetupAxisScale(ImAxis_X1, 10);
+		//ImPlot::SetupAxisScale(ImAxis_X1, 10);
 		ImPlot::SetupAxisLimits(ImAxis_X1, curr - targetSec, curr + 0.1, ImGuiCond_Always);
-		ImPlot::SetupAxisLimits(ImAxis_Y1, -0.5, 25, ImGuiCond_Always);
+		//ImPlot::SetupAxisLimits(ImAxis_Y1, -0.5, 5, ImGuiCond_Always);
 		ImPlot::PlotLine("Draw Time", &Graph[0].X, &Graph[0].Y, Graph.size() - 1, 0, 0, sizeof(FVector2D));
 		ImPlot::PlotLine("Tick Time", &TickGraph[0].X, &TickGraph[0].Y, TickGraph.size() - 1, 0, 0, sizeof(FVector2D));
 		ImPlot::EndPlot();

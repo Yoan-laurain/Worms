@@ -40,12 +40,18 @@ private:
 	// Todo voir comment faire des petits class pour juste garder la logique des graph
 	std::vector<FVector2D> Graph;
 	std::vector<FVector2D> TickGraph;
+
+	bool m_bFrameLimitActivated = false;
 	
 	sf::Clock m_ClockLogic;
 
 	sf::Clock m_ClockDraw;
 
+	sf::Clock m_GlobalClock;
+
 	sf::Time m_TimeLogic;
+
+	float m_DrawTime;
 
 	sf::RenderWindow* WindowRef;
 	
