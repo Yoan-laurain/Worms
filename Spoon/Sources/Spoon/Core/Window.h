@@ -35,6 +35,7 @@ public:
 	virtual void SetEventRenderBack(const std::function<void()>& callback) = 0;
 	virtual unsigned int GetWidth() const = 0;
 	virtual unsigned int GetHeight() const = 0;
+	FVector2D GetMousePos() const { return m_mousePos; }
 
 	static Window* Create(const WindowsProps& props = WindowsProps());
 
@@ -42,5 +43,8 @@ public:
 	virtual void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>>& DebugShapes) = 0;
 	virtual void DrawDebugPoint(const FTransform& transform) = 0;
 #endif
+
+protected:
+	FVector2D m_mousePos;
 };
 

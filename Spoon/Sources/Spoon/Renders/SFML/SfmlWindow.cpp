@@ -174,10 +174,10 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 
 		// For debug purpose only
-		sf::CircleShape point(5);
-		point.setOrigin(5, 5);
+		sf::CircleShape point( 3 );
+		point.setOrigin( 3, 3 );
 		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
-		point.setFillColor(sf::Color::Red);
+		point.setFillColor(sf::Color::White);
 		WindowRef->draw(point);
 		// end debug
 	}
@@ -274,6 +274,7 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 	{
 		MouseMovedEvent tmpevent(FVector2D(event.mouseMove.x, event.mouseMove.y));
 		EventCallBack(tmpevent);
+		m_mousePos = tmpevent.GetLoc();
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
 	{

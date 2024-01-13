@@ -7,6 +7,10 @@
 #include "Inputs/InputMgr.h"
 #include "Objects/SActor.h"
 #include "Renders/SFML/TextureMgr.h"
+#include "Library/TColor.h"
+#include "Objects/Prefab/RectangleObject.h"
+#include "Objects/Components/SShapeComponent.h"
+#include <Objects/Prefab/CircleObject.h>
 
 Application* Application::s_Instance = nullptr;
 
@@ -76,6 +80,8 @@ void Application::OnEvent(SpoonEvent& e)
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
 	//dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Application::OnMouseMoved));
+
+	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(Application::OnMousePressed));
 
 }
 
@@ -192,6 +198,36 @@ bool Application::OnMouseMoved(MouseMovedEvent& e)
 		currentActor->IsInBound(e.GetLoc());
 	}
 	return false;
+}
+
+bool Application::OnMousePressed(MouseButtonPressedEvent& e)
+{
+	if (e.GetMouseButton() == Mouse::Button3 ) 
+	{
+		float width = rand() % 30 + 5;
+		float height = rand() % 30 + 5;
+		
+		m_WindowRef->GetMousePos();
+
+		FColor color = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
+
+		std::unique_lock<std::mutex> lock(_mutex);
+		SRectangleObject* rect = GetWorld()->SpawnActor<SRectangleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(width, height)));
+		rect->GetComponent<SShapeComponent>()->ObjectColor = color;
+	}
+	else if (e.GetMouseButton() == Mouse::Button4)
+	{
+		float radius = rand() % 30 + 5;
+
+		m_WindowRef->GetMousePos();
+
+		FColor color = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
+
+		std::unique_lock<std::mutex> lock(_mutex);
+		SCircleObject* circle = GetWorld()->SpawnActor<SCircleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(radius, radius)));
+		circle->GetComponent<SShapeComponent>()->ObjectColor = color;
+	}
+	return true;
 }
 
 void Application::TickRun()

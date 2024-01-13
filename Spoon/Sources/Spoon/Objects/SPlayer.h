@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Objects/Prefab/PolygonObject.h"
+#include "Objects/Prefab/RectangleObject.h"
 
 enum class InputAction;
 
-class SPOON_API SPlayer : public SPolygonObject
+class SPOON_API SPlayer : public SRectangleObject
 {
 	GENERATE()
 

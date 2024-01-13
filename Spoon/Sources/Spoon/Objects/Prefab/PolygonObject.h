@@ -22,7 +22,7 @@ class SPOON_API SPolygonObject : public SActor
 
 		bool bUpdateVerticesRequired;
 
-	private:
+	protected:
 		
 		SPolygonComponent* PolygonComponent;
 		std::vector<FVector2D> Vertices;
