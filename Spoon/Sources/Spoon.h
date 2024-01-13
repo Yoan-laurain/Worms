@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Core/Application.h"
 #include "Core/Level.h"
 #include "Objects/SActor.h"

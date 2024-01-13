@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Objects/SObject.h"
-#include "Library/TColor.h"
+
+class SActor;
 
 class SPOON_API SComponent : public SObject
 {
@@ -12,9 +14,9 @@ public:
 
 	SComponent(class SActor* owner = nullptr);
 
-	virtual ~SComponent();
+	virtual ~SComponent() override;
 
-	template <typename T = class SActor>
+	template <typename T = SActor>
 	T* GetOwner() const
 	{
 		return (Owner) ? (T*)Owner : nullptr;
@@ -24,7 +26,7 @@ public:
 
 protected:
 
-	virtual void OnUpdate(const float Deltatime) {};
+	virtual void OnUpdate(const float Deltatime) {}
 
 private:
 
@@ -32,8 +34,7 @@ private:
 
 private:
 
-	class SActor* Owner;
+	SActor* Owner;
 
 	std::string ComponentName;
-
 };

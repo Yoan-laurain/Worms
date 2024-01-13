@@ -11,8 +11,8 @@
 Application* Application::s_Instance = nullptr;
 
 Application::Application() : 
-	WindowName("SpoonEngine"),
 	ScreenSize(FVector2D(720, 1080)),
+	WindowName("SpoonEngine"),
 	_InputMgr(nullptr),
 	_TextureMgr(nullptr)
 {
@@ -20,7 +20,7 @@ Application::Application() :
 	Init();
 }
 
-Application::Application(std::string windowName, FVector2D screensize) : WindowName(windowName), ScreenSize(screensize)
+Application::Application(std::string windowName, FVector2D screensize) : ScreenSize(screensize), WindowName(windowName)
 {
 	s_Instance = this;
 	Init();

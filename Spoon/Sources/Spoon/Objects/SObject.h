@@ -1,8 +1,9 @@
 #pragma once
+
 #include "Core/Core.h"
+
 #include <string>
 #include <typeinfo>
-#include "Core/Field.h"
 
 class IReflecatble
 {
@@ -52,4 +53,3 @@ private:
 	uint64 UniqueId;
 
 };
-

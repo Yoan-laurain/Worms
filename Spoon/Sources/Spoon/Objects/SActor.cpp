@@ -6,31 +6,30 @@
 #include <snpch.h>
 
 SActor::SActor() :
-	SObject(),
-	WorldRef(nullptr),
+	bIsStatic(false),
+	bIsColliding(false),
+	LinearVelocity(FVector2D::Zero()),
+	RotationalVelocity(0.f),
+	Restitution(0.5f),
+	Magnitude(8.f),
+	Density(1.f),
+	bNeedToUpdateBoundingBox(true),
+	AABB(FVector2D::Zero(), FVector2D::Zero()),
 	bIsHovered(false),
 	bIsPressed(false),
-	bIsStatic(false),
+	WorldRef(nullptr),
+	Inertia(0.f),
+	InvInertia(0.f),
 	Mass(1.f),
-	LinearVelocity(FVector2D::Zero()),
-	Restitution(0.5f),
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
-	bIsColliding(false),
-	RotationalVelocity(0.f),
-	Magnitude(8.f),
-	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
-	AABB(FVector2D::Zero(), FVector2D::Zero()),
-	bNeedToUpdateBoundingBox(true),
-	Inertia(0.f),
-	InvInertia(0.f)
+	Gravity(FVector2D(0.f, MathLibrary::Gravity))
 {
 }
 
 SActor::~SActor()
 {
 	SetWorldRef(nullptr);
-
 }
 
 void SActor::BeginPlay()
@@ -39,9 +38,9 @@ void SActor::BeginPlay()
 
 void SActor::Tick(float DeltaTime)
 {
-	for (int i = 0; i < ComponentList.size(); ++i)
+	for (auto& i : ComponentList)
 	{
-		ComponentList[i]->OnUpdate(DeltaTime);
+		i->OnUpdate(DeltaTime);
 	}
 	if (bIsPressed && bIsHovered)
 	{
@@ -51,7 +50,7 @@ void SActor::Tick(float DeltaTime)
 		}
 	}
 
-	Step(DeltaTime);
+	UpdateObjectPhysics(DeltaTime);
 }
 
 void SActor::DestroyActor()
@@ -100,7 +99,7 @@ void SActor::SetWorldRef(Level* parentRef)
 	WorldRef = parentRef;
 }
 
-void SActor::Step(float DeltaTime)
+void SActor::UpdateObjectPhysics(float DeltaTime)
 {
 	if (bIsStatic)
 	{
@@ -128,6 +127,18 @@ float SActor::CalculateRotationInertia()
 void SActor::AddForce(const FVector2D& force)
 {
 	Force = force;
+}
+
+float SActor::GetMass() const
+{
+	return Mass;
+}
+
+void SActor::SetDensity(float density)
+{
+	Density = density;
+	UpdateMass();
+	SetInertia(CalculateRotationInertia());
 }
 
 FVector2D SActor::GetLocation() const
@@ -171,7 +182,7 @@ void SActor::SetTransform(const FTransform& transform)
 	std::unique_lock<std::mutex> _lock(_mutex);
 	ObjectTransform = transform;
 
-	SetMass(1.f); // TODO : Set mass with density
+	UpdateMass();
 	SetInertia(CalculateRotationInertia());
 }
 
@@ -183,34 +194,18 @@ void SActor::SetInertia(float inertia)
 	}
 
 	Inertia = inertia;
-
-	if (bIsStatic)
-	{
-		InvInertia = 0.f;
-	}
-	else
-	{
-		InvInertia = 1.f / Inertia;
-	}
+	InvInertia = bIsStatic ? 0.f : 1.f / Inertia;
 }
 
-void SActor::SetMass(float density)
+void SActor::UpdateMass()
 {
 	if (bIsStatic)
 	{
 		return;
 	}
 
-	Mass = density * ObjectTransform.Size.X * ObjectTransform.Size.Y;
-
-	if (bIsStatic)
-	{
-		InvMass = 0.f;
-	}
-	else
-	{
-		InvMass = 1.f / Mass;
-	}
+	Mass = Density * ObjectTransform.Size.X * ObjectTransform.Size.Y;
+	InvMass = bIsStatic ? 0.f : 1.f / Mass;
 }
 
 bool SActor::IsInBound(const FVector2D& _loc)

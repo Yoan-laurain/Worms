@@ -5,6 +5,8 @@
 class FragGrenade : public WeaponStrategy
 {
 	public:
-	
+
+		/* WeaponStrategy IMPLEMENTATION */
 		void DoDamage() override;
+		/* END WeaponStrategy IMPLEMENTATION */
 };

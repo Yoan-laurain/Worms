@@ -8,7 +8,4 @@ class SPOON_API InputHandler
 public:
 
 	void BindInput(void* objRef, std::function<void()>& func);
-
-
-
 };

@@ -9,11 +9,11 @@ class WeaponStrategy : public SActor
 		WeaponStrategy();
 
 		virtual ~WeaponStrategy() = default;
-
+	
+		virtual void DoDamage();
+		virtual void Reload();
+	
 		int currentAmunition;
 		int maxAmunition;
 		int damage;
-
-		virtual void DoDamage();
-		virtual void Reload();
 };

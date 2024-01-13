@@ -13,7 +13,8 @@ public:
 	FTransform& GetSpawnPoint();
 
 private:
-	void AddSpawnPoint(const FTransform& spawnPoint);
 
 	std::vector<FTransform> m_SpawnPoints;
+	
+	void AddSpawnPoint(const FTransform& spawnPoint);
 };

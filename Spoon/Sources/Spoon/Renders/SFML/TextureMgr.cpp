@@ -16,7 +16,6 @@ bool TextureMgr::LoadTexture(const std::string& name, std::string& fileName)
 	else
 	{
 		throw std::runtime_error("Error loading texture: " + fileName);
-		return false;
 	}
 	return true;
 }
@@ -42,8 +41,7 @@ bool TextureMgr::IsTextureLoaded(const std::string& name)
 
 void TextureMgr::LoadFont(const std::string& name, const std::string& fileName)
 {
-	// if already loaded, do nothing
-	if (_fonts.find(name) != _fonts.end())
+	if ( IsFontLoaded(name) )
 	{
 		return;
 	}
@@ -68,4 +66,13 @@ sf::Font& TextureMgr::GetFont(const std::string& name)
 	}
 
 	return _fonts.at(name);
+}
+
+bool TextureMgr::IsFontLoaded(const std::string& name)
+{
+	if (_fonts.find(name) == _fonts.end())
+	{
+		return false;
+	}
+	return true;
 }

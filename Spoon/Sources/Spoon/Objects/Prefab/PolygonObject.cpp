@@ -2,7 +2,7 @@
 #include "Objects/Components/SShapeComponent.h"
 #include <Library/Collision.h>
 
-SPolygonObject::SPolygonObject() : SActor(),
+SPolygonObject::SPolygonObject() : 
 	PolygonComponent(CreateComponent<SPolygonComponent>("VisualComponent")),
 	Vertices(),
 	bUpdateVerticesRequired(true)
@@ -10,9 +10,7 @@ SPolygonObject::SPolygonObject() : SActor(),
 	PolygonComponent->ObjectColor = FColor(152, 251, 152, 255);
 }
 
-SPolygonObject::~SPolygonObject()
-{
-}
+SPolygonObject::~SPolygonObject() = default;
 
 std::vector<FVector2D> SPolygonObject::GetVertices()
 {
@@ -35,7 +33,7 @@ std::vector<FVector2D> SPolygonObject::GetVertices()
 
 bool SPolygonObject::IsInBound(const FVector2D& _loc)
 {
-	if (GetVertices().size() == 0)
+	if (GetVertices().empty())
 	{
 		return false;
 	}
@@ -74,5 +72,5 @@ float SPolygonObject::CalculateRotationInertia()
 	float widthSquared = GetSize().X * GetSize().X;
 	float heightSquared = GetSize().Y * GetSize().Y;
 
-	return (1.f / 12.f) * Mass * ( widthSquared + heightSquared );
+	return (1.f / 12.f) * GetMass() * ( widthSquared + heightSquared );
 }

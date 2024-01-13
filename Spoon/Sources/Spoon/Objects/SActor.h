@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Objects/SObject.h"
-#include "Library/TColor.h"
 #include "Library/TStruct.h"
 #include "Components/SComponent.h"
+
 #include <Library/AlignAxisBoudingBox.h>
 
 class SPOON_API SActor : public SObject
@@ -46,10 +46,6 @@ public:
 
 	virtual void SetTransform(const FTransform& transform);
 
-	void SetInertia(float inertia);
-	void SetMass(float density);
-	virtual void AddForce(const FVector2D& force);
-
 	/************************************************************************/
 	/* Collision															*/
 	/************************************************************************/
@@ -89,6 +85,15 @@ public:
 		return !CompList.empty();
 	}
 
+	/************************************************************************/
+	/* Physics															*/
+	/************************************************************************/
+
+	void SetInertia(float inertia);
+	virtual void AddForce(const FVector2D& force);
+	float GetMass() const;
+	void SetDensity(float density);
+
 protected:
 
 	// Funciton called lorsque l'objet est ajouté à la list update
@@ -123,7 +128,9 @@ private:
 
 	void SetWorldRef(class Level* parentRef);
 
-	void Step(float DeltaTime);
+	void UpdateObjectPhysics(float DeltaTime);
+
+	void UpdateMass();
 
 public:
 
@@ -134,13 +141,8 @@ public:
 	FVector2D LinearVelocity;
 	float RotationalVelocity;
 	float Restitution;
-	float Mass;
-	float InvMass;
 	float Magnitude;
-	FVector2D Force;
-	FVector2D Gravity;
-
-
+	float Density;
 	bool bNeedToUpdateBoundingBox;
 	AlignAxisBoundingBox AABB;
 
@@ -164,6 +166,12 @@ private:
 
 	float Inertia;
 	float InvInertia;
+	
+	float Mass;
+	float InvMass;
+
+	FVector2D Force;
+	FVector2D Gravity;
 
 };
 

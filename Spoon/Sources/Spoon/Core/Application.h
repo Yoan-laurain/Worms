@@ -5,6 +5,14 @@
 
 class Level;
 class Window;
+class SpoonEvent;
+class SPlayer;
+enum class InputAction;
+class WindowCloseEvent;
+class KeyPressedEvent;
+class AppTickEvent;
+class WindowResizeEvent;
+class MouseMovedEvent;
 
 class SPOON_API Application
 {
@@ -21,7 +29,7 @@ public:
 	void Run();
 
 	// Dispatch Event
-	void OnEvent(class SpoonEvent& e);
+	void OnEvent(SpoonEvent& e);
 
 	Level* GetWorld() const;
 
@@ -30,24 +38,24 @@ public:
 	class InputMgr* GetInputMgr() const;
 	class TextureMgr* GetTextureMgr() const;
 
-	void AddNewPlayer(class SPlayer* player);
+	void AddNewPlayer(SPlayer* player);
 
-	bool BindAction(class SPlayer* player, enum class InputAction inputAction, std::function<void(float)> func);
+	bool BindAction(SPlayer* player,InputAction inputAction, std::function<void(float)> func);
 
 	FVector2D GetScreenSize() const;
 
 protected:
 
-	void SetLevel(class Level* _newLevel, const bool DestroyPrevious = false);
+	void SetLevel(Level* _newLevel, const bool DestroyPrevious = false);
 
 private:
 
 	// Event
-	bool OnWindowClose(class WindowCloseEvent& e);
-	bool OnKeyPressed(class KeyPressedEvent& e);
-	bool OnAppTick(class AppTickEvent& e);
-	bool OnWindowResize(class WindowResizeEvent& e);
-	bool OnMouseMoved(class MouseMovedEvent& e);
+	bool OnWindowClose(WindowCloseEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
+	bool OnAppTick(AppTickEvent& e);
+	bool OnWindowResize(WindowResizeEvent& e);
+	bool OnMouseMoved(MouseMovedEvent& e);
 
 	void TickRun();
 	void OnRender();
@@ -62,16 +70,16 @@ private:
 
 private:
 
-	Window* m_WindowRef;
+	Window* m_WindowRef{};
 
 	bool bIsRunning = true;
 
-	Level* CurrentLevel;
+	Level* CurrentLevel{};
 
 	static Application* s_Instance;
 
-	std::vector<class SPlayer*> Players;
-	class InputMgr* _InputMgr;
-	TextureMgr* _TextureMgr;
+	std::vector<SPlayer*> Players;
+	InputMgr* _InputMgr{};
+	TextureMgr* _TextureMgr{};
 
 };

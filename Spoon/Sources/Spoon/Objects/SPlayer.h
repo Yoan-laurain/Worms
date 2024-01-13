@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Objects/SActor.h"
-#include "Inputs/InputAction.h"
 #include "Objects/Prefab/PolygonObject.h"
+
+enum class InputAction;
 
 class SPOON_API SPlayer : public SPolygonObject
 {
@@ -10,16 +10,11 @@ class SPOON_API SPlayer : public SPolygonObject
 
 public:
 	SPlayer();
-	virtual ~SPlayer();
+	virtual ~SPlayer() override;
+	
 protected:
 
 	virtual void Tick(float DeltaTime) override;
-
-
-	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
-
-private:
 	
-	class CircleShape* CollisionComponent;
-
+	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
 };

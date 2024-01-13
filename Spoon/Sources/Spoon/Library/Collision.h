@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Library/TVector.h"
-#include "Objects/Components/SCollisionComponent.h"
 #include "Objects/SActor.h"
 #include "Objects/Prefab/CircleObject.h"
 #include "Objects/Prefab/PolygonObject.h"

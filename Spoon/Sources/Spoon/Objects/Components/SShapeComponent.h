@@ -1,5 +1,6 @@
 #pragma once
 #include "SComponent.h"
+#include "Library/TColor.h"
 #include "Library/TStruct.h"
 
 enum SPOON_API FActorType
