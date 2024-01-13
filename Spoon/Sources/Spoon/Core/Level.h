@@ -44,7 +44,7 @@ protected:
 private:
 
 	void UpdateEntity(double deltatime);
-	static void ResolveCollision(Manifold& contact);
+	void ResolveCollision(Manifold& contact);
 
 	AlignAxisBoundingBox& GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	
@@ -53,6 +53,8 @@ private:
 	void RemoveObject(SActor* obj);
 
 	void AddObject(SActor* obj);
+
+	void NarrowPhase(SActor* entity, SActor* obj);
 
 protected:
 

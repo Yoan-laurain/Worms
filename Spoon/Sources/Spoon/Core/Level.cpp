@@ -1,8 +1,9 @@
 #include "Level.h"
 #include "Objects/SActor.h"
 #include "Library/Collision.h"
-#include <snpch.h>
 #include "Application.h"
+#include "Objects/Prefab/CircleObject.h"
+#include <snpch.h>
 
 Level::Level() : 
 	bIsListBeingEdit(false)
@@ -175,28 +176,29 @@ void Level::HandleCollision( SActor* obj )
 				continue;
 			}
 
-			SActor* bodyA = entity.get();
-			SActor* bodyB = obj;
-
-			Manifold collision;
-
-			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
-			{
-
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
+			NarrowPhase( entity.get(), obj );
 		}
+	}
+}
+
+void Level::NarrowPhase(SActor* entity, SActor* obj)
+{
+	Manifold collision;
+
+	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
 	}
 }

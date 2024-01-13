@@ -1,6 +1,8 @@
 #pragma once
 #include "Core/Core.h"
 #include "Events/SpoonEvent.h"
+#include "Library/TVector.h"
+
 
 struct WindowsProps
 {

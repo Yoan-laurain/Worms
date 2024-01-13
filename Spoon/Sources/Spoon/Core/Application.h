@@ -13,6 +13,8 @@ class KeyPressedEvent;
 class AppTickEvent;
 class WindowResizeEvent;
 class MouseMovedEvent;
+class InputMgr;
+class TextureMgr;
 
 class SPOON_API Application
 {

@@ -11,6 +11,7 @@
 #include <implot.h>
 
 #include "Core/Application.h"
+#include <Core/Level.h>
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
@@ -99,6 +100,7 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 
 		comp->GetOwner()->bIsColliding = false;
 	}
+
 }
 
 unsigned int SfmlWindow::GetWidth() const
@@ -115,6 +117,14 @@ void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circ
 {
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
 	_circle.setRadius(_component->Radius);
+
+	sf::Vertex line[] =
+	{
+		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y)),
+		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X + _component->Radius, _component->GetOwner()->GetLocation().Y + _component->Radius))
+	};
+
+	WindowRef->draw(line, 2, sf::Lines);
 
 	SetCommonShapeProperties(_circle, _component);
 }
@@ -243,7 +253,6 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 	}
 	// TODO mettre le reste des events qui pourrais servire ici.
 }
-
 
 // TODO faire des classe et fonction plus jolie pour nos bouton ImGui
 void SfmlWindow::DrawImGuiWin()

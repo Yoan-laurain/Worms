@@ -146,6 +146,8 @@ public:
 	bool bNeedToUpdateBoundingBox;
 	AlignAxisBoundingBox AABB;
 
+	float LifeSpan;
+
 protected:
 
 	bool bIsHovered;
