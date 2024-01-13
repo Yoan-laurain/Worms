@@ -46,6 +46,7 @@ public:
 	}
 
 	void ClearDebugShapes();
+	int GetEntityCount() const;
 
 protected:
 	

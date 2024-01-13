@@ -194,6 +194,11 @@ void Level::ClearDebugShapes()
 	DebugShapes.clear();
 }
 
+int Level::GetEntityCount() const
+{
+	return EntityList.size();
+}
+
 void Level::HandleCollision( SActor* obj )
 {
 	for (const auto& entity : EntityList)

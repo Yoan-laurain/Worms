@@ -316,6 +316,8 @@ void SfmlWindow::DrawImGuiWin()
 	ImGui::Text("Draw Time : %.2f ms, FPS : %d", m_DrawTime, currFrameRate);
 	ImGui::Text("Logic Time : %.2f ms", TickTime);
 
+	ImGui::Text("Entity count : %d", Application::Get().GetWorld()->GetEntityCount());
+
 	ImGui::Separator();
 
 	bool vertSync = Configuration::VerticalSync;
