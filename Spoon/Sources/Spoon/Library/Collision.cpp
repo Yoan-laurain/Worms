@@ -336,7 +336,7 @@ void Collision::FindPolygonsContactPoints(
 
             if (FVector2D::NearlyEqual( distSq, minDistSq))
             {
-                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                if (!FVector2D::NearlyEqual(cp, contact1))
                 {
                     contact2 = cp;
                     contactCount = 2;
@@ -364,7 +364,7 @@ void Collision::FindPolygonsContactPoints(
 
             if (FVector2D::NearlyEqual(distSq, minDistSq))
             {
-                if (!FVector2D::NearlyEqual(cp, contact1) && !FVector2D::NearlyEqual(cp, contact2))
+                if (!FVector2D::NearlyEqual(cp, contact1))
                 {
                     contact2 = cp;
                     contactCount = 2;

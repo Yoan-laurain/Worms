@@ -68,10 +68,10 @@ void Application::OnEvent(SpoonEvent& e)
 	EventDispatcher dispatcher(e);
 
 	// Todo : à sup lorsque les key seront bien impl
-	for (const auto& tmp : GetWorld()->EntityList)
-	{
-		tmp->OnEvent(e);
-	}
+	//for (const auto& tmp : GetWorld()->EntityList)
+	//{
+	//	//tmp->OnEvent(e);
+	//}
 
 	dispatcher.Dispatch<AppTickEvent>(BIND_EVENT_FN(Application::OnAppTick));
 
@@ -122,10 +122,13 @@ bool Application::OnAppTick(AppTickEvent& e)
 void Application::OnRender()
 {
 	// Todo : I should probably put a wait for the entity list to be construct to render
-	for (const auto& CurrentActor : GetWorld()->EntityList)
+	if (!GetWorld()->bIsListBeingEdit)
 	{
-		if(m_WindowRef)
-			m_WindowRef->Draw(CurrentActor.get());
+		for (const auto& CurrentActor : GetWorld()->EntityList)
+		{
+			if (m_WindowRef)
+				m_WindowRef->Draw(CurrentActor.get());
+		}
 	}
 
 #if DEBUG

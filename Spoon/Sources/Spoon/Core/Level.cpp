@@ -54,11 +54,17 @@ void Level::ResolveCollision(Manifold& contact)
 	const FVector2D normal = contact.Normal;
 
 #if DEBUG
-	AddDebugShape(FTransform(contact.Contact1, FVector2D(2.f, 2.f)), DebugShape::SPHERE);
+
+	DebugShapeData shape;
+	shape.Shape = DebugShape::SPHERE;
+	shape.Transform = FTransform(contact.Contact1, FVector2D(2.f, 2.f));
+
+	AddDebugShape( shape );
 
 	if (contact.ContactCount > 1)
 	{
-		AddDebugShape(FTransform(contact.Contact2, FVector2D(2.f, 2.f)), DebugShape::SPHERE);
+		shape.Transform = FTransform(contact.Contact2, FVector2D(2.f, 2.f));
+		AddDebugShape( shape );
 	}
 
 #endif
@@ -166,31 +172,25 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
-void Level::AddDebugShape(const FTransform& transform, const DebugShape& shape)
+void Level::AddDebugShape(const DebugShapeData& shape)
 {
 	std::unique_lock<std::mutex> lock(_mutex);
-	if (DebugShapes.find(shape) != DebugShapes.end())
+	
+	for (const auto& s : DebugShapes)
 	{
-		for (const auto& t : DebugShapes[shape])
+		if (FVector2D::NearlyEqual(s.Transform.Location , shape.Transform.Location, 0.1f))
 		{
-			if (t.Location == transform.Location && t.Size == transform.Size && t.Rotation == transform.Rotation)
-			{
-				return;
-			}
+			return;
 		}
-	}
+	}	
 
-	DebugShapes[shape].push_back(transform);
+	DebugShapes.push_back(shape);
 }
 
 void Level::ClearDebugShapes()
 {
 	std::unique_lock<std::mutex> lock(_mutex);
 
-	for (auto& shape : DebugShapes)
-	{
-		shape.second.clear();
-	}
 	DebugShapes.clear();
 }
 

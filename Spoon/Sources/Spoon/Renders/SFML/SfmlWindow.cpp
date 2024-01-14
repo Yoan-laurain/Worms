@@ -80,6 +80,8 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 		return;
 	}
 	std::vector<SShapeComponent*> CompList;
+
+	std::unique_lock<std::mutex> lock(_mutex);
 	if(!_currentActor->GetAllComponentType<SShapeComponent*>(CompList))
 		return;
 
@@ -117,20 +119,17 @@ void SfmlWindow::DrawDebugPoint(const FTransform& transform)
 	WindowRef->draw(circle);
 }
 
-void SfmlWindow::DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>>& DebugShapes)
+void SfmlWindow::DrawAllDebugs(std::vector<DebugShapeData>& DebugShapes)
 {
 	for (auto& shape : DebugShapes)
 	{
-		for (auto& transform : shape.second)
+		switch (shape.Shape)
 		{
-			switch (shape.first)
-			{
-				case DebugShape::SPHERE :
-						DrawDebugPoint(transform);
-						break;
-					default:
-						break;
-			}
+			case DebugShape::SPHERE :
+					DrawDebugPoint(shape.Transform);
+					break;
+				default:
+					break;
 		}
 	}
 }

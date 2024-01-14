@@ -8,11 +8,13 @@ class SActor;
 
 enum DebugShape
 {
-	BOX,
 	SPHERE,
-	CAPSULE,
-	LINE,
-	POINT
+};
+
+struct DebugShapeData
+{
+	FTransform Transform;
+	DebugShape Shape;
 };
 
 // TODO Levels
@@ -65,8 +67,7 @@ private:
 	void RemoveObject(SActor* obj);
 
 	void AddObject(SActor* obj);
-	void AddDebugShape(const FTransform& transform,const DebugShape& shape);
-	
+	void AddDebugShape(const DebugShapeData& shape);
 
 	void NarrowPhase(SActor* entity, SActor* obj);
 
@@ -77,7 +78,7 @@ protected:
 
 	std::vector<std::unique_ptr<SActor>> AddEntityList;
 
-	std::map<DebugShape,std::vector<FTransform>> DebugShapes;
+	std::vector<DebugShapeData> DebugShapes;
 
 	bool bIsListBeingEdit;
 };

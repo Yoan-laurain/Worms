@@ -24,7 +24,7 @@ public:
 
 #if DEBUG
 	void DrawDebugPoint(const FTransform& transforme);
-	void DrawAllDebugs(std::map<DebugShape, std::vector<FTransform>>& DebugShapes) override;
+	void DrawAllDebugs(std::vector<DebugShapeData>& DebugShapes) override;
 #endif
 
 	inline void SetEventCallback(const EventCallBackFn& callback) override { EventCallBack = callback;};
