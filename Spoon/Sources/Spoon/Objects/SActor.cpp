@@ -118,13 +118,18 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	}
 
 	ObjectTransform.Location += LinearVelocity * DeltaTime;
-	ObjectTransform.Rotation += AngularVelocity * DeltaTime;
+	AddRotation(AngularVelocity * DeltaTime * 50);
+
+	std::cout << ObjectTransform.Rotation << std::endl;
 
 	Force = FVector2D::Zero();
 }
 
 float SActor::CalculateRotationInertia()
 {
+
+
+
 	return 0.f;
 }
 
@@ -188,6 +193,11 @@ void SActor::SetTransform(const FTransform& transform)
 
 	UpdateMass();
 	SetInertia(CalculateRotationInertia());
+}
+
+void SActor::AddRotation(const float addRotation)
+{
+	ObjectTransform.Rotation += addRotation;
 }
 
 void SActor::SetInertia(float inertia)

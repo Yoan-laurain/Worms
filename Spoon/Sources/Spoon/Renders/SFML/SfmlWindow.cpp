@@ -5,6 +5,7 @@
 #include "Events/MouseEvent.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "TextureMgr.h"
+#include "Library/MathLibrary.h"
 
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -185,7 +186,7 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
-	drawShape.setRotation(_component->GetOwner()->GetTransform().Rotation);
+	drawShape.setRotation(_component->GetOwner()->GetTransform().Rotation * (180 / MathLibrary::Pi));
 
 	if (_component->texturePath != "")
 	{

@@ -46,6 +46,8 @@ public:
 
 	virtual void SetTransform(const FTransform& transform);
 
+	virtual void AddRotation(const float addRotation);
+
 	/************************************************************************/
 	/* Collision															*/
 	/************************************************************************/
@@ -172,16 +174,11 @@ private:
 
 	float Inertia;
 	float InvInertia;
-	
+
 	float Mass;
 	float InvMass;
 
 	FVector2D Force;
 	FVector2D Gravity;
 
-};
-
-class SPOON_API IPrefab
-{
-	virtual class SShapeComponent* GetShapeComponent() const = 0;
 };

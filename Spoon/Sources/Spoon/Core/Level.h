@@ -74,7 +74,7 @@ private:
 
 	std::vector<FVector2D> raList;
 	std::vector<FVector2D> rbList;
-	std::vector<FVector2D> impulseList;
+	//std::vector<FVector2D> impulseList;
 	std::vector<FVector2D> contactList;
 	std::vector<FVector2D> frictionImpulseList;
 	std::vector<float> jList;

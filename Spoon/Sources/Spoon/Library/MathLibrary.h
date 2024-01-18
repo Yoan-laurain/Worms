@@ -8,7 +8,7 @@ namespace MathLibrary
 {
 	constexpr float Gravity(9.81f);
 	
-	constexpr double Pi() { return std::numbers::pi; }
+	constexpr double Pi(std::numbers::pi);
 	
 	static float CosRad(float A) { return cosf(A); }
 	static double CosRad(double A) { return cos(A);	}
