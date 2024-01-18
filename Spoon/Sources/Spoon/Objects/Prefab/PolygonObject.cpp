@@ -20,10 +20,18 @@ std::vector<FVector2D> SPolygonObject::GetVertices()
 		{
 			if (Vertices.size() <= i)
 			{
-				Vertices.push_back(FVector2D());
+				Vertices.push_back(FVector2D::Zero());
 			}
 
-			Vertices[i] = GetLocation() + PolygonComponent->Points[i];
+			FTransform transform = GetTransform();
+
+			FVector2D finalPos = FVector2D(
+				transform.Location.X + transform.Cos * PolygonComponent->Points[i].X - transform.Sin * PolygonComponent->Points[i].Y,
+				transform.Location.Y + transform.Cos * PolygonComponent->Points[i].Y + transform.Sin * PolygonComponent->Points[i].X
+			);
+
+			Vertices[i] = finalPos;
+
 		}
 		bUpdateVerticesRequired = false;
 	}
@@ -69,6 +77,11 @@ void SPolygonObject::Tick(float DeltaTime)
 
 float SPolygonObject::CalculateRotationInertia()
 {
+	if (bIsStatic)
+	{
+		return 0.f;
+	}
+
 	float widthSquared = GetSize().X * GetSize().X;
 	float heightSquared = GetSize().Y * GetSize().Y;
 

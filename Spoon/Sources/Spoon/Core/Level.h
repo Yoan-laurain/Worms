@@ -59,6 +59,7 @@ private:
 
 	void UpdateEntity(double deltatime);
 	void ResolveCollision(Manifold& contact);
+	void ApplyFriction(Manifold& contact);
 
 	AlignAxisBoundingBox& GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	
@@ -70,6 +71,13 @@ private:
 	void AddDebugShape(const DebugShapeData& shape);
 
 	void NarrowPhase(SActor* entity, SActor* obj);
+
+	std::vector<FVector2D> raList;
+	std::vector<FVector2D> rbList;
+	std::vector<FVector2D> impulseList;
+	std::vector<FVector2D> contactList;
+	std::vector<FVector2D> frictionImpulseList;
+	std::vector<float> jList;
 
 protected:
 

@@ -94,6 +94,11 @@ struct OBJECT_API Vector2D
 		return X * _val.X + Y * _val.Y;
 	}
 
+	static T Cross(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	{
+		return _left.X * _right.Y - _left.Y * _right.X;
+	}
+
 	/************************************************************************/
 	/* Default Var Static													*/
 	/************************************************************************/
@@ -218,6 +223,13 @@ Vector2D<T> OBJECT_API operator*(const Vector2D<T>& right, const L& left)
 {
 	return Vector2D<T>(right.X * left, right.Y * left);
 }	
+
+template <typename T, typename L = T>
+Vector2D<T> OBJECT_API operator*(const L& left, const Vector2D<T>& right )
+{
+	return Vector2D<T>(right.X * left, right.Y * left);
+}
+
 
 template <typename T>
 bool const OBJECT_API operator>=(const Vector2D<T>& left, const Vector2D<T>& right)

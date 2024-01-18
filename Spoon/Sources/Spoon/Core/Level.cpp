@@ -7,7 +7,13 @@
 
 Level::Level() : 
 	bIsListBeingEdit(false),
-	DebugShapes()
+	DebugShapes(),
+	rbList(2),
+	raList(2),
+	impulseList(2),
+	contactList(2),
+	frictionImpulseList(2),
+	jList(2)
 {
 }
 
@@ -49,9 +55,12 @@ void Level::UpdateEntity(double deltatime)
 
 void Level::ResolveCollision(Manifold& contact)
 {
-	SActor* bodyA = contact.BodyA;
-	SActor* bodyB = contact.BodyB;
-	const FVector2D normal = contact.Normal;
+	SActor& bodyA = *contact.BodyA;
+	SActor& bodyB = *contact.BodyB;
+	const FVector2D& normal = contact.Normal;
+	const FVector2D& contact1 = contact.Contact1;
+	const FVector2D& contact2 = contact.Contact2;
+	int contactCount = contact.ContactCount;
 
 #if DEBUG
 
@@ -59,31 +68,157 @@ void Level::ResolveCollision(Manifold& contact)
 	shape.Shape = DebugShape::SPHERE;
 	shape.Transform = FTransform(contact.Contact1, FVector2D(2.f, 2.f));
 
-	AddDebugShape( shape );
+	AddDebugShape(shape);
 
 	if (contact.ContactCount > 1)
 	{
 		shape.Transform = FTransform(contact.Contact2, FVector2D(2.f, 2.f));
-		AddDebugShape( shape );
+		AddDebugShape(shape);
 	}
 
 #endif
 
-	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
+	float e = std::min(bodyA.Restitution, bodyB.Restitution);
 
-	if (FVector2D::DotProduct(relativeVelocity, normal) > 0.f) {
-		return;
+	contactList[0] = contact1;
+	contactList[1] = contact2;
+
+	for (int i = 0; i < contactCount; ++i)
+	{
+		impulseList[i] = FVector2D::Zero();
+		raList[i] = FVector2D::Zero();
+		rbList[i] = FVector2D::Zero();
+		frictionImpulseList[i] = FVector2D::Zero();
+		jList[i] = 0.f;
 	}
 
-	float e = fminf(bodyA->Restitution, bodyB->Restitution);
+	for (int i = 0; i < contactCount; ++i)
+	{
+		FVector2D ra = contactList[i] - bodyA.GetLocation();
+		FVector2D rb = contactList[i] - bodyB.GetLocation();
 
-	float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
-	j /= bodyA->InvMass + bodyB->InvMass;
+		raList[i] = ra;
+		rbList[i] = rb;
 
-	FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+		FVector2D raPerp(-ra.Y, ra.X);
+		FVector2D rbPerp(-rb.Y, rb.X);
 
-	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
-	bodyB->LinearVelocity += impulse * bodyB->InvMass;
+		//FVector2D angularLinearVelocityA = raPerp * bodyA.AngularVelocity;
+		//FVector2D angularLinearVelocityB = rbPerp * bodyB.AngularVelocity;
+
+		FVector2D relativeVelocity =
+			(bodyB.LinearVelocity) -
+			(bodyA.LinearVelocity );
+
+		float contactVelocityMag = FVector2D::DotProduct(relativeVelocity, normal);
+
+		if (contactVelocityMag > 0.0f)
+		{
+			continue;
+		}
+
+		float raPerpDotN = FVector2D::DotProduct(raPerp, normal);
+		float rbPerpDotN = FVector2D::DotProduct(rbPerp, normal);
+
+		float denom = bodyA.InvMass + bodyB.InvMass +
+			(raPerpDotN * raPerpDotN) * bodyA.InvInertia +
+			(rbPerpDotN * rbPerpDotN) * bodyB.InvInertia;
+
+		float j = -(1.0f + e) * contactVelocityMag;
+		j /= denom;
+		j /= static_cast<float>(contactCount);
+
+		jList[i] = j;
+
+		FVector2D impulse = normal * j;
+		impulseList[i] = impulse;
+	}
+
+	FVector2D relativeVelocity = bodyB.LinearVelocity - bodyA.LinearVelocity;
+
+	if (FVector2D::DotProduct(relativeVelocity, normal) < 0.f) {
+		float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
+		j /= bodyA.InvMass + bodyB.InvMass;
+
+		FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+
+		bodyA.LinearVelocity -= impulse * bodyA.InvMass;
+		bodyB.LinearVelocity += impulse * bodyB.InvMass;
+	}
+
+
+	ApplyFriction(contact);
+}
+
+void Level::ApplyFriction(Manifold& contact)
+{
+	float sf = (contact.BodyA->StaticFriction + contact.BodyB->StaticFriction) * 0.5f;
+	float df = (contact.BodyA->DynamicFriction + contact.BodyB->DynamicFriction) * 0.5f;
+
+	for (int i = 0; i < contact.ContactCount; i++) {
+		FVector2D ra = contactList[i] - contact.BodyA->GetLocation();
+		FVector2D rb = contactList[i] - contact.BodyB->GetLocation();
+
+		raList[i] = ra;
+		rbList[i] = rb;
+
+		FVector2D raPerp(-ra.Y, ra.X);
+		FVector2D rbPerp(-rb.Y, rb.X);
+
+		FVector2D angularLinearVelocityA = raPerp * contact.BodyA->AngularVelocity;
+		FVector2D angularLinearVelocityB = rbPerp * contact.BodyB->AngularVelocity;
+
+		FVector2D relativeVelocity =
+			(contact.BodyB->LinearVelocity + angularLinearVelocityB) -
+			(contact.BodyA->LinearVelocity + angularLinearVelocityA);
+
+		FVector2D tangent = relativeVelocity - FVector2D::DotProduct(relativeVelocity, contact.Normal) * contact.Normal;
+
+		if (FVector2D::NearlyEqual(tangent, FVector2D::Zero())) {
+			continue;
+		}
+		else {
+			tangent = FVector2D::Normalize(tangent);
+		}
+
+		float raPerpDotT = FVector2D::DotProduct(raPerp, tangent);
+		float rbPerpDotT = FVector2D::DotProduct(rbPerp, tangent);
+
+		float denom = contact.BodyA->InvMass + contact.BodyB->InvMass +
+			(raPerpDotT * raPerpDotT) * contact.BodyA->InvInertia +
+			(rbPerpDotT * rbPerpDotT) * contact.BodyB->InvInertia;
+
+		float jt = -FVector2D::DotProduct(relativeVelocity, tangent);
+		jt /= denom;
+		jt /= static_cast<float>(contact.ContactCount);
+
+		FVector2D frictionImpulse;
+		float j = jList[i];
+
+		if (std::abs(jt) <= j * sf) {
+			frictionImpulse = tangent * jt;
+		}
+		else {
+			frictionImpulse = tangent * df * -j;
+		}
+
+		frictionImpulseList[i] = frictionImpulse;
+	}
+
+	for (int i = 0; i < contact.ContactCount; i++) {
+		FVector2D frictionImpulse = frictionImpulseList[i];
+		FVector2D ra = raList[i];
+		FVector2D rb = rbList[i];
+
+		std::cout << "Friction impulse: " << frictionImpulse.X << ", " << frictionImpulse.Y << std::endl;
+
+		FVector2D res = frictionImpulse.ReverseVector() * contact.BodyA->InvMass;
+
+		contact.BodyA->LinearVelocity += res ;
+		//contact.BodyA->AngularVelocity += -FVector2D::Cross(ra, frictionImpulse) * contact.BodyA->InvInertia;
+		contact.BodyB->LinearVelocity += frictionImpulse * contact.BodyB->InvMass;
+		//contact.BodyB->AngularVelocity += FVector2D::Cross(rb, frictionImpulse) * contact.BodyB->InvInertia;
+	}
 }
 
 AlignAxisBoundingBox& Level::GetAABB(SActor* obj)

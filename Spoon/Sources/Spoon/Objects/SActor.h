@@ -139,14 +139,18 @@ public:
 
 	// physics
 	FVector2D LinearVelocity;
-	float RotationalVelocity;
 	float Restitution;
 	float Magnitude;
 	float Density;
 	bool bNeedToUpdateBoundingBox;
 	AlignAxisBoundingBox AABB;
 
-	float LifeSpan;
+	float AngularVelocity;
+	float StaticFriction;
+	float DynamicFriction;
+
+	void AddLinearVelocity(const FVector2D& velocity);
+	void AddAngularVelocity(float velocity);
 
 protected:
 

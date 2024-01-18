@@ -41,6 +41,11 @@ bool SCircleObject::IsInBound(const FVector2D& _loc)
 
 float SCircleObject::CalculateRotationInertia()
 {
+	if (bIsStatic)
+	{
+		return 0.f;
+	}
+
 	// Formule is : 1/2 * m * R^2
 	float radius = GetSize().X / 2.f;
 	return (1.f / 2.f) * GetMass() * ( radius * radius );

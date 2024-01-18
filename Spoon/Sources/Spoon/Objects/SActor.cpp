@@ -9,7 +9,6 @@ SActor::SActor() :
 	bIsStatic(false),
 	bIsColliding(false),
 	LinearVelocity(FVector2D::Zero()),
-	RotationalVelocity(0.f),
 	Restitution(0.5f),
 	Magnitude(8.f),
 	Density(1.f),
@@ -24,7 +23,10 @@ SActor::SActor() :
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
 	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
-	LifeSpan(-1.f)
+	AngularVelocity(0.f),
+	StaticFriction(0.6f),
+	DynamicFriction(0.4f)
+
 {
 }
 
@@ -39,16 +41,6 @@ void SActor::BeginPlay()
 
 void SActor::Tick(float DeltaTime)
 {
-	if (LifeSpan != -1)
-	{
-		LifeSpan -= DeltaTime;
-
-		if (LifeSpan <= 0.f)
-		{
-			DestroyActor();
-		}
-	}
-
 	for (auto& i : ComponentList)
 	{
 		i->OnUpdate(DeltaTime);
@@ -126,7 +118,8 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	}
 
 	ObjectTransform.Location += LinearVelocity * DeltaTime;
-	ObjectTransform.Rotation += RotationalVelocity * DeltaTime;
+	ObjectTransform.Rotation += AngularVelocity * DeltaTime;
+
 	Force = FVector2D::Zero();
 }
 
@@ -217,6 +210,24 @@ void SActor::UpdateMass()
 
 	Mass = Density * ObjectTransform.Size.X * ObjectTransform.Size.Y;
 	InvMass = bIsStatic ? 0.f : 1.f / Mass;
+}
+
+void SActor::AddLinearVelocity(const FVector2D& velocity)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+	LinearVelocity += velocity;
+}
+
+void SActor::AddAngularVelocity(float velocity)
+{
+	if (bIsStatic)
+	{
+		return;
+	}
+	AngularVelocity += velocity;
 }
 
 bool SActor::IsInBound(const FVector2D& _loc)
