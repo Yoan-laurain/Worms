@@ -11,6 +11,7 @@
 #include <implot.h>
 
 #include "Core/Application.h"
+#include <Core/Level.h>
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
@@ -79,6 +80,8 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 		return;
 	}
 	std::vector<SShapeComponent*> CompList;
+
+	std::unique_lock<std::mutex> lock(_mutex);
 	if(!_currentActor->GetAllComponentType<SShapeComponent*>(CompList))
 		return;
 
@@ -99,7 +102,39 @@ void SfmlWindow::Draw(const SActor* _currentActor)
 
 		comp->GetOwner()->bIsColliding = false;
 	}
+
 }
+
+#if DEBUG
+void SfmlWindow::DrawDebugPoint(const FTransform& transform)
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+	sf::CircleShape circle;
+	circle.setRadius(transform.Size.X);
+	circle.setOrigin(transform.Size.X, transform.Size.Y);
+	circle.setPosition(sf::Vector2f(transform.Location.X, transform.Location.Y));
+	circle.setFillColor(sf::Color::Red);
+	circle.setOutlineColor(sf::Color::Green);
+	circle.setOutlineThickness(1);
+	WindowRef->draw(circle);
+}
+
+void SfmlWindow::DrawAllDebugs(std::vector<DebugShapeData>& DebugShapes)
+{
+	for (auto& shape : DebugShapes)
+	{
+		switch (shape.Shape)
+		{
+			case DebugShape::SPHERE :
+					DrawDebugPoint(shape.Transform);
+					break;
+				default:
+					break;
+		}
+	}
+}
+
+#endif
 
 unsigned int SfmlWindow::GetWidth() const
 {
@@ -116,6 +151,14 @@ void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circ
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
 	_circle.setRadius(_component->Radius);
 
+	sf::Vertex line[] =
+	{
+		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y)),
+		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X + _component->Radius, _component->GetOwner()->GetLocation().Y + _component->Radius))
+	};
+
+	WindowRef->draw(line, 2, sf::Lines);
+
 	SetCommonShapeProperties(_circle, _component);
 }
 
@@ -130,10 +173,10 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 
 		// For debug purpose only
-		sf::CircleShape point(5);
-		point.setOrigin(5, 5);
+		sf::CircleShape point( 3 );
+		point.setOrigin( 3, 3 );
 		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
-		point.setFillColor(sf::Color::Red);
+		point.setFillColor(sf::Color::White);
 		WindowRef->draw(point);
 		// end debug
 	}
@@ -230,6 +273,7 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 	{
 		MouseMovedEvent tmpevent(FVector2D(event.mouseMove.x, event.mouseMove.y));
 		EventCallBack(tmpevent);
+		m_mousePos = tmpevent.GetLoc();
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
 	{
@@ -243,7 +287,6 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 	}
 	// TODO mettre le reste des events qui pourrais servire ici.
 }
-
 
 // TODO faire des classe et fonction plus jolie pour nos bouton ImGui
 void SfmlWindow::DrawImGuiWin()
@@ -271,6 +314,8 @@ void SfmlWindow::DrawImGuiWin()
 	}
 	ImGui::Text("Draw Time : %.2f ms, FPS : %d", m_DrawTime, currFrameRate);
 	ImGui::Text("Logic Time : %.2f ms", TickTime);
+
+	ImGui::Text("Entity count : %d", Application::Get().GetWorld()->GetEntityCount());
 
 	ImGui::Separator();
 

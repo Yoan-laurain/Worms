@@ -23,7 +23,8 @@ SActor::SActor() :
 	Mass(1.f),
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
-	Gravity(FVector2D(0.f, MathLibrary::Gravity))
+	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
+	LifeSpan(-1.f)
 {
 }
 
@@ -38,6 +39,16 @@ void SActor::BeginPlay()
 
 void SActor::Tick(float DeltaTime)
 {
+	if (LifeSpan != -1)
+	{
+		LifeSpan -= DeltaTime;
+
+		if (LifeSpan <= 0.f)
+		{
+			DestroyActor();
+		}
+	}
+
 	for (auto& i : ComponentList)
 	{
 		i->OnUpdate(DeltaTime);

@@ -13,6 +13,9 @@ class KeyPressedEvent;
 class AppTickEvent;
 class WindowResizeEvent;
 class MouseMovedEvent;
+class InputMgr;
+class TextureMgr;
+class MouseButtonPressedEvent;
 
 class SPOON_API Application
 {
@@ -56,6 +59,7 @@ private:
 	bool OnAppTick(AppTickEvent& e);
 	bool OnWindowResize(WindowResizeEvent& e);
 	bool OnMouseMoved(MouseMovedEvent& e);
+	bool OnMousePressed(MouseButtonPressedEvent& e);
 
 	void TickRun();
 	void OnRender();
@@ -81,5 +85,6 @@ private:
 	std::vector<SPlayer*> Players;
 	InputMgr* _InputMgr;
 	TextureMgr* _TextureMgr;
+	std::mutex _mutex;
 
 };

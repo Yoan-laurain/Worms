@@ -151,9 +151,9 @@ struct OBJECT_API Vector2D
 		return std::abs(a - b) < amount;
 	}
 
-	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right)
+	static bool NearlyEqual(const Vector2D<T>& _left, const Vector2D<T>& _right, float amount = VerySmallAmount)
 	{
-		return GetSquareLength(_left, _right) < VerySmallAmount * VerySmallAmount;
+		return NearlyEqual(_left.X, _right.X, amount) && NearlyEqual(_left.Y, _right.Y, amount);
 	}
 
 };

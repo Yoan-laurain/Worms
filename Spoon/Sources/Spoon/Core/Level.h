@@ -6,6 +6,17 @@
 
 class SActor;
 
+enum DebugShape
+{
+	SPHERE,
+};
+
+struct DebugShapeData
+{
+	FTransform Transform;
+	DebugShape Shape;
+};
+
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
 // Faire en sorte d'avoir un objet levels qui gere tous seul les entités qui seront crée.
@@ -36,6 +47,9 @@ public:
 		return tmp;
 	}
 
+	void ClearDebugShapes();
+	int GetEntityCount() const;
+
 protected:
 	
 	void HandleCollision(SActor* obj);
@@ -44,7 +58,7 @@ protected:
 private:
 
 	void UpdateEntity(double deltatime);
-	static void ResolveCollision(Manifold& contact);
+	void ResolveCollision(Manifold& contact);
 
 	AlignAxisBoundingBox& GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	
@@ -53,6 +67,9 @@ private:
 	void RemoveObject(SActor* obj);
 
 	void AddObject(SActor* obj);
+	void AddDebugShape(const DebugShapeData& shape);
+
+	void NarrowPhase(SActor* entity, SActor* obj);
 
 protected:
 
@@ -61,6 +78,7 @@ protected:
 
 	std::vector<std::unique_ptr<SActor>> AddEntityList;
 
-	bool bIsListBeingEdit = false;
+	std::vector<DebugShapeData> DebugShapes;
 
+	bool bIsListBeingEdit;
 };

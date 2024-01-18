@@ -1,11 +1,13 @@
 #include "Level.h"
 #include "Objects/SActor.h"
 #include "Library/Collision.h"
-#include <snpch.h>
 #include "Application.h"
+#include "Objects/Prefab/CircleObject.h"
+#include <snpch.h>
 
 Level::Level() : 
-	bIsListBeingEdit(false)
+	bIsListBeingEdit(false),
+	DebugShapes()
 {
 }
 
@@ -29,7 +31,6 @@ void Level::UpdateEntity(double deltatime)
 		bIsListBeingEdit = false;
 	}
 
-
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != nullptr)
@@ -51,6 +52,22 @@ void Level::ResolveCollision(Manifold& contact)
 	SActor* bodyA = contact.BodyA;
 	SActor* bodyB = contact.BodyB;
 	const FVector2D normal = contact.Normal;
+
+#if DEBUG
+
+	DebugShapeData shape;
+	shape.Shape = DebugShape::SPHERE;
+	shape.Transform = FTransform(contact.Contact1, FVector2D(2.f, 2.f));
+
+	AddDebugShape( shape );
+
+	if (contact.ContactCount > 1)
+	{
+		shape.Transform = FTransform(contact.Contact2, FVector2D(2.f, 2.f));
+		AddDebugShape( shape );
+	}
+
+#endif
 
 	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 
@@ -155,6 +172,33 @@ void Level::AddObject(SActor* obj)
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
 }
 
+void Level::AddDebugShape(const DebugShapeData& shape)
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+	
+	for (const auto& s : DebugShapes)
+	{
+		if (FVector2D::NearlyEqual(s.Transform.Location , shape.Transform.Location, 0.1f))
+		{
+			return;
+		}
+	}	
+
+	DebugShapes.push_back(shape);
+}
+
+void Level::ClearDebugShapes()
+{
+	std::unique_lock<std::mutex> lock(_mutex);
+
+	DebugShapes.clear();
+}
+
+int Level::GetEntityCount() const
+{
+	return EntityList.size();
+}
+
 void Level::HandleCollision( SActor* obj )
 {
 	for (const auto& entity : EntityList)
@@ -175,28 +219,29 @@ void Level::HandleCollision( SActor* obj )
 				continue;
 			}
 
-			SActor* bodyA = entity.get();
-			SActor* bodyB = obj;
-
-			Manifold collision;
-
-			if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SCircleObject*>(bodyB), collision))
-			{
-
-				ResolveCollision(collision);
-			}
-			else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(bodyA), dynamic_cast<SPolygonObject*>(bodyB), collision))
-			{
-				ResolveCollision(collision);
-			}
+			NarrowPhase( entity.get(), obj );
 		}
+	}
+}
+
+void Level::NarrowPhase(SActor* entity, SActor* obj)
+{
+	Manifold collision;
+
+	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
+	}
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	{
+		ResolveCollision(collision);
 	}
 }
