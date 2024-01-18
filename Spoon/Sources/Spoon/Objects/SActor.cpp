@@ -118,7 +118,7 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	}
 
 	ObjectTransform.Location += LinearVelocity * DeltaTime;
-	AddRotation(AngularVelocity * DeltaTime * 50<);
+	AddRotation(AngularVelocity * DeltaTime * 50);
 
 	std::cout << ObjectTransform.Rotation << std::endl;
 
