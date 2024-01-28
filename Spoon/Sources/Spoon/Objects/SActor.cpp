@@ -120,8 +120,6 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	ObjectTransform.Location += LinearVelocity * DeltaTime;
 	AddRotation(AngularVelocity * DeltaTime * 50);
 
-	std::cout << ObjectTransform.Rotation << std::endl;
-
 	Force = FVector2D::Zero();
 }
 

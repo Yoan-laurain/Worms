@@ -186,7 +186,7 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
-	drawShape.setRotation(_component->GetOwner()->GetTransform().Rotation * (180 / MathLibrary::Pi));
+	//drawShape.setRotation(_component->GetOwner()->GetTransform().Rotation * (180 / MathLibrary::Pi));
 
 	if (_component->texturePath != "")
 	{
