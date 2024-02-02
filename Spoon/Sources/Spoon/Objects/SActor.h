@@ -3,6 +3,7 @@
 #include "Objects/SObject.h"
 #include "Library/TStruct.h"
 #include "Components/SComponent.h"
+#include "Library/Manifold.h"
 
 #include <Library/AlignAxisBoudingBox.h>
 
@@ -25,6 +26,7 @@ public:
 
 	virtual ~SActor();
 
+	void MarkActorToDestruction();
 	void DestroyActor();
 
 	inline class Level* GetWorld() const { return WorldRef; };
@@ -39,6 +41,7 @@ public:
 	virtual void Move(const FVector2D& loc);
 
 	FVector2D GetSize() const;
+	FVector2D GetForwardVector() const;
 
 	void SetSize(const FVector2D& size);
 
@@ -51,6 +54,7 @@ public:
 	/************************************************************************/
 
 	virtual bool IsInBound(const FVector2D& _loc);
+	virtual void OnCollide(Manifold& contact);
 
 	/************************************************************************/
 	/* Component Getter														*/
@@ -147,6 +151,7 @@ public:
 	AlignAxisBoundingBox AABB;
 
 	float LifeSpan;
+	bool bNeedToDestroy;
 
 protected:
 

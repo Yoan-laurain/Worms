@@ -28,6 +28,13 @@ void Field::GenerateFieldCurve()
         FVector2D dt = point - GetLocation();
 
         GetPolygonComponent()->Points.push_back( dt );
+
+        if (i != 0 && i < numberOfCurvePoints - 1)
+        {
+            FTransform spawnPoint = FTransform(point, FVector2D(0.f, 0.f), 0.f);
+            AddSpawnPoint(spawnPoint);
+        }
+
     }
 
     // Add symetric points to close convex
@@ -38,16 +45,6 @@ void Field::GenerateFieldCurve()
 
         GetPolygonComponent()->Points.push_back(point);
     }
-
-    for (int i = 0; i < Config::MaxPlayers; ++i)
-    {
-        FTransform transform;
-        transform.Location = GetLocation() +  GetPolygonComponent()->Points[i];
-        transform.Rotation = 0.f;
-
-        AddSpawnPoint(transform);
-    }
-
 }
 
 FTransform& Field::GetSpawnPoint()

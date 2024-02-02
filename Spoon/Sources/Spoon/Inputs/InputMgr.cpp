@@ -14,17 +14,20 @@ bool InputMgr::Update(float fDeltaTime)
 {
 	for (const auto& p : InputBinds)
 	{
-		const sf::Keyboard::Key& key = p.first;
-		const InputBindInfo& bindInfo = p.second;
-
-		if (sf::Keyboard::isKeyPressed(key))
+		for (const auto& inputBind : p.second)
 		{
-			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 1.f * fDeltaTime);
-		}
-		else
-		{
-			SetPlayerActionState(bindInfo.PlayerIndex, bindInfo.Action, 0.f);
-		}
+			const sf::Keyboard::Key& key = inputBind.Key;
+		
+			if (sf::Keyboard::isKeyPressed(key))
+			{
+				SetPlayerActionState(inputBind.PlayerIndex, inputBind.Action, 1.f * fDeltaTime);
+			}
+			else
+			{
+				
+				SetPlayerActionState(inputBind.PlayerIndex, inputBind.Action, 0.f);
+			}
+		}	
 	}
 
 	return true;
@@ -40,17 +43,15 @@ void InputMgr::AddNewPlayer()
 	unsigned int index = PlayersInputAction.size();
 	PlayersInputAction.push_back(PlayerInputAction(index));
 
-	if (index == 0)
-	{
-#define INIT_DEFAULT_BIND(key, bind) InputBinds.insert(std::make_pair(key, bind));
+#define INIT_DEFAULT_BIND(key, bind) InputBinds[key].push_back(bind);
 #include "Player0KeyboardDefaultBind.h"
 #undef INIT_DEFAULT_BIND
-	}
+	
 }
 
-void InputMgr::BindAction(int playerIndex, InputAction inputAction, std::function<void(float)> func)
+void InputMgr::BindAction(int playerIndex, InputAction inputAction, std::function<void(float)> func, InputType inputType)
 {
-	PlayersInputAction[playerIndex].BindAction(inputAction, func);
+	PlayersInputAction[playerIndex].BindAction(inputAction, func,inputType);
 }
 
 void InputMgr::SetPlayerActionState(unsigned playerIndex, InputAction action, float value)
@@ -59,8 +60,18 @@ void InputMgr::SetPlayerActionState(unsigned playerIndex, InputAction action, fl
 	assert(playerIndex < PlayersInputAction.size());
 #endif
 
-	PlayersInputAction[playerIndex].SetInputAction(action, value);
+	InputActionInfo& info = PlayersInputAction[playerIndex].InputActionsInfo.at(action);
+
+	if (value != 0.f)
+		PlayersInputAction[playerIndex].SetInputAction(action, value);
+	else if (value == 0.f && info.HasBeenPressed)
+	{
+		PlayersInputAction[playerIndex].OnReleased(action);
+		info.HasBeenPressed = false;
+	}
 }
 
-InputMgr::InputBindInfo::InputBindInfo(unsigned playerIndex, InputAction action): PlayerIndex(playerIndex), Action(action)
-{}
+InputBindInfo::InputBindInfo(unsigned playerIndex, InputAction action, sf::Keyboard::Key key)
+	: PlayerIndex(playerIndex), Action(action), Key(key)
+{
+}

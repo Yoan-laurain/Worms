@@ -1,7 +1,6 @@
 #include "FragGrenade.h"
 #include <iostream>
 
-void FragGrenade::DoDamage()
+void FragGrenade::DoDamage(SActor* target)
 {
-	std::cout << "FragGrenade::DoDamage()" << std::endl;
 }

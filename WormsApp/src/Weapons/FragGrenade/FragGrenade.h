@@ -7,6 +7,6 @@ class FragGrenade : public WeaponStrategy
 	public:
 
 		/* WeaponStrategy IMPLEMENTATION */
-		void DoDamage() override;
+		void DoDamage(SActor* target) override;
 		/* END WeaponStrategy IMPLEMENTATION */
 };

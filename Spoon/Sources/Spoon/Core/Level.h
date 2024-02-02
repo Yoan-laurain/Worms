@@ -49,6 +49,7 @@ public:
 
 	void ClearDebugShapes();
 	int GetEntityCount() const;
+	void ResolveCollision(Manifold& contact);
 
 protected:
 	
@@ -58,7 +59,6 @@ protected:
 private:
 
 	void UpdateEntity(double deltatime);
-	void ResolveCollision(Manifold& contact);
 
 	AlignAxisBoundingBox& GetAABB(SActor* obj);
 	void HandleObjectOutOfWindow(SActor* obj);	

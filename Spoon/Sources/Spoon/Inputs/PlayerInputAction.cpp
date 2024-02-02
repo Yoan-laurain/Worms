@@ -18,11 +18,22 @@ void PlayerInputAction::SetInputAction(InputAction action, float value)
 	//std::cout << "Player " << PlayerIndex << ", Action: " << (int) action << ", Update: " << value << std::endl;
 #endif
 
+	if (info.InputType == InputType::Pressed && info.HasBeenPressed)
+		return;
+
 	info.Value = value;
 	for (auto callback : info.Callbacks)
 	{
 		callback(value);
 	}
+
+	info.HasBeenPressed = true;
+}
+
+void PlayerInputAction::OnReleased(InputAction action)
+{
+	InputActionInfo& info = InputActionsInfo.at(action);
+	info.HasBeenPressed = false;
 }
 
 float PlayerInputAction::GetInputActionValue(InputAction action) const
@@ -40,10 +51,11 @@ bool PlayerInputAction::IsInputActionReleased(InputAction action) const
 	return InputActionsInfo.at(action).Value == 0.f;
 }
 
-void PlayerInputAction::BindAction(InputAction inputAction, std::function<void(float)> func)
+void PlayerInputAction::BindAction(InputAction inputAction, std::function<void(float)> func, InputType inputType)
 {
 	InputActionsInfo.at(inputAction).Callbacks.push_back(func);
+	InputActionsInfo.at(inputAction).InputType = inputType;
 }
 
-PlayerInputAction::InputActionInfo::InputActionInfo(): Value(0.f), Callbacks()
+InputActionInfo::InputActionInfo(): Value(0.f), Callbacks()
 {}

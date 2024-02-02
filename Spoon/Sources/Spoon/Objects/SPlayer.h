@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Objects/Prefab/RectangleObject.h"
+#include "../../../../build/Spoon/InputType.h"
 
 enum class InputAction;
 
@@ -16,5 +17,5 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 	
-	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func);
+	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
 };

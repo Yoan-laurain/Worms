@@ -24,7 +24,8 @@ SActor::SActor() :
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
 	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
-	LifeSpan(-1.f)
+	LifeSpan(-1.f),
+	bNeedToDestroy(false)
 {
 }
 
@@ -62,6 +63,11 @@ void SActor::Tick(float DeltaTime)
 	}
 
 	UpdateObjectPhysics(DeltaTime);
+}
+
+void SActor::MarkActorToDestruction()
+{
+	bNeedToDestroy = true;
 }
 
 void SActor::DestroyActor()
@@ -177,6 +183,12 @@ FVector2D SActor::GetSize() const
 	return ObjectTransform.Size;
 }
 
+FVector2D SActor::GetForwardVector() const
+{
+	FVector2D direction = FVector2D(cosf(ObjectTransform.Rotation), sinf(ObjectTransform.Rotation));
+	return direction.GetSafeNormal();
+}
+
 void SActor::SetSize(const FVector2D& size)
 {
 	std::unique_lock<std::mutex> _lock(_mutex);
@@ -230,4 +242,14 @@ bool SActor::IsInBound(const FVector2D& _loc)
 		return true;
 	}
 	return false;
+}
+
+void SActor::OnCollide(Manifold& contact)
+{
+	if ( contact.BodyA == nullptr || contact.BodyB == nullptr)
+	{
+		return;
+	}
+
+	GetWorld()->ResolveCollision(contact);
 }

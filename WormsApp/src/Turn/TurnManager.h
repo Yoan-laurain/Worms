@@ -15,9 +15,10 @@ class TurnManager
         void unregisterObserver(ITurnObserver* observer);
         void nextTurn();
 
+        int currentPlayer;
+
     private:
         void notifyObservers();
     
-        int currentPlayer;
         std::vector<ITurnObserver*> observers;
 };

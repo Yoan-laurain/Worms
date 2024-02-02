@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Library/TVector.h"
 #include <snpch.h>
+#include "../../../../build/Spoon/InputType.h"
 
 class Level;
 class Window;
@@ -43,7 +44,7 @@ public:
 
 	void AddNewPlayer(SPlayer* player);
 
-	bool BindAction(SPlayer* player,InputAction inputAction, std::function<void(float)> func);
+	bool BindAction(SPlayer* player,InputAction inputAction, std::function<void(float)> func, InputType inputType);
 
 	FVector2D GetScreenSize() const;
 

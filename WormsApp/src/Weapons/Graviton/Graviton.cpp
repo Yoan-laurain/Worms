@@ -1,7 +1,6 @@
 #include "Graviton.h"
 #include <iostream>
 
-void Graviton::DoDamage()
+void Graviton::DoDamage(SActor* target)
 {
-	std::cout << "Graviton damage" << std::endl;
 }

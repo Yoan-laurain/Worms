@@ -7,13 +7,14 @@ WormLevel::WormLevel() : m_Field(nullptr)
 {
 }
 
-void WormLevel::CreatePlayer(const FTransform& SpawnLocation)
+void WormLevel::CreatePlayer(const FTransform& SpawnLocation,int PlayerId)
 {
 	FTransform transform = SpawnLocation;
-	transform.Size = FVector2D(50.f, 50.f);
-	transform.Location += transform.Size / 2.f;
+	transform.Size = FVector2D(25.f, 25.f);
+	transform.Location -= transform.Size;
 
 	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
+	playerPtr->PlayerId = PlayerId;
 
 	m_TurnManager->registerObserver(playerPtr);
 }
@@ -29,6 +30,6 @@ void WormLevel::BeginPlay()
 
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
-		//CreatePlayer(m_Field->GetSpawnPoint());
+		CreatePlayer(m_Field->GetSpawnPoint(),i);
 	}
 }

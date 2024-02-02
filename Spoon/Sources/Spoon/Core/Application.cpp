@@ -155,7 +155,7 @@ FVector2D Application::GetScreenSize() const
 	return ScreenSize;
 }
 
-bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func)
+bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func, InputType inputType)
 {
 	int index = -1;
 	for (int i = 0; i < Players.size(); ++i)
@@ -175,7 +175,7 @@ bool Application::BindAction(SPlayer* player, InputAction inputAction, std::func
 	}
 #endif
 
-	_InputMgr->BindAction(index, inputAction, func);
+	_InputMgr->BindAction(index, inputAction, func,inputType);
 	return true;
 }
 

@@ -1,5 +1,6 @@
 #include "TurnManager.h"
 #include "ITurnObserver.h"
+#include <iostream>
 
 TurnManager::TurnManager() : currentPlayer(1)
 {
@@ -33,7 +34,7 @@ void TurnManager::unregisterObserver(ITurnObserver* observer)
 
 void TurnManager::nextTurn()
 {
-    currentPlayer = (currentPlayer % 2) + 1;
+    currentPlayer = currentPlayer == 1 ? 0 : 1;
     notifyObservers();
 }
 

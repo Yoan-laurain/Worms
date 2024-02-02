@@ -42,7 +42,18 @@ void Level::UpdateEntity(double deltatime)
 				HandleCollision(entity.get());
 			}
 
-			HandleObjectOutOfWindow(entity.get());
+			if (entity.get() != nullptr)
+			{
+				HandleObjectOutOfWindow(entity.get());
+			}
+		}
+	}
+
+	for (const auto& entity : EntityList)
+	{
+		if (entity.get() != nullptr && entity.get()->bNeedToDestroy)
+		{
+			entity->DestroyActor();
 		}
 	}
 }
@@ -128,6 +139,11 @@ AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 
 void Level::HandleObjectOutOfWindow(SActor* obj)
 {
+	if (obj == nullptr )
+	{
+		return;
+	}
+	
 	AlignAxisBoundingBox AABB = GetAABB(obj);
 
 	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > Application::Get().GetScreenSize().X || AABB.Min.Y > Application::Get().GetScreenSize().Y)
@@ -168,8 +184,9 @@ void Level::AddObject(SActor* obj)
 		std::cout << "Objet already in the list" << std::endl;
 		return;
 	}
-
+	bIsListBeingEdit = true;
 	AddEntityList.push_back(std::move(std::unique_ptr<SActor>(obj)));
+	bIsListBeingEdit = false;
 }
 
 void Level::AddDebugShape(const DebugShapeData& shape)
@@ -201,6 +218,11 @@ int Level::GetEntityCount() const
 
 void Level::HandleCollision( SActor* obj )
 {
+	if (obj == nullptr)
+	{
+		return;
+	}
+
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)
@@ -210,16 +232,19 @@ void Level::HandleCollision( SActor* obj )
 				continue;
 			}
 
-			AlignAxisBoundingBox& firstAABB = GetAABB(entity.get());
-			AlignAxisBoundingBox& secondAABB = GetAABB(obj);
-
-			// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
-			if (Collision::IntersectAABBs(firstAABB, secondAABB) == false)
+			if (entity.get())
 			{
-				continue;
-			}
+				AlignAxisBoundingBox& firstAABB = GetAABB(entity.get());
+				AlignAxisBoundingBox& secondAABB = GetAABB(obj);
 
-			NarrowPhase( entity.get(), obj );
+				// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
+				if (Collision::IntersectAABBs(firstAABB, secondAABB) == false)
+				{
+					continue;
+				}
+
+				NarrowPhase(entity.get(), obj);
+			}
 		}
 	}
 }
@@ -230,18 +255,22 @@ void Level::NarrowPhase(SActor* entity, SActor* obj)
 
 	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		ResolveCollision(collision);
+		entity->OnCollide(collision);
+		obj->OnCollide(collision);
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		ResolveCollision(collision);
+		entity->OnCollide(collision);
+		obj->OnCollide(collision);
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		ResolveCollision(collision);
+		entity->OnCollide(collision);
+		obj->OnCollide(collision);
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		ResolveCollision(collision);
+		entity->OnCollide(collision);
+		obj->OnCollide(collision);
 	}
 }

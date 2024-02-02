@@ -1,13 +1,11 @@
 #include "WeaponStrategy.h"
 
-WeaponStrategy::WeaponStrategy() : 
-	currentAmunition(0),
-	maxAmunition(0),
-	damage(0)
+
+WeaponStrategy::WeaponStrategy(int maxAmunition, int damage) : maxAmunition(maxAmunition), damage(damage), currentAmunition(maxAmunition)
 {
 }
 
-void WeaponStrategy::DoDamage()
+void WeaponStrategy::DoDamage(SActor* target)
 {
 	
 }
@@ -15,4 +13,16 @@ void WeaponStrategy::DoDamage()
 void WeaponStrategy::Reload()
 {
 	currentAmunition = maxAmunition;
+}
+
+void WeaponStrategy::Shoot(Level& world, FTransform shootingPoint)
+{
+	if (currentAmunition > 0)
+	{
+		currentAmunition--;
+	}
+	else
+	{
+		Reload();
+	}
 }
