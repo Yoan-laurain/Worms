@@ -1,8 +1,8 @@
 #include "SimpleGun.h"
+#include "../../Player/WormsPlayer.h"
+#include "Bullet/Bullet.h"
 #include <Spoon/Core/Level.h>
 #include <iostream>
-#include "../Bullet.h"
-#include "../../Player/WormsPlayer.h"
 
 SimpleGun::SimpleGun() : WeaponStrategy( 2,50)
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Objects/Prefab/RectangleObject.h"
-#include "../../../../build/Spoon/InputType.h"
+#include <Inputs/PlayerInputAction.h>
 
 enum class InputAction;
 

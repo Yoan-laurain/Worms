@@ -14,6 +14,7 @@ class TurnManager
         void registerObserver(ITurnObserver* observer);
         void unregisterObserver(ITurnObserver* observer);
         void nextTurn();
+        void OnEndGame();
 
         int currentPlayer;
 

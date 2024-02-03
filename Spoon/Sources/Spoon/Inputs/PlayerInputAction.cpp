@@ -1,5 +1,6 @@
 #include "PlayerInputAction.h"
 #include "InputAction.h"
+#include "InputType.h"
 
 PlayerInputAction::PlayerInputAction(unsigned playerIndex): PlayerIndex(playerIndex)
 {

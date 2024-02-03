@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PlayerInputAction.h"
-#include "../../../../build/Spoon/InputType.h"
 
 #include <map>
 #include <vector>

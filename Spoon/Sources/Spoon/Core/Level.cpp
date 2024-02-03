@@ -42,10 +42,7 @@ void Level::UpdateEntity(double deltatime)
 				HandleCollision(entity.get());
 			}
 
-			if (entity.get() != nullptr)
-			{
-				HandleObjectOutOfWindow(entity.get());
-			}
+			HandleObjectOutOfWindow(entity.get());	
 		}
 	}
 
@@ -139,11 +136,6 @@ AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
 
 void Level::HandleObjectOutOfWindow(SActor* obj)
 {
-	if (obj == nullptr )
-	{
-		return;
-	}
-	
 	AlignAxisBoundingBox AABB = GetAABB(obj);
 
 	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > Application::Get().GetScreenSize().X || AABB.Min.Y > Application::Get().GetScreenSize().Y)
@@ -218,11 +210,6 @@ int Level::GetEntityCount() const
 
 void Level::HandleCollision( SActor* obj )
 {
-	if (obj == nullptr)
-	{
-		return;
-	}
-
 	for (const auto& entity : EntityList)
 	{
 		if (entity.get() != obj && entity.get() != nullptr)

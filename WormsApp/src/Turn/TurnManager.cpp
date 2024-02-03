@@ -38,6 +38,12 @@ void TurnManager::nextTurn()
     notifyObservers();
 }
 
+void TurnManager::OnEndGame()
+{
+    std::cout << "Game over" << std::endl;
+    exit(0);
+}
+
 void TurnManager::notifyObservers()
 {
     for (const auto& weakObserver : observers)

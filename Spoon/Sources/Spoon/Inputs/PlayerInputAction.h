@@ -4,8 +4,8 @@
 
 #include <functional>
 #include <vector>
-#include "../../../../build/Spoon/InputType.h"
 
+enum class InputType;
 enum class InputAction;
 
 struct InputActionInfo

@@ -4,8 +4,9 @@
 #include "Inputs/InputAction.h"
 #include "Spoon/Core/Level.h"
 #include "Objects/Components/SShapeComponent.h"
-#include <Objects/Prefab/CircleObject.h>
 #include "../Levels/WormLevel.h"
+#include <Objects/Prefab/CircleObject.h>
+#include <Inputs/InputType.h>
 
 WormsPlayer::WormsPlayer() :
 	weaponStrategy(nullptr),
@@ -116,6 +117,9 @@ bool WormsPlayer::OnDamageTaken(int damage)
 	if (currentHealth <= 0)
 	{
 		MarkActorToDestruction();
+
+		WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
+		level->m_TurnManager->OnEndGame();
 	}
 
 	return currentHealth > 0;

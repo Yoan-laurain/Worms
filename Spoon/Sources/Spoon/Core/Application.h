@@ -2,7 +2,7 @@
 #include "Core.h"
 #include "Library/TVector.h"
 #include <snpch.h>
-#include "../../../../build/Spoon/InputType.h"
+#include <Inputs/PlayerInputAction.h>
 
 class Level;
 class Window;

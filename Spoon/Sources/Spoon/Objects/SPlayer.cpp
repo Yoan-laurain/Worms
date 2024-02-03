@@ -1,6 +1,6 @@
 #include "Objects/SPlayer.h"
 #include "Core/Application.h"
-#include "../../../../build/Spoon/InputType.h"
+#include "Inputs/InputAction.h"
 
 SPlayer::SPlayer()
 {
