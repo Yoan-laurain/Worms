@@ -10,7 +10,8 @@ Bullet::Bullet()
 
 Bullet::~Bullet()
 {
-	OnDestroy();
+	WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
+	level->m_TurnManager->nextTurn();
 }
 
 void Bullet::OnCollide(Manifold& contact)
@@ -25,10 +26,4 @@ void Bullet::OnCollide(Manifold& contact)
 			player->GetWeaponStrategy()->DoDamage(player);
 		}
 	}
-}
-
-void Bullet::OnDestroy()
-{
-	WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
-	level->m_TurnManager->nextTurn();
 }
