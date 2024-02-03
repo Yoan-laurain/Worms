@@ -12,6 +12,4 @@ public:
 	/* SActor IMPLEMENTATION */
 	virtual void OnCollide(Manifold& contact) override;
 	/* SActor IMPLEMENTATION */
-
-	void OnDestroy();
 };

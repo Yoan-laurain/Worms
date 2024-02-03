@@ -36,4 +36,5 @@ private :
 	std::unique_ptr<WeaponStrategy> weaponStrategy;
 
 	int maxHealth;
+	bool HasShot;
 };

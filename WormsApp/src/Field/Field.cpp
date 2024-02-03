@@ -49,8 +49,14 @@ void Field::GenerateFieldCurve()
 
 FTransform& Field::GetSpawnPoint()
 {
-    FTransform& spawnPoint = m_SpawnPoints.back();
-    m_SpawnPoints.pop_back();
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0, m_SpawnPoints.size() - 1);
+	int index = dist6(rng);
+	FTransform& spawnPoint = m_SpawnPoints[index];
+
+    m_SpawnPoints.erase(m_SpawnPoints.begin() + index);
+
     return spawnPoint;
 }
 

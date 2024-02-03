@@ -5,19 +5,21 @@
 #include "Spoon/Core/Level.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "../Levels/WormLevel.h"
+#include "../Weapons/FragGrenade/GrenadeLauncher.h"
 #include <Objects/Prefab/CircleObject.h>
 #include <Inputs/InputType.h>
 
 WormsPlayer::WormsPlayer() :
 	weaponStrategy(nullptr),
 	currentHealth(100),
-	maxHealth(100)
+	maxHealth(100),
+	HasShot(false)
 {
 	GetPolygonComponent()->texturePath = "Ressources/WormsPlayer.png";
 	GetPolygonComponent()->name = "WormsPlayer";
 	SetDensity(2.f);
 
-	SetWeaponStrategy( std::make_unique<SimpleGun>() );
+	SetWeaponStrategy( std::make_unique<GrenadeLauncher>() );
 
 	ApplyBinding();
 }
@@ -40,12 +42,15 @@ WeaponStrategy* WormsPlayer::GetWeaponStrategy() const
 
 void WormsPlayer::onTurnChange(int currentWormsPlayer)
 {
-	
+	if (!IsMyTurn())
+		return;
+
+	HasShot = false;
 }
 
 void WormsPlayer::MoveVertical(float value, float sign)
 {
-	if (!IsMyTurn())
+	if (!IsMyTurn() || HasShot)
 		return;
 	
 	if (value > 0.f)
@@ -59,7 +64,7 @@ void WormsPlayer::MoveVertical(float value, float sign)
 
 void WormsPlayer::MoveHorizontal(float value, float sign)
 {
-	if (!IsMyTurn())
+	if (!IsMyTurn() || HasShot)
 		return;
 
 	if (value > 0.f)
@@ -84,15 +89,10 @@ void WormsPlayer::ApplyBinding()
 
 void WormsPlayer::Shoot()
 {
-	if (!IsMyTurn())
-	{
-		std::cout << "Not my turn to shoot as player " << PlayerId << std::endl;
+	if (!IsMyTurn() || HasShot)
 		return;
-	}
-	else
-{
-		std::cout << "My turn to shoot as player " << PlayerId << std::endl;
-	}
+
+	HasShot = true;
 
 	FVector2D location = GetLocation();
 	location.X += GetForwardVector().X * GetSize().X + 10.f;
@@ -106,7 +106,6 @@ void WormsPlayer::Shoot()
 bool WormsPlayer::IsMyTurn()
 {
 	WormLevel* level = static_cast<WormLevel*>(GetWorld());
-	std::cout << "Current player : " << level->m_TurnManager->currentPlayer << " - My player : " << PlayerId << std::endl;
 	return level->m_TurnManager->currentPlayer == PlayerId;
 }
 

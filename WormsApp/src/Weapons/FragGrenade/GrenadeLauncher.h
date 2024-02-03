@@ -2,11 +2,14 @@
 
 #include "../WeaponStrategy.h"
 
-class FragGrenade : public WeaponStrategy
+class GrenadeLauncher : public WeaponStrategy
 {
 	public:
 
+		GrenadeLauncher();
+
 		/* WeaponStrategy IMPLEMENTATION */
 		void DoDamage(SActor* target) override;
+		virtual void Shoot(Level& world, FTransform shootingPoint) override;
 		/* END WeaponStrategy IMPLEMENTATION */
 };
