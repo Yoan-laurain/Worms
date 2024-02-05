@@ -23,7 +23,7 @@ SActor::SActor() :
 	Mass(1.f),
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
-	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
+	OldGravity(FVector2D(0.f, MathLibrary::Gravity)),
 	LifeSpan(-1.f),
 	bNeedToDestroy(false)
 {
@@ -124,7 +124,7 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	}
 
 	// TODO : Get a list of forces
-	LinearVelocity += (Gravity + Force) * DeltaTime;
+	LinearVelocity += (OldGravity + Force) * DeltaTime;
 
 	if (LinearVelocity != FVector2D::Zero())
 	{

@@ -3,11 +3,13 @@
 #include "Library/Collision.h"
 #include "Application.h"
 #include "Objects/Prefab/CircleObject.h"
+#include "Library/MathLibrary.h"
 #include <snpch.h>
 
 Level::Level() : 
 	bIsListBeingEdit(false),
-	DebugShapes()
+	DebugShapes(),
+	Gravity(MathLibrary::Gravity)
 {
 }
 

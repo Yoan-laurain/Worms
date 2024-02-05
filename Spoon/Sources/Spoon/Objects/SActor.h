@@ -38,9 +38,11 @@ public:
 	FVector2D GetLocation() const;
 
 	void SetLocation(const FVector2D& loc);
+
 	virtual void Move(const FVector2D& loc);
 
 	FVector2D GetSize() const;
+
 	FVector2D GetForwardVector() const;
 
 	void SetSize(const FVector2D& size);
@@ -178,7 +180,7 @@ private:
 	float InvMass;
 
 	FVector2D Force;
-	FVector2D Gravity;
+	FVector2D OldGravity;
 
 };
 

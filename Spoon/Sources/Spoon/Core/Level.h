@@ -51,6 +51,12 @@ public:
 	int GetEntityCount() const;
 	void ResolveCollision(Manifold& contact);
 
+	/************************************************************************/
+	/* Physic                                                               */
+	/************************************************************************/
+
+	float GetGravityZ() const { return Gravity; }
+
 protected:
 	
 	void HandleCollision(SActor* obj);
@@ -81,4 +87,9 @@ protected:
 	std::vector<DebugShapeData> DebugShapes;
 
 	bool bIsListBeingEdit;
+
+private:
+
+	float Gravity;
+
 };

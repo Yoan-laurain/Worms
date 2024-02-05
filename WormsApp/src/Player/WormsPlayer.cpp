@@ -27,7 +27,7 @@ WormsPlayer::WormsPlayer() :
 WormsPlayer::~WormsPlayer()
 {
 	WormLevel* level = static_cast<WormLevel*>(GetWorld());
-	level->m_TurnManager->unregisterObserver(this);	 
+	level->m_TurnManager->unregisterObserver(this);
 }
 
 void WormsPlayer::SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy)
