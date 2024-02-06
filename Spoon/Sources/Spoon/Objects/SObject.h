@@ -48,6 +48,12 @@ public:
 
 	uint64 GetUniqueId() const { return UniqueId; }
 
+	void RemoveChild(SObject* child);
+	void AddChild(std::shared_ptr<SObject> child);
+
+	std::vector<std::shared_ptr<SObject>> Children;
+
+
 private:
 
 	uint64 UniqueId;
