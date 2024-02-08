@@ -3,13 +3,13 @@
 #include "../Widget.h"
 #include <string>
 
-class ImageWidget : public Widget 
+class SPOON_API ImageWidget : public Widget
 {
     public:
 
         ImageWidget();
 
-        void render();
+        void render(Window* window) override;
         void SetBackgroundImage(std::string imagePath);
 
     private:

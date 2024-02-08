@@ -1,17 +1,21 @@
 #include "ImageWidget.h"
+#include "../Renderer/DrawingInterface.h"
+#include "Core/Window.h"
 
 ImageWidget::ImageWidget()
 {
 }
 
-void ImageWidget::render()
+void ImageWidget::render(Window* window)
 {
-	if (renderer)
+	if ( !renderer.expired() )
 	{
-		renderer->RenderImage(imagePath, position, size);
+		UpdateWorldPosition();
+		renderer.lock()->RenderImage(window,imagePath,worldPosition, size);
 	}
 }
 
 void ImageWidget::SetBackgroundImage(std::string imagePath)
 {
+	this->imagePath = imagePath;
 }

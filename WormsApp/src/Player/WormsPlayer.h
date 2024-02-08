@@ -4,6 +4,11 @@
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
 #include "Objects/SPlayer.h"
 
+class TextBlockWidget;
+class ImageWidget;
+class ButtonWidget;
+class ProgressBarWidget;
+
 class WormsPlayer : public SPlayer, public ITurnObserver
 {
 	GENERATE()
@@ -23,7 +28,7 @@ public :
 		bool OnDamageTaken(int damage);
 
 		int PlayerId;
-		int currentHealth;
+		float currentHealth;
 private :
 
 	void MoveVertical(float value, float sign);
@@ -32,9 +37,16 @@ private :
 	void Shoot();
 	bool IsMyTurn();
 	
-	// On utilise un pointeur unique pour s'assurer que le Player est le seul � poss�der l'objet
 	std::unique_ptr<WeaponStrategy> weaponStrategy;
+	//TextBlockWidget* healthText;
+	//ImageWidget* healthImage;
+	//ButtonWidget* UpgradeButton;
+	ProgressBarWidget* healthBar;
+	void UpgradeWeapon();
 
-	int maxHealth;
+	float maxHealth;
 	bool HasShot;
+
+protected:
+	void BeginPlay() override;
 };

@@ -1,11 +1,14 @@
 #include "Widget.h"
 #include "Renderer/DrawingInterfaceManager.h"
+#include "WidgetManager.h"
+#include <Objects/SActor.h>
 
 Widget::Widget() : 
     bIsAddedToViewport(false)
     , bIsEnabled(true)
     , visibility(Visibility::VISIBLE)
-    , position(0, 0)
+    , relativePosition(0, 0)
+	, worldPosition(0, 0)
     , size(0, 0)
     , renderer(DrawingInterfaceManager::getInstance().getDrawingInterface())
 {
@@ -13,13 +16,12 @@ Widget::Widget() :
 
 void Widget::RemoveFromParent()
 { 
-    if (parent.expired())
-    {
+    if (parent == nullptr)
+	{
 		return;
 	}
 
-    auto parentPtr = parent.lock();
-    parentPtr->RemoveChild(this);
+    WidgetManager::GetInstance()->RemoveWidget(this);
 }
 
 void Widget::AddToViewport()
@@ -37,17 +39,48 @@ void Widget::SetVisibility(Visibility visibility)
     this->visibility = visibility;
 }
 
-void Widget::SetParent(std::shared_ptr<SObject> parent)
+void Widget::SetParent(std::unique_ptr<SObject> parent)
 {
-    this->parent = parent;
+    this->parent = std::move(parent);   
 }
 
-void Widget::SetPosition(FVector2D position)
+void Widget::SetRelativePosition(FVector2D position)
 {
-	this->position = position;
+	this->relativePosition = position;
 }
 
 void Widget::SetSize(FVector2D size)
 {
 	this->size = size;
+}
+
+void Widget::UpdateWorldPosition()
+{
+	worldPosition = relativePosition;
+	if (parent.get())
+	{
+		SActor* parentActor = dynamic_cast<SActor*>(parent.get());
+
+		if (parentActor)
+		{
+			worldPosition = parentActor->GetLocation() + relativePosition;
+			return;
+		}
+
+		Widget* parentWidget = dynamic_cast<Widget*>(parent.get());
+		if (parentWidget)
+		{
+			worldPosition = parentWidget->worldPosition + relativePosition;
+		}
+	}
+}
+
+bool Widget::IsPointInWidget(const FVector2D& mousePosition)
+{
+	if (mousePosition.X > worldPosition.X && mousePosition.X < worldPosition.X + size.X &&
+		mousePosition.Y > worldPosition.Y && mousePosition.Y < worldPosition.Y + size.Y)
+	{
+		return true;
+	}
+	return false;
 }

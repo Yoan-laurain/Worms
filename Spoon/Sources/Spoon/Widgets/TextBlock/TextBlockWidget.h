@@ -1,17 +1,24 @@
 #pragma once
 
 #include "../Widget.h"
+#include "Library/TColor.h"
 #include <string>
 
-class TextBlockWidget : public Widget
+class SPOON_API TextBlockWidget : public Widget
 {
 	public:
 		TextBlockWidget();
 		virtual ~TextBlockWidget() = default;
 
-		void render() override;
-		void setText(const std::string& text);
+		void render(Window* window) override;
 
+		void setText(const std::string& text);
+		void setColor(const FColor color);
+		void setFontSize(float fontSize);
+
+		float fontSize;
+		std::string text;
 private:
-	std::string text;
+	FColor color;
+
 };

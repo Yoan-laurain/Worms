@@ -1,17 +1,17 @@
 #include "DrawingInterfaceManager.h"
 
-DrawingInterfaceManager& DrawingInterfaceManager::getInstance()
+DrawingInterfaceManager& DrawingInterfaceManager::getInstance() 
 {
-	static DrawingInterfaceManager instance;
-	return instance;
+    static DrawingInterfaceManager instance;
+    return instance;
+}
+
+void DrawingInterfaceManager::setDrawingInterface(std::shared_ptr<DrawingInterface> interface)
+{
+    drawingInterface = std::move(interface);
 }
 
 std::shared_ptr<DrawingInterface> DrawingInterfaceManager::getDrawingInterface() const
 {
-	return drawingInterface; 
-}
-
-void DrawingInterfaceManager::setDrawingInterface(std::shared_ptr<DrawingInterface> drawingInterface)
-{
-	this->drawingInterface = drawingInterface;
+    return drawingInterface;
 }

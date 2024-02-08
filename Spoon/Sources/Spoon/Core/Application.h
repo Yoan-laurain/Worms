@@ -35,6 +35,8 @@ public:
 	// Dispatch Event
 	void OnEvent(SpoonEvent& e);
 
+	void SetDrawingInterface(bool useSFML);
+
 	Level* GetWorld() const;
 
 	static Application& Get() { return *s_Instance; }

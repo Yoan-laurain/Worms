@@ -1,18 +1,21 @@
 #pragma once
 
 #include "../Widget.h"
+#include "Widgets/TextBlock/TextBlockWidget.h" // On peut pas forward
 
-class ButtonWidget : public Widget
+class SPOON_API ButtonWidget : public Widget
 {
 	public:
 		ButtonWidget();
 		virtual ~ButtonWidget() = default;
 
-		virtual void render() override;
-		virtual void OnClick() = 0;
+		virtual void render(Window* window) override;
+		virtual void OnClick();
 
 		void SetText(const std::string& text);
+		void SetOnClick(std::function<void()> onClick);
 
 	private:
-		std::string text;
+		std::unique_ptr<TextBlockWidget> textBlock;
+		std::function<void()> onClick;
 };

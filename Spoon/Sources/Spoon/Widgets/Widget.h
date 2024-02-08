@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Objects/SObject.h"
+#include "WidgetManager.h"
 #include <vector>
 #include <memory>
-#include "Renderer/DrawingInterface.h"
+#include <Library/TVector.h>
 
 enum class Visibility 
 {
@@ -12,13 +13,16 @@ enum class Visibility
     COLLAPSED
 };
 
-class Widget : public SObject 
+class DrawingInterface;
+class Window;
+
+class SPOON_API Widget : public SObject
 {
     public:
         Widget();
         virtual ~Widget() = default;
 
-        virtual void render() = 0;
+        virtual void render(Window* window) = 0;
 
         void AddToViewport();
         void RemoveFromParent();
@@ -26,45 +30,25 @@ class Widget : public SObject
         void SetIsEnabled(bool bIsEnabled);
         void SetVisibility(Visibility visibility);
 
-        void SetParent(std::shared_ptr<SObject> parent);
+        void SetParent(std::unique_ptr<SObject> parent);
 
-    private:
-
-        void SetPosition(FVector2D position);
+        void SetRelativePosition(FVector2D position);
         void SetSize(FVector2D size);
+        void UpdateWorldPosition();
+        bool IsPointInWidget( const FVector2D& mousePosition);
 
         bool bIsAddedToViewport;
         bool bIsEnabled;
         Visibility visibility;
 
-        std::weak_ptr<SObject> parent;
+        std::unique_ptr<SObject> parent;
+
+        FVector2D relativePosition;
+        FVector2D worldPosition;
+        FVector2D size;
 
     protected:
-        std::shared_ptr<DrawingInterface> renderer;
+        std::weak_ptr<DrawingInterface> renderer;
 
-        FVector2D position;
-        FVector2D size;
+
 };
-
-template <typename WidgetT = Widget, typename OwnerType = SObject>
-WidgetT* CreateWidget(std::unique_ptr<OwnerType> OwningObject)
-{
-    if (!OwningObject)
-    {
-        assert(false," The owning object of the widget is null");
-		return nullptr;
-	}
-
-    WidgetT* widget = new WidgetT();
-    if (widget)
-    {
-        OwningObject->addChild(std::unique_ptr<Widget>(widget));
-        widget->SetParent(OwningObject);
-        
-        return widget;
-    }
-
-    assert(false, "Failed to create widget");
-
-    return nullptr;
-}

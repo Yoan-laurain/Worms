@@ -10,7 +10,11 @@
 #include "Library/TColor.h"
 #include "Objects/Prefab/RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
-#include <Objects/Prefab/CircleObject.h>
+#include "Objects/Prefab/CircleObject.h"
+#include "Widgets/Renderer/SFML/SFMLRenderer.h"
+#include "Widgets/Renderer/ImGui/ImGuiRenderer.h"
+#include "Widgets/Renderer/DrawingInterfaceManager.h"
+#include "Widgets/WidgetManager.h"
 
 Application* Application::s_Instance = nullptr;
 
@@ -85,6 +89,24 @@ void Application::OnEvent(SpoonEvent& e)
 
 }
 
+void Application::SetDrawingInterface(bool useSFML)
+{
+	std::shared_ptr<DrawingInterface> interfaceD;
+
+	if (useSFML)
+	{
+		SFMLRenderer* sfml = new SFMLRenderer();
+		interfaceD = std::shared_ptr<SFMLRenderer>(sfml);
+	}
+	else
+	{
+		ImGuiRenderer* imgui = new ImGuiRenderer();
+		interfaceD = std::shared_ptr<ImGuiRenderer>(imgui);
+	}
+
+	DrawingInterfaceManager::getInstance().setDrawingInterface(interfaceD);
+}
+
 void Application::SetLevel(class Level* _newLevel, const bool DestroyPrevious /*= false*/)
 {
 	if (DestroyPrevious && CurrentLevel)
@@ -139,8 +161,9 @@ void Application::OnRender()
 	}
 
 #endif
-		
-	return;
+
+	if (m_WindowRef)
+		WidgetManager::GetInstance()->RenderWidgets(m_WindowRef);
 }
 
 void Application::AddNewPlayer(SPlayer* player)
@@ -230,6 +253,11 @@ bool Application::OnMousePressed(MouseButtonPressedEvent& e)
 		SCircleObject* circle = GetWorld()->SpawnActor<SCircleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(radius, radius)));
 		circle->GetComponent<SShapeComponent>()->ObjectColor = color;
 	}
+	else if (e.GetMouseButton() == Mouse::Button0)
+	{
+		WidgetManager::GetInstance()->HandleWidgetOnClicked(m_WindowRef->GetMousePos());
+	}
+	
 	return true;
 }
 

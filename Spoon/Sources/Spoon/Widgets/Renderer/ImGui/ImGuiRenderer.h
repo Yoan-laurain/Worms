@@ -6,7 +6,10 @@ class ImGuiRenderer : public DrawingInterface
 {
 	public:
 		ImGuiRenderer();
-		virtual ~ImGuiRenderer() override;
+		~ImGuiRenderer() override;
 
-		virtual void RenderImage(std::string imagePath, FVector2D position, FVector2D size);
+		void RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size) override;
+		void RenderText( Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color) override;
+		void RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor) override;
+		void RenderButton( Window* window,const FVector2D& position, const FVector2D& size) override;
 };
