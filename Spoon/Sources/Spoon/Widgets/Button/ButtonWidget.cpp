@@ -13,11 +13,11 @@ ButtonWidget::ButtonWidget() :
 {
 }
 
-void ButtonWidget::render(Window* window)
+void ButtonWidget::render()
 {
 	UpdateWorldPosition();
 
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text, BackgroundColor);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderButton(worldPosition, size, textBlock->text, BackgroundColor);
 
 	if (!dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
 	{
@@ -27,7 +27,7 @@ void ButtonWidget::render(Window* window)
 			textBlock->relativePosition = FVector2D(size.X / 2.f - (textBlock->text.size() / 2.f * textBlock->fontSize / 2.f),
 				size.Y / 2.f - textBlock->fontSize / 2.f);
 			textBlock->color = FColor(255, 255, 255, 255);
-			textBlock->render(window);
+			textBlock->render();
 		}
 	}
 }

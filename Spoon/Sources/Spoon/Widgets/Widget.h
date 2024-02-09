@@ -22,7 +22,7 @@ class SPOON_API Widget : public SObject
         Widget();
         ~Widget() override = default;
 
-        virtual void render(Window* window) = 0;
+        virtual void render() = 0;
 
         void AddToViewport();
         void RemoveFromParent();

@@ -69,7 +69,7 @@ void SfmlWindow::OnRender()
 
 	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
 
-	WidgetManager::GetInstance()->RenderWidgets(this);
+	WidgetManager::GetInstance()->GetWidgetToRender();
 	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
@@ -232,6 +232,11 @@ void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _c
 	_shape.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
 	SetCollidingState(_shape, _component->GetOwner());
+}
+
+void SfmlWindow::RenderDrawable(sf::Drawable& _drawable)
+{
+	WindowRef->draw(_drawable);
 }
 
 void SfmlWindow::Init(const WindowsProps& props)

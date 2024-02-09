@@ -6,7 +6,7 @@
 #include "Renders/SFML/SfmlWindow.h"
 #include <SFML/Graphics.hpp>
 
-void SFMLWidgetRenderer::RenderImage(Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void SFMLWidgetRenderer::RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size)
 {
 	if (imagePath.empty())
 	{
@@ -27,14 +27,15 @@ void SFMLWidgetRenderer::RenderImage(Window* window,const std::string& imagePath
 	sprite.setScale(size.X / texture.getSize().x, size.Y / texture.getSize().y);
 	sprite.setTexture(texture);
 
+	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+
 	if (window)
 	{
-		SfmlWindow* sfmlWindow = dynamic_cast<SfmlWindow*>(window);
-		sfmlWindow->WindowRef->draw(sprite);
+		window->RenderDrawable(sprite);
 	}
 }
 
-void SFMLWidgetRenderer::RenderText(Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void SFMLWidgetRenderer::RenderText(const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
 {
 	sf::Text sfText;
 	sf::Font font;
@@ -52,14 +53,15 @@ void SFMLWidgetRenderer::RenderText(Window* window,const std::string& text, cons
 	sfText.setFillColor(sf::Color(color.R, color.G, color.B, color.A)); 
 	sfText.setPosition(position.X, position.Y); 
 
+	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+
 	if (window)
 	{
-		SfmlWindow* sfmlWindow = dynamic_cast<SfmlWindow*>(window);
-		sfmlWindow->WindowRef->draw(sfText); 
+		window->RenderDrawable( sfText );
 	}
 }
 
-void SFMLWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void SFMLWidgetRenderer::RenderProgressBar(const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
 {
 	sf::RectangleShape background; 
 	background.setSize(sf::Vector2f(size.X, size.Y)); 
@@ -71,15 +73,16 @@ void SFMLWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& posi
 	rectangle.setFillColor(sf::Color(color.R, color.G, color.B, color.A));
 	rectangle.setPosition(position.X, position.Y);
 
+	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+
 	if (window)
 	{
-		SfmlWindow* sfmlWindow = dynamic_cast<SfmlWindow*>(window);
-		sfmlWindow->WindowRef->draw(background);
-		sfmlWindow->WindowRef->draw(rectangle);
+		window->RenderDrawable( background );
+		window->RenderDrawable( rectangle );
 	}
 }
 
-void SFMLWidgetRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void SFMLWidgetRenderer::RenderButton( const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
 {
 	sf::RectangleShape rectangle;
 	rectangle.setSize(sf::Vector2f(size.X, size.Y));
@@ -89,9 +92,10 @@ void SFMLWidgetRenderer::RenderButton( Window* window,const FVector2D& position,
 	rectangle.setFillColor(sfmlColor);
 	rectangle.setPosition(position.X, position.Y);
 
+	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+
 	if (window)
 	{
-		SfmlWindow* sfmlWindow = dynamic_cast<SfmlWindow*>(window);
-		sfmlWindow->WindowRef->draw(rectangle);
+		window->RenderDrawable( rectangle );
 	}
 }

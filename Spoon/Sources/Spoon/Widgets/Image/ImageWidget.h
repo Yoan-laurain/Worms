@@ -9,7 +9,7 @@ class SPOON_API ImageWidget : public Widget
 
         ImageWidget();
 
-        void render(Window* window) override;
+        void render() override;
     
         std::string imagePath;
 };

@@ -186,6 +186,11 @@ FVector2D Application::GetScreenSize() const
 	return ScreenSize;
 }
 
+Window* Application::GetWindow() const
+{
+	return m_WindowRef;
+}
+
 bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func, InputType inputType)
 {
 	int index = -1;

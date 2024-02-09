@@ -39,8 +39,8 @@ public:
 
 	void SetCollidingState(sf::Shape& _shape, SActor* _actor);
 	void SetCommonShapeProperties(sf::Shape& _shape, class SShapeComponent* _actor);
+	void RenderDrawable( sf::Drawable& _drawable);
 
-	sf::RenderWindow* WindowRef;
 private:
 	
 	// Todo voir comment faire des petits class pour juste garder la logique des graph
@@ -59,6 +59,7 @@ private:
 
 	float m_DrawTime;
 
+	sf::RenderWindow* WindowRef;
 	
 	virtual void Init(const WindowsProps& props);
 

@@ -7,7 +7,6 @@
 
 class SObject;
 class Widget;
-class Window;
 
 class SPOON_API WidgetManager
 {
@@ -18,7 +17,7 @@ class SPOON_API WidgetManager
 
     void AddWidget(std::shared_ptr<Widget> widget);
     void RemoveWidget(Widget* child);
-    void RenderWidgets(Window* window);
+    void GetWidgetToRender();
     void HandleWidgetOnClicked(const FVector2D& mousePosition);
 
     void BeforeRenderImGui();

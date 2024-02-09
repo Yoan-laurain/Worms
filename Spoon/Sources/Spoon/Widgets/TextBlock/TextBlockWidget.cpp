@@ -11,8 +11,8 @@ TextBlockWidget::TextBlockWidget() :
 	
 }
 
-void TextBlockWidget::render(Window* window)
+void TextBlockWidget::render()
 {
 	UpdateWorldPosition();
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderText(window,text, worldPosition, fontSize, color);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderText(text, worldPosition, fontSize, color);
 }

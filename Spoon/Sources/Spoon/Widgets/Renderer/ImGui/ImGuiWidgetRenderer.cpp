@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <Spoon.h>
 
-void ImGuiWidgetRenderer::RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void ImGuiWidgetRenderer::RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size)
 {
 	// TODO : Handle texture rendering with ImGui
 
@@ -12,7 +12,7 @@ void ImGuiWidgetRenderer::RenderImage( Window* window,const std::string& imagePa
 	ImGui::Image( ImTextureID( imagePath.c_str() ), ImVec2(size.X, size.Y));	 
 }
 
-void ImGuiWidgetRenderer::RenderText(Window* window, const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void ImGuiWidgetRenderer::RenderText( const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
 {
 	// TODO: Handle font size
 
@@ -21,7 +21,7 @@ void ImGuiWidgetRenderer::RenderText(Window* window, const std::string& text, co
     ImGui::TextColored(ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f), text.c_str());
 }
 
-void ImGuiWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void ImGuiWidgetRenderer::RenderProgressBar(const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
 {
 	ImGui::SetCursorPos(ImVec2(position.X, position.Y));
 	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
@@ -29,7 +29,7 @@ void ImGuiWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& pos
 	ImGui::PopStyleColor();
 }
 
-void ImGuiWidgetRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void ImGuiWidgetRenderer::RenderButton(const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
 {
 	// TODO : Handle button color
 

@@ -9,7 +9,7 @@ class SPOON_API ButtonWidget : public Widget
 		ButtonWidget();
 		~ButtonWidget() override = default;
 
-		void render(Window* window) override;
+		void render() override;
 		virtual void OnClick();
 
 		void SetText(const std::string& text);

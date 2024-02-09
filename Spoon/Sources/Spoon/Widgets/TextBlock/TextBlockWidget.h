@@ -10,7 +10,7 @@ class SPOON_API TextBlockWidget : public Widget
 		TextBlockWidget();
 		~TextBlockWidget() override = default;
 
-		void render(Window* window) override;
+		void render() override;
 	
 		float fontSize;
 		std::string text;

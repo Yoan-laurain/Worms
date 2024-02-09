@@ -7,8 +7,8 @@ ImageWidget::ImageWidget() : imagePath("")
 {
 }
 
-void ImageWidget::render(Window* window)
+void ImageWidget::render()
 {
 	UpdateWorldPosition();
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(window, imagePath, worldPosition, size);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(imagePath, worldPosition, size);
 }

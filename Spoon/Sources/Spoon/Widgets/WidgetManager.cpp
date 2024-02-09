@@ -6,6 +6,7 @@
 #include "Renderer\DrawingWidgetInterfaceManager.h"
 #include "Renderer\ImGui\ImGuiWidgetRenderer.h"
 #include <imgui.h>
+#include <SFML/Graphics/Drawable.hpp>
 
 WidgetManager* WidgetManager::instance = nullptr;
 
@@ -32,7 +33,7 @@ void WidgetManager::RemoveWidget(Widget* child)
 	}
 }
 
-void WidgetManager::RenderWidgets(Window* window)
+void WidgetManager::GetWidgetToRender()
 {
 	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
 	{
@@ -43,7 +44,7 @@ void WidgetManager::RenderWidgets(Window* window)
 	{
 		if (widget.get() && widget.get()->bIsAddedToViewport)
 		{
-			widget.get()->render(window); 
+			widget.get()->render();
 		}
 	}
 

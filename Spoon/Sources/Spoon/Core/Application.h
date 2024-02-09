@@ -50,6 +50,8 @@ public:
 
 	FVector2D GetScreenSize() const;
 
+	Window* GetWindow() const;
+
 protected:
 
 	void SetLevel(Level* _newLevel, const bool DestroyPrevious = false);
