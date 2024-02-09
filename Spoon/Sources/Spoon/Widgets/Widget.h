@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <Library/TVector.h>
+#include <Library/TColor.h>
 
 enum class Visibility 
 {
@@ -36,6 +37,7 @@ class SPOON_API Widget : public SObject
         void SetSize(FVector2D size);
         void UpdateWorldPosition();
         bool IsPointInWidget( const FVector2D& mousePosition);
+        void SetBackgroundColor(FColor color);
 
         bool bIsAddedToViewport;
         bool bIsEnabled;
@@ -46,4 +48,5 @@ class SPOON_API Widget : public SObject
         FVector2D relativePosition;
         FVector2D worldPosition;
         FVector2D size;
+        FColor BackgroundColor;
 };

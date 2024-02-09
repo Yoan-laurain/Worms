@@ -70,8 +70,9 @@ void SfmlWindow::OnRender()
 	m_GlobalClock.restart();
 
 	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
-	DrawImGuiWin();
+
 	WidgetManager::GetInstance()->RenderWidgets(this);
+	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
 	Application::Get().SetDrawingInterface(Application::Get().useSfml);
@@ -296,17 +297,7 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 // TODO faire des classe et fonction plus jolie pour nos bouton ImGui
 void SfmlWindow::DrawImGuiWin()
 {
-	ImGuiWindowFlags imFlags =
-		ImGuiWindowFlags_NoDecoration
-		| ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_AlwaysAutoResize
-		| ImGuiWindowFlags_NoSavedSettings
-		| ImGuiWindowFlags_NoFocusOnAppearing
-		| ImGuiWindowFlags_NoMouseInputs 
-		| ImGuiWindowFlags_NoNav;
-	//ImGui::SetNextWindowSize(sf::Vector2f(600, 100));
 	ImGui::SetNextWindowPos(sf::Vector2f(0,0));
-	ImGui::SetNextWindowBgAlpha(0.0f);
 
 	ImGui::Begin("Debugs");
 

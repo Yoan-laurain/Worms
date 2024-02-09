@@ -10,6 +10,7 @@ Widget::Widget() :
     , relativePosition(0, 0)
 	, worldPosition(0, 0)
     , size(0, 0)
+	, BackgroundColor(127,127,127,127)
 {
 }
 
@@ -82,4 +83,9 @@ bool Widget::IsPointInWidget(const FVector2D& mousePosition)
 		return true;
 	}
 	return false;
+}
+
+void Widget::SetBackgroundColor(FColor color)
+{
+	BackgroundColor = color;
 }

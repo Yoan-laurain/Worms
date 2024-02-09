@@ -79,11 +79,14 @@ void SFMLRenderer::RenderProgressBar( Window* window,const FVector2D& position, 
 	}
 }
 
-void SFMLRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text)
+void SFMLRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
 {
 	sf::RectangleShape rectangle;
 	rectangle.setSize(sf::Vector2f(size.X, size.Y));
-	rectangle.setFillColor(sf::Color::Red);
+
+	sf::Color sfmlColor = sf::Color(color.R, color.G, color.B, color.A);
+
+	rectangle.setFillColor(sfmlColor);
 	rectangle.setPosition(position.X, position.Y);
 
 	if (window)

@@ -123,7 +123,7 @@ void WormsPlayer::BeginPlay()
 	healthText->setText("Life : " + std::to_string(currentHealth));
 	healthText->SetSize(FVector2D(100.f, 100.f));
 	healthText->setFontSize(20);
-	healthText->setColor(FColor(125, 15, 245, 255));
+	healthText->setColor(FColor(255, 255, 255, 255));
 	healthText->SetRelativePosition(FVector2D( -GetSize().X *2 , -GetSize().Y * 2 - healthText->size.Y));
 	healthText->AddToViewport();
 
@@ -144,7 +144,7 @@ void WormsPlayer::BeginPlay()
 	healthBar->SetSize(FVector2D(100.f, 10.f));
 	healthBar->SetRelativePosition(FVector2D(-healthBar->size.X / 2.f, -GetSize().Y * 2 - healthBar->size.Y * 12));
 	healthBar->setProgress( currentHealth / maxHealth );
-	healthBar->setBackgroundColor(FColor(127, 127, 127, 150));
+	healthBar->SetBackgroundColor(FColor(127, 127, 127, 150));
 	healthBar->setColor(FColor(0, 255, 0, 255));
 	healthBar->AddToViewport();
 }

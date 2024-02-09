@@ -15,7 +15,7 @@ void ButtonWidget::render(Window* window)
 {
 	UpdateWorldPosition();
 
-	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text);
+	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text, BackgroundColor);
 
 	if (!dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
 	{
