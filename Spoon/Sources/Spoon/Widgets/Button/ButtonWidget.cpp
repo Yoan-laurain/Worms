@@ -1,13 +1,15 @@
 #include "ButtonWidget.h"
 #include "../TextBlock/TextBlockWidget.h"
-#include "../Renderer/DrawingInterface.h"
+#include "..\Renderer\DrawingWidgetInterface.h"
 #include "Core/Window.h"
-#include <Objects/SActor.h>
-#include <Library/WidgetHandler.h>
-#include <Widgets/Renderer/DrawingInterfaceManager.h>
-#include <Widgets/Renderer/ImGui/ImGuiRenderer.h>
+#include "Objects/SActor.h"
+#include "Library/WidgetHandler.h"
+#include "..\Renderer\DrawingWidgetInterfaceManager.h"
+#include "..\Renderer\ImGui\ImGuiWidgetRenderer.h"
 
-ButtonWidget::ButtonWidget()
+ButtonWidget::ButtonWidget() :
+	onClick(nullptr),
+	textBlock(nullptr)
 {
 }
 
@@ -15,16 +17,16 @@ void ButtonWidget::render(Window* window)
 {
 	UpdateWorldPosition();
 
-	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text, BackgroundColor);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text, BackgroundColor);
 
-	if (!dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	if (!dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
 	{
 		if (textBlock)
 		{
-			textBlock->setFontSize(10.f);
-			textBlock->SetRelativePosition(FVector2D(size.X / 2.f - (textBlock->text.size() / 2.f * textBlock->fontSize / 2.f),
-				size.Y / 2.f - textBlock->fontSize / 2.f));
-			textBlock->setColor(FColor(255, 255, 255, 255));
+			textBlock->fontSize = 10.f;
+			textBlock->relativePosition = FVector2D(size.X / 2.f - (textBlock->text.size() / 2.f * textBlock->fontSize / 2.f),
+				size.Y / 2.f - textBlock->fontSize / 2.f);
+			textBlock->color = FColor(255, 255, 255, 255);
 			textBlock->render(window);
 		}
 	}
@@ -45,10 +47,5 @@ void ButtonWidget::SetText(const std::string& text)
 		TextBlockWidget* TBWidget = WidgetHandler::CreateWidget<TextBlockWidget>(this);
 		textBlock = std::unique_ptr<TextBlockWidget>(TBWidget);
 	}
-	textBlock->setText(text);
-}
-
-void ButtonWidget::SetOnClick(std::function<void()> onClick)
-{
-	this->onClick = onClick;
+	textBlock->text = text;
 }

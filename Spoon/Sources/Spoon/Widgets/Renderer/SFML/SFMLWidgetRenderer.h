@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../DrawingInterface.h"
+#include "..\DrawingWidgetInterface.h"
 
-class SFMLRenderer : public DrawingInterface
+class SFMLWidgetRenderer : public DrawingWidgetInterface
 {
 	public:
 		void RenderImage(Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size) override;

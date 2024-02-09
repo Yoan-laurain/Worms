@@ -10,8 +10,6 @@ class SPOON_API ImageWidget : public Widget
         ImageWidget();
 
         void render(Window* window) override;
-        void SetBackgroundImage(std::string imagePath);
-
-    private:
+    
         std::string imagePath;
 };

@@ -1,14 +1,12 @@
 #include "TextBlockWidget.h"
-#include "../Renderer/DrawingInterface.h"
+#include "..\Renderer\DrawingWidgetInterface.h"
 #include "Core/Window.h"
-#include <Objects/SActor.h>
-#include <Widgets/Renderer/DrawingInterfaceManager.h>
+#include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
-TextBlockWidget::TextBlockWidget() : 
-	Widget(),
+TextBlockWidget::TextBlockWidget() :
+	fontSize(1.0f),
 	text(""),
-	color(),
-	fontSize(1.0f)
+	color(FColor::White())
 {
 	
 }
@@ -16,20 +14,5 @@ TextBlockWidget::TextBlockWidget() :
 void TextBlockWidget::render(Window* window)
 {
 	UpdateWorldPosition();
-	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderText(window,text, worldPosition, fontSize, color);
-}
-
-void TextBlockWidget::setText(const std::string& text)
-{
-	this->text = text;
-}
-
-void TextBlockWidget::setColor(const FColor color)
-{
-	this->color = color;
-}
-
-void TextBlockWidget::setFontSize(float fontSize)
-{
-	this->fontSize = fontSize;
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderText(window,text, worldPosition, fontSize, color);
 }

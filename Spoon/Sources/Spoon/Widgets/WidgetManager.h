@@ -12,7 +12,7 @@ class Window;
 class SPOON_API WidgetManager
 {
     public:
-        WidgetManager();
+        WidgetManager() = default;
 
     static WidgetManager* GetInstance();
 

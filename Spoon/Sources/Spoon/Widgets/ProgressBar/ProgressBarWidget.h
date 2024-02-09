@@ -7,13 +7,10 @@ class SPOON_API ProgressBarWidget : public Widget
 {
 	public:
 		ProgressBarWidget();
-		virtual ~ProgressBarWidget() = default;
+		~ProgressBarWidget() override = default;
 
 		void render(Window* window) override;
-		void setProgress(float progress);
-		void setColor(const FColor& color);
-
-	private:
+	
 		float progress;
 		FColor color;
 };

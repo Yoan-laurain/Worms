@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "Level.h"
-
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -11,17 +10,18 @@
 #include "Objects/Prefab/RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "Objects/Prefab/CircleObject.h"
-#include "Widgets/Renderer/SFML/SFMLRenderer.h"
-#include "Widgets/Renderer/ImGui/ImGuiRenderer.h"
-#include "Widgets/Renderer/DrawingInterfaceManager.h"
+#include "..\Widgets\Renderer\SFML\SFMLWidgetRenderer.h"
+#include "..\Widgets\Renderer\ImGui\ImGuiWidgetRenderer.h"
+#include "..\Widgets\Renderer\DrawingWidgetInterfaceManager.h"
 #include "Widgets/WidgetManager.h"
-#include <imgui-SFML.h>
 #include <imgui.h>
 #include <Renders/SFML/SfmlWindow.h>
 
 Application* Application::s_Instance = nullptr;
 
 Application::Application() : 
+	currenltyUsesSfml(false),
+	wasUsingSfml(false),
 	ScreenSize(FVector2D(720, 1080)),
 	WindowName("SpoonEngine"),
 	_InputMgr(nullptr),
@@ -31,7 +31,7 @@ Application::Application() :
 	Init();
 }
 
-Application::Application(std::string windowName, FVector2D screensize) : ScreenSize(screensize), WindowName(windowName)
+Application::Application(const std::string& windowName, const FVector2D screensize) : ScreenSize(screensize), WindowName(windowName)
 {
 	s_Instance = this;
 	Init();
@@ -74,7 +74,7 @@ void Application::OnEvent(SpoonEvent& e)
 {
 	EventDispatcher dispatcher(e);
 
-	// Todo : à sup lorsque les key seront bien impl
+	// Todo : ï¿½ sup lorsque les key seront bien impl
 	//for (const auto& tmp : GetWorld()->EntityList)
 	//{
 	//	//tmp->OnEvent(e);
@@ -92,30 +92,30 @@ void Application::OnEvent(SpoonEvent& e)
 
 }
 
-void Application::SetDrawingInterface(bool useSFML)
+void Application::SetWidgetDrawingInterface(bool useSFML)
 {
-	if (OldUseSfml == useSFML)
+	if (wasUsingSfml == useSFML)
 	{
 		return;
 	}
 	
-	std::shared_ptr<DrawingInterface> interfaceD;
+	std::shared_ptr<DrawingWidgetInterface> interfaceD;
 
-	useSfml = useSFML;
-	OldUseSfml = useSfml;
+	currenltyUsesSfml = useSFML;
+	wasUsingSfml = currenltyUsesSfml;
 
 	if (useSFML)
 	{
-		SFMLRenderer* sfml = new SFMLRenderer();
-		interfaceD = std::shared_ptr<SFMLRenderer>(sfml);
+		SFMLWidgetRenderer* sfml = new SFMLWidgetRenderer();
+		interfaceD = std::shared_ptr<SFMLWidgetRenderer>(sfml);
 	}
 	else
 	{
-		ImGuiRenderer* imgui = new ImGuiRenderer();
-		interfaceD = std::shared_ptr<ImGuiRenderer>(imgui);
+		ImGuiWidgetRenderer* imgui = new ImGuiWidgetRenderer();
+		interfaceD = std::shared_ptr<ImGuiWidgetRenderer>(imgui);
 	}
 
-	DrawingInterfaceManager::getInstance().setDrawingInterface(interfaceD);
+	DrawingWidgetInterfaceManager::getInstance().setWidgetDrawingInterface(interfaceD);
 }
 
 void Application::SetLevel(class Level* _newLevel, const bool DestroyPrevious /*= false*/)
@@ -139,9 +139,9 @@ bool Application::OnKeyPressed(KeyPressedEvent& e)
 	std::cout << e.ToString() << std::endl;
 #endif // DEBUG
 
-	// Resend les event à tous les objets qui possède un bind
+	// Resend les event ï¿½ tous les objets qui possï¿½de un bind
 	// je sais pas encore vraiment faudrait que je fasse un system de listerner
-	// comme ça des que la fonction et call pouf je call tous les autres.
+	// comme ï¿½a des que la fonction et call pouf je call tous les autres.
 	return true;
 }
 

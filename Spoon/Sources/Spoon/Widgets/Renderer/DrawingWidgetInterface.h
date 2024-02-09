@@ -1,14 +1,13 @@
 #pragma once
 
 #include <Library/TVector.h>
-#include <Library/TColor.h>
 
 class Window;
 
-class DrawingInterface
+class DrawingWidgetInterface
 {
 	public :
-		virtual ~DrawingInterface() = default;
+		virtual ~DrawingWidgetInterface() = default;
 
 		virtual void RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size) = 0;
 		virtual void RenderText( Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color) = 0;

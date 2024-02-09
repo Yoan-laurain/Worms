@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../DrawingInterface.h"
+#include "..\DrawingWidgetInterface.h"
 
-class ImGuiRenderer : public DrawingInterface
+class ImGuiWidgetRenderer : public DrawingWidgetInterface
 {
 	public:
-		ImGuiRenderer();
-		~ImGuiRenderer() override;
+		ImGuiWidgetRenderer() = default;
+		~ImGuiWidgetRenderer() override = default;
 
 		void RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size) override;
 		void RenderText( Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color) override;

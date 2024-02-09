@@ -1,14 +1,14 @@
-#include "SFMLRenderer.h"
+#include "SFMLWidgetRenderer.h"
 #include "Library/TColor.h"
 #include "Core/Application.h"
 #include "Spoon/Renders/SFML/TextureMgr.h"
 #include "Core/Window.h"
+#include "Renders/SFML/SfmlWindow.h"
 #include <SFML/Graphics.hpp>
-#include <Renders/SFML/SfmlWindow.h>
 
-void SFMLRenderer::RenderImage(Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void SFMLWidgetRenderer::RenderImage(Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
 {
-	if (imagePath == "")
+	if (imagePath.empty())
 	{
 		return;
 	}
@@ -34,7 +34,7 @@ void SFMLRenderer::RenderImage(Window* window,const std::string& imagePath, cons
 	}
 }
 
-void SFMLRenderer::RenderText(Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void SFMLWidgetRenderer::RenderText(Window* window,const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
 {
 	sf::Text sfText;
 	sf::Font font;
@@ -59,7 +59,7 @@ void SFMLRenderer::RenderText(Window* window,const std::string& text, const FVec
 	}
 }
 
-void SFMLRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void SFMLWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
 {
 	sf::RectangleShape background; 
 	background.setSize(sf::Vector2f(size.X, size.Y)); 
@@ -79,7 +79,7 @@ void SFMLRenderer::RenderProgressBar( Window* window,const FVector2D& position, 
 	}
 }
 
-void SFMLRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void SFMLWidgetRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
 {
 	sf::RectangleShape rectangle;
 	rectangle.setSize(sf::Vector2f(size.X, size.Y));

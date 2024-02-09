@@ -1,24 +1,16 @@
 #include "ProgressBarWidget.h"
-#include "../Renderer/DrawingInterface.h"
+#include "..\Renderer\DrawingWidgetInterface.h"
 #include "Core/Window.h"
-#include <Widgets/Renderer/DrawingInterfaceManager.h>
+#include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
-ProgressBarWidget::ProgressBarWidget() : progress(0.0f)
+ProgressBarWidget::ProgressBarWidget() :
+	progress(0.0f),
+	color(FColor::White())
 {
 }
 
 void ProgressBarWidget::render(Window* window)
 {
 	UpdateWorldPosition();
-	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderProgressBar(window,worldPosition, size, progress, color, BackgroundColor);
-}
-
-void ProgressBarWidget::setProgress(float progress)
-{
-	this->progress = progress;
-}
-
-void ProgressBarWidget::setColor(const FColor& color)
-{
-	this->color = color;
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderProgressBar(window,worldPosition, size, progress, color, BackgroundColor);
 }

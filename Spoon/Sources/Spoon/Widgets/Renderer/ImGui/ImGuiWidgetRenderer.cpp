@@ -1,20 +1,10 @@
-#include "ImGuiRenderer.h"
+#include "ImGuiWidgetRenderer.h"
 #include "Library/TColor.h"
-#include "Spoon/Renders/SFML/TextureMgr.h"
+#include "Renders/SFML/SfmlWindow.h"
 #include <imgui.h>
-#include <imgui-SFML.h>
-#include <Renders/SFML/SfmlWindow.h>
 #include <Spoon.h>
 
-ImGuiRenderer::ImGuiRenderer() 
-{
-}
-
-ImGuiRenderer::~ImGuiRenderer()
-{
-}
-
-void ImGuiRenderer::RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void ImGuiWidgetRenderer::RenderImage( Window* window,const std::string& imagePath, const FVector2D& position, const FVector2D& size)
 {
 	// TODO : Handle texture rendering with ImGui
 
@@ -22,7 +12,7 @@ void ImGuiRenderer::RenderImage( Window* window,const std::string& imagePath, co
 	ImGui::Image( ImTextureID( imagePath.c_str() ), ImVec2(size.X, size.Y));	 
 }
 
-void ImGuiRenderer::RenderText(Window* window, const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void ImGuiWidgetRenderer::RenderText(Window* window, const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
 {
 	// TODO: Handle font size
 
@@ -31,7 +21,7 @@ void ImGuiRenderer::RenderText(Window* window, const std::string& text, const FV
     ImGui::TextColored(ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f), text.c_str());
 }
 
-void ImGuiRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void ImGuiWidgetRenderer::RenderProgressBar( Window* window,const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
 {
 	ImGui::SetCursorPos(ImVec2(position.X, position.Y));
 	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
@@ -39,7 +29,7 @@ void ImGuiRenderer::RenderProgressBar( Window* window,const FVector2D& position,
 	ImGui::PopStyleColor();
 }
 
-void ImGuiRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void ImGuiWidgetRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
 {
 	// TODO : Handle button color
 

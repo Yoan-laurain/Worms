@@ -11,10 +11,8 @@
 #include <implot.h>
 
 #include "Core/Application.h"
+#include "Widgets/WidgetManager.h"
 #include <Core/Level.h>
-#include <Widgets/Renderer/DrawingInterfaceManager.h>
-#include <Widgets/Renderer/ImGui/ImGuiRenderer.h>
-#include <Widgets/WidgetManager.h>
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
@@ -75,7 +73,7 @@ void SfmlWindow::OnRender()
 	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
-	Application::Get().SetDrawingInterface(Application::Get().useSfml);
+	Application::Get().SetWidgetDrawingInterface(Application::Get().currenltyUsesSfml);
 
 	WindowRef->display();
 }
@@ -338,7 +336,7 @@ void SfmlWindow::DrawImGuiWin()
 
 	ImGui::Separator();
 
-	ImGui::Checkbox("UseSfml", &Application::Get().useSfml);
+	ImGui::Checkbox("UseSfml", &Application::Get().currenltyUsesSfml);
 	
 	ImGui::Separator();
 

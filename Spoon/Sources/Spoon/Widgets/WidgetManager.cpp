@@ -2,16 +2,12 @@
 #include "Widget.h"
 #include "Objects/SActor.h"
 #include "Button/ButtonWidget.h"
-#include <Core/Window.h>
-#include "Renderer/DrawingInterfaceManager.h"
-#include "Renderer/ImGui/ImGuiRenderer.h"
+#include "Core/Window.h"
+#include "Renderer\DrawingWidgetInterfaceManager.h"
+#include "Renderer\ImGui\ImGuiWidgetRenderer.h"
 #include <imgui.h>
 
 WidgetManager* WidgetManager::instance = nullptr;
-
-WidgetManager::WidgetManager() : Widgets()
-{
-}
 
 WidgetManager* WidgetManager::GetInstance()
 {
@@ -38,7 +34,7 @@ void WidgetManager::RemoveWidget(Widget* child)
 
 void WidgetManager::RenderWidgets(Window* window)
 {
-	if (dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
 	{
 		BeforeRenderImGui();
 	}
@@ -51,7 +47,7 @@ void WidgetManager::RenderWidgets(Window* window)
 		}
 	}
 
-	if (dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
 	{
 		AfterRenderImGui();
 	}

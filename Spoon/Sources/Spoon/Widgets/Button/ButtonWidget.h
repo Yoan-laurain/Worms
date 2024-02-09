@@ -7,15 +7,14 @@ class SPOON_API ButtonWidget : public Widget
 {
 	public:
 		ButtonWidget();
-		virtual ~ButtonWidget() = default;
+		~ButtonWidget() override = default;
 
-		virtual void render(Window* window) override;
+		void render(Window* window) override;
 		virtual void OnClick();
 
 		void SetText(const std::string& text);
-		void SetOnClick(std::function<void()> onClick);
+		std::function<void()> onClick;
 
 	private:
 		std::unique_ptr<TextBlockWidget> textBlock;
-		std::function<void()> onClick;
 };

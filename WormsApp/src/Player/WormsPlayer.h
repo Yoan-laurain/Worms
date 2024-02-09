@@ -16,7 +16,7 @@ class WormsPlayer : public SPlayer, public ITurnObserver
 public :
 
 		WormsPlayer();
-		~WormsPlayer();
+		~WormsPlayer() override;
 
 		/* Begin ITurnObserver Implementation */
 		void onTurnChange(int currentPlayer) override;

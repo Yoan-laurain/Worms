@@ -1,7 +1,6 @@
 #include "Widget.h"
-#include "Renderer/DrawingInterfaceManager.h"
 #include "WidgetManager.h"
-#include <Objects/SActor.h>
+#include "Objects/SActor.h"
 
 Widget::Widget() : 
     bIsAddedToViewport(false)
@@ -29,29 +28,9 @@ void Widget::AddToViewport()
     bIsAddedToViewport = true;
 }
 
-void Widget::SetIsEnabled(bool bIsEnabled)
-{
-    this->bIsEnabled = bIsEnabled;
-}
-
-void Widget::SetVisibility(Visibility visibility)
-{
-    this->visibility = visibility;
-}
-
 void Widget::SetParent(std::unique_ptr<SObject> parent)
 {
     this->parent = std::move(parent);   
-}
-
-void Widget::SetRelativePosition(FVector2D position)
-{
-	this->relativePosition = position;
-}
-
-void Widget::SetSize(FVector2D size)
-{
-	this->size = size;
 }
 
 void Widget::UpdateWorldPosition()
@@ -83,9 +62,4 @@ bool Widget::IsPointInWidget(const FVector2D& mousePosition)
 		return true;
 	}
 	return false;
-}
-
-void Widget::SetBackgroundColor(FColor color)
-{
-	BackgroundColor = color;
 }

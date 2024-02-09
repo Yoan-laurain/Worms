@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Objects/SObject.h"
 #include "snpch.h"
+#include "Objects/SObject.h"
 #include "Widgets/WidgetManager.h"
-#include "Widgets/Widget.h"
 
 struct SPOON_API WidgetHandler
 {
@@ -30,6 +29,6 @@ struct SPOON_API WidgetHandler
         assert(false, "Failed to create widget");
 
         return nullptr;
-    };
+    }
 };
 
