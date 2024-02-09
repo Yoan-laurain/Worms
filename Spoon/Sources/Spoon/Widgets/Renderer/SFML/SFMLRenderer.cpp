@@ -79,7 +79,7 @@ void SFMLRenderer::RenderProgressBar( Window* window,const FVector2D& position, 
 	}
 }
 
-void SFMLRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size)
+void SFMLRenderer::RenderButton( Window* window,const FVector2D& position, const FVector2D& size, const std::string& text)
 {
 	sf::RectangleShape rectangle;
 	rectangle.setSize(sf::Vector2f(size.X, size.Y));

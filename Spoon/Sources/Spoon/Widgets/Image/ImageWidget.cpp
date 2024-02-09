@@ -1,6 +1,7 @@
 #include "ImageWidget.h"
 #include "../Renderer/DrawingInterface.h"
 #include "Core/Window.h"
+#include <Widgets/Renderer/DrawingInterfaceManager.h>
 
 ImageWidget::ImageWidget()
 {
@@ -8,11 +9,8 @@ ImageWidget::ImageWidget()
 
 void ImageWidget::render(Window* window)
 {
-	if ( !renderer.expired() )
-	{
-		UpdateWorldPosition();
-		renderer.lock()->RenderImage(window,imagePath,worldPosition, size);
-	}
+	UpdateWorldPosition();
+	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderImage(window, imagePath, worldPosition, size);
 }
 
 void ImageWidget::SetBackgroundImage(std::string imagePath)

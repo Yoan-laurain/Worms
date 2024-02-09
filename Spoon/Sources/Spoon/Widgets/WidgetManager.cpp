@@ -3,6 +3,9 @@
 #include "Objects/SActor.h"
 #include "Button/ButtonWidget.h"
 #include <Core/Window.h>
+#include "Renderer/DrawingInterfaceManager.h"
+#include "Renderer/ImGui/ImGuiRenderer.h"
+#include <imgui.h>
 
 WidgetManager* WidgetManager::instance = nullptr;
 
@@ -35,12 +38,22 @@ void WidgetManager::RemoveWidget(Widget* child)
 
 void WidgetManager::RenderWidgets(Window* window)
 {
+	if (dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	{
+		BeforeRenderImGui();
+	}
+
 	for (auto& widget : Widgets)
 	{
-		if (widget.get()->bIsAddedToViewport)
+		if (widget.get() && widget.get()->bIsAddedToViewport)
 		{
 			widget.get()->render(window); 
 		}
+	}
+
+	if (dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	{
+		AfterRenderImGui();
 	}
 }
 
@@ -60,4 +73,25 @@ void WidgetManager::HandleWidgetOnClicked(const FVector2D& mousePosition)
 			}
 		}
 	}
+}
+
+void WidgetManager::BeforeRenderImGui()
+{
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
+	ImGui::NewFrame();
+
+	ImGui::Begin("Widgets", NULL,
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoFocusOnAppearing | 
+		ImGuiWindowFlags_NoBackground |
+		ImGuiWindowFlags_NoDecoration);
+}
+
+void WidgetManager::AfterRenderImGui()
+{
+	ImGui::End();
+	ImGui::EndFrame();
 }

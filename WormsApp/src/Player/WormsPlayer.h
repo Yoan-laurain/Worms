@@ -38,10 +38,12 @@ private :
 	bool IsMyTurn();
 	
 	std::unique_ptr<WeaponStrategy> weaponStrategy;
-	//TextBlockWidget* healthText;
-	//ImageWidget* healthImage;
-	//ButtonWidget* UpgradeButton;
+
+	TextBlockWidget* healthText;
+	ImageWidget* healthImage;
+	ButtonWidget* UpgradeButton;
 	ProgressBarWidget* healthBar;
+
 	void UpgradeWeapon();
 
 	float maxHealth;

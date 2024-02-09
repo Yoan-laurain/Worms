@@ -50,6 +50,9 @@ public:
 
 	FVector2D GetScreenSize() const;
 
+	bool useSfml;
+	bool OldUseSfml;
+
 protected:
 
 	void SetLevel(Level* _newLevel, const bool DestroyPrevious = false);

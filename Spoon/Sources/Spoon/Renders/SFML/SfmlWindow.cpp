@@ -12,6 +12,9 @@
 
 #include "Core/Application.h"
 #include <Core/Level.h>
+#include <Widgets/Renderer/DrawingInterfaceManager.h>
+#include <Widgets/Renderer/ImGui/ImGuiRenderer.h>
+#include <Widgets/WidgetManager.h>
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
@@ -68,7 +71,10 @@ void SfmlWindow::OnRender()
 
 	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
 	DrawImGuiWin();
+	WidgetManager::GetInstance()->RenderWidgets(this);
 	ImGui::SFML::Render(*WindowRef);
+
+	Application::Get().SetDrawingInterface(Application::Get().useSfml);
 
 	WindowRef->display();
 }
@@ -296,8 +302,9 @@ void SfmlWindow::DrawImGuiWin()
 		| ImGuiWindowFlags_AlwaysAutoResize
 		| ImGuiWindowFlags_NoSavedSettings
 		| ImGuiWindowFlags_NoFocusOnAppearing
+		| ImGuiWindowFlags_NoMouseInputs 
 		| ImGuiWindowFlags_NoNav;
-	//ImGui::SetNextWindowSize(sf::Vector2f(200, 200));
+	//ImGui::SetNextWindowSize(sf::Vector2f(600, 100));
 	ImGui::SetNextWindowPos(sf::Vector2f(0,0));
 	ImGui::SetNextWindowBgAlpha(0.0f);
 
@@ -338,6 +345,10 @@ void SfmlWindow::DrawImGuiWin()
 		}
 	}
 
+	ImGui::Separator();
+
+	ImGui::Checkbox("UseSfml", &Application::Get().useSfml);
+	
 	ImGui::Separator();
 
 	// Ici y a un pb avec le faite de pouvoir changer le frame rate.

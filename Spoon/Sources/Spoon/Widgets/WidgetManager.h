@@ -21,6 +21,9 @@ class SPOON_API WidgetManager
     void RenderWidgets(Window* window);
     void HandleWidgetOnClicked(const FVector2D& mousePosition);
 
+    void BeforeRenderImGui();
+    void AfterRenderImGui();
+
 	private:
 		std::vector< std::shared_ptr<Widget> > Widgets;
 

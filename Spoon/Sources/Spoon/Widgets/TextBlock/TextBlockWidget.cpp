@@ -2,6 +2,7 @@
 #include "../Renderer/DrawingInterface.h"
 #include "Core/Window.h"
 #include <Objects/SActor.h>
+#include <Widgets/Renderer/DrawingInterfaceManager.h>
 
 TextBlockWidget::TextBlockWidget() : 
 	Widget(),
@@ -14,11 +15,8 @@ TextBlockWidget::TextBlockWidget() :
 
 void TextBlockWidget::render(Window* window)
 {
-	if (!renderer.expired())
-	{
-		UpdateWorldPosition();
-		renderer.lock()->RenderText(window,text, worldPosition, fontSize, color);
-	}
+	UpdateWorldPosition();
+	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderText(window,text, worldPosition, fontSize, color);
 }
 
 void TextBlockWidget::setText(const std::string& text)

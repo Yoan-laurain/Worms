@@ -46,9 +46,4 @@ class SPOON_API Widget : public SObject
         FVector2D relativePosition;
         FVector2D worldPosition;
         FVector2D size;
-
-    protected:
-        std::weak_ptr<DrawingInterface> renderer;
-
-
 };

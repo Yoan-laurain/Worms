@@ -1,6 +1,7 @@
 #include "ProgressBarWidget.h"
 #include "../Renderer/DrawingInterface.h"
 #include "Core/Window.h"
+#include <Widgets/Renderer/DrawingInterfaceManager.h>
 
 ProgressBarWidget::ProgressBarWidget() : progress(0.0f)
 {
@@ -8,11 +9,8 @@ ProgressBarWidget::ProgressBarWidget() : progress(0.0f)
 
 void ProgressBarWidget::render(Window* window)
 {
-	if (!renderer.expired())
-	{
-		UpdateWorldPosition();
-		renderer.lock()->RenderProgressBar(window,worldPosition, size, progress, color, backgroundColor);
-	}
+	UpdateWorldPosition();
+	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderProgressBar(window,worldPosition, size, progress, color, backgroundColor);
 }
 
 void ProgressBarWidget::setProgress(float progress)

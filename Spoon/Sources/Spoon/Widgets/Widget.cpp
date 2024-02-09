@@ -10,7 +10,6 @@ Widget::Widget() :
     , relativePosition(0, 0)
 	, worldPosition(0, 0)
     , size(0, 0)
-    , renderer(DrawingInterfaceManager::getInstance().getDrawingInterface())
 {
 }
 

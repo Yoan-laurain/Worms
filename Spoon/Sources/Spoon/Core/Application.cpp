@@ -15,6 +15,9 @@
 #include "Widgets/Renderer/ImGui/ImGuiRenderer.h"
 #include "Widgets/Renderer/DrawingInterfaceManager.h"
 #include "Widgets/WidgetManager.h"
+#include <imgui-SFML.h>
+#include <imgui.h>
+#include <Renders/SFML/SfmlWindow.h>
 
 Application* Application::s_Instance = nullptr;
 
@@ -91,7 +94,15 @@ void Application::OnEvent(SpoonEvent& e)
 
 void Application::SetDrawingInterface(bool useSFML)
 {
+	if (OldUseSfml == useSFML)
+	{
+		return;
+	}
+	
 	std::shared_ptr<DrawingInterface> interfaceD;
+
+	useSfml = useSFML;
+	OldUseSfml = useSfml;
 
 	if (useSFML)
 	{
@@ -161,9 +172,6 @@ void Application::OnRender()
 	}
 
 #endif
-
-	if (m_WindowRef)
-		WidgetManager::GetInstance()->RenderWidgets(m_WindowRef);
 }
 
 void Application::AddNewPlayer(SPlayer* player)

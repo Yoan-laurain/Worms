@@ -4,6 +4,8 @@
 #include "Core/Window.h"
 #include <Objects/SActor.h>
 #include <Library/WidgetHandler.h>
+#include <Widgets/Renderer/DrawingInterfaceManager.h>
+#include <Widgets/Renderer/ImGui/ImGuiRenderer.h>
 
 ButtonWidget::ButtonWidget()
 {
@@ -11,16 +13,17 @@ ButtonWidget::ButtonWidget()
 
 void ButtonWidget::render(Window* window)
 {
-	if ( !renderer.expired() )
-	{
-		UpdateWorldPosition();
-		renderer.lock()->RenderButton(window,worldPosition, size);
+	UpdateWorldPosition();
 
-		if ( textBlock )
+	DrawingInterfaceManager::getInstance().getDrawingInterface()->RenderButton(window,worldPosition, size, textBlock->text);
+
+	if (!dynamic_cast<ImGuiRenderer*>(DrawingInterfaceManager::getInstance().getDrawingInterface().get()))
+	{
+		if (textBlock)
 		{
 			textBlock->setFontSize(10.f);
-			textBlock->SetRelativePosition(FVector2D(size.X / 2.f - ( textBlock->text.size() / 2.f * textBlock->fontSize / 2.f ),
-													 size.Y / 2.f - textBlock->fontSize / 2.f));
+			textBlock->SetRelativePosition(FVector2D(size.X / 2.f - (textBlock->text.size() / 2.f * textBlock->fontSize / 2.f),
+				size.Y / 2.f - textBlock->fontSize / 2.f));
 			textBlock->setColor(FColor(255, 255, 255, 255));
 			textBlock->render(window);
 		}
