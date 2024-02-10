@@ -13,8 +13,8 @@ public:
 	virtual size_t GetClassId() const = 0;
 };
 
-// To be honest C'est chat GPT qui là fait
-// Je voulais pouvoir avoir la classe dans le quel il est crée pour que si je le stock dans une var du type parent
+// To be honest C'est chat GPT qui lï¿½ fait
+// Je voulais pouvoir avoir la classe dans le quel il est crï¿½e pour que si je le stock dans une var du type parent
 // Je puisse get la class child
 #define GENERATE() \
 	public: \

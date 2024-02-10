@@ -24,7 +24,7 @@ public:
 
 	Application();
 
-	Application(std::string windowName, FVector2D screensize);
+	Application(const std::string& windowName, FVector2D screensize);
 
 	virtual ~Application();
 
@@ -39,14 +39,16 @@ public:
 
 	static Application& Get() { return *s_Instance; }
 
-	class InputMgr* GetInputMgr() const;
-	class TextureMgr* GetTextureMgr() const;
+	InputMgr* GetInputMgr() const;
+	TextureMgr* GetTextureMgr() const;
 
 	void AddNewPlayer(SPlayer* player);
 
 	bool BindAction(SPlayer* player,InputAction inputAction, std::function<void(float)> func, InputType inputType);
 
 	FVector2D GetScreenSize() const;
+
+	Window* GetWindow() const;
 
 protected:
 
@@ -72,7 +74,7 @@ private:
 	std::string WindowName;
 
 	#pragma endregion
-
+	
 private:
 
 	Window* m_WindowRef;
@@ -84,8 +86,11 @@ private:
 	static Application* s_Instance;
 
 	std::vector<SPlayer*> Players;
+
+	// TODO : Maybe use smart pointers
 	InputMgr* _InputMgr;
 	TextureMgr* _TextureMgr;
+	
 	std::mutex _mutex;
 
 };

@@ -5,13 +5,16 @@
 #include "Spoon/Core/Level.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "../Levels/WormLevel.h"
-#include "../Weapons/FragGrenade/GrenadeLauncher.h"
-#include <Objects/Prefab/CircleObject.h>
+#include <Widgets/Image/ImageWidget.h> 
 #include <Inputs/InputType.h>
+#include <Widgets/TextBlock/TextBlockWidget.h>
+#include <Widgets/ProgressBar/ProgressBarWidget.h>
+#include <Widgets/Button/ButtonWidget.h>
+#include <Library/WidgetHandler.h>
 
 WormsPlayer::WormsPlayer() :
-	weaponStrategy(nullptr),
 	currentHealth(100),
+	weaponStrategy(nullptr),
 	maxHealth(100),
 	HasShot(false)
 {
@@ -19,7 +22,7 @@ WormsPlayer::WormsPlayer() :
 	GetPolygonComponent()->name = "WormsPlayer";
 	SetDensity(2.f);
 
-	SetWeaponStrategy( std::make_unique<GrenadeLauncher>() );
+	SetWeaponStrategy( std::make_unique<SimpleGun>() );
 
 	ApplyBinding();
 }
@@ -99,8 +102,6 @@ void WormsPlayer::Shoot()
 	FTransform transform = FTransform(location, FVector2D(5.f, 5.f));
 
 	weaponStrategy->Shoot(*GetWorld(),transform);
-
-	WormLevel* level = static_cast<WormLevel*>(GetWorld());
 }
 
 bool WormsPlayer::IsMyTurn()
@@ -109,9 +110,49 @@ bool WormsPlayer::IsMyTurn()
 	return level->m_TurnManager->currentPlayer == PlayerId;
 }
 
+void WormsPlayer::UpgradeWeapon()
+{
+	std::cout << "Upgrade" << std::endl;
+}
+
+void WormsPlayer::BeginPlay()
+{
+	healthText = WidgetHandler::CreateWidget<TextBlockWidget>(this);
+	healthText->text = "Life : " + std::to_string(currentHealth);
+	healthText->size = FVector2D(100.f, 100.f);
+	healthText->fontSize = 20;
+	healthText->color = FColor(255, 255, 255, 255);
+	healthText->relativePosition = FVector2D( -GetSize().X *2 , -GetSize().Y * 2 - healthText->size.Y);
+	healthText->AddToViewport();
+
+	healthImage = WidgetHandler::CreateWidget<ImageWidget>(this);
+	healthImage->imagePath = "Ressources/WormsPlayer.png";
+	healthImage->size = FVector2D(50.f, 50.f);
+	healthImage->relativePosition = FVector2D( -healthImage->size.X / 2.f, -GetSize().Y * 2 - healthImage->size.Y / 2.f);
+	healthImage->AddToViewport();
+
+	UpgradeButton = WidgetHandler::CreateWidget<ButtonWidget>(this);
+	UpgradeButton->size = FVector2D(100.f, 30.f);
+	UpgradeButton->relativePosition = FVector2D(-UpgradeButton->size.X / 2.f, -GetSize().Y * 2 - UpgradeButton->size.Y * 2);
+	UpgradeButton->SetText("Upgrade");
+	UpgradeButton->onClick = std::bind(&WormsPlayer::UpgradeWeapon, this);
+	UpgradeButton->AddToViewport();
+
+	healthBar = WidgetHandler::CreateWidget<ProgressBarWidget>(this);
+	healthBar->size = FVector2D(100.f, 10.f);
+	healthBar->relativePosition = FVector2D(-healthBar->size.X / 2.f, -GetSize().Y * 2 - healthBar->size.Y * 12);
+	healthBar->progress = currentHealth / maxHealth;
+	healthBar->BackgroundColor = FColor(127, 127, 127, 150);
+	healthBar->color = FColor(0, 255, 0, 255);
+	healthBar->AddToViewport();
+}
+
 bool WormsPlayer::OnDamageTaken(int damage)
 {
-	currentHealth = std::max(0, std::min(currentHealth - damage, maxHealth));
+	currentHealth = std::max(0.f, std::min(currentHealth - damage, maxHealth));
+
+	healthBar->progress = currentHealth / maxHealth;
+	healthText->text = "Life : " + std::to_string(currentHealth);
 
 	if (currentHealth <= 0)
 	{

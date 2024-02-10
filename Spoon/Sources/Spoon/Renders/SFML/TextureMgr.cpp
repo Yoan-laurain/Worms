@@ -1,6 +1,6 @@
 #include "TextureMgr.h"
 
-bool TextureMgr::LoadTexture(const std::string& name, std::string& fileName)
+bool TextureMgr::LoadTexture(const std::string& name, const std::string& fileName)
 {
 	if (IsTextureLoaded(name))
 	{

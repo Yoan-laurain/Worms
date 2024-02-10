@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "Level.h"
-
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -10,7 +9,8 @@
 #include "Library/TColor.h"
 #include "Objects/Prefab/RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
-#include <Objects/Prefab/CircleObject.h>
+#include "Objects/Prefab/CircleObject.h"
+#include "Widgets/WidgetManager.h"
 
 Application* Application::s_Instance = nullptr;
 
@@ -24,7 +24,7 @@ Application::Application() :
 	Init();
 }
 
-Application::Application(std::string windowName, FVector2D screensize) : ScreenSize(screensize), WindowName(windowName)
+Application::Application(const std::string& windowName, const FVector2D screensize) : ScreenSize(screensize), WindowName(windowName)
 {
 	s_Instance = this;
 	Init();
@@ -67,7 +67,7 @@ void Application::OnEvent(SpoonEvent& e)
 {
 	EventDispatcher dispatcher(e);
 
-	// Todo : à sup lorsque les key seront bien impl
+	// Todo : ï¿½ sup lorsque les key seront bien impl
 	//for (const auto& tmp : GetWorld()->EntityList)
 	//{
 	//	//tmp->OnEvent(e);
@@ -106,9 +106,9 @@ bool Application::OnKeyPressed(KeyPressedEvent& e)
 	std::cout << e.ToString() << std::endl;
 #endif // DEBUG
 
-	// Resend les event à tous les objets qui possède un bind
+	// Resend les event ï¿½ tous les objets qui possï¿½de un bind
 	// je sais pas encore vraiment faudrait que je fasse un system de listerner
-	// comme ça des que la fonction et call pouf je call tous les autres.
+	// comme ï¿½a des que la fonction et call pouf je call tous les autres.
 	return true;
 }
 
@@ -139,8 +139,6 @@ void Application::OnRender()
 	}
 
 #endif
-		
-	return;
 }
 
 void Application::AddNewPlayer(SPlayer* player)
@@ -153,6 +151,11 @@ void Application::AddNewPlayer(SPlayer* player)
 FVector2D Application::GetScreenSize() const
 { 
 	return ScreenSize;
+}
+
+Window* Application::GetWindow() const
+{
+	return m_WindowRef;
 }
 
 bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func, InputType inputType)
@@ -230,6 +233,11 @@ bool Application::OnMousePressed(MouseButtonPressedEvent& e)
 		SCircleObject* circle = GetWorld()->SpawnActor<SCircleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(radius, radius)));
 		circle->GetComponent<SShapeComponent>()->ObjectColor = color;
 	}
+	else if (e.GetMouseButton() == Mouse::Button0)
+	{
+		WidgetManager::GetInstance()->HandleWidgetOnClicked(m_WindowRef->GetMousePos());
+	}
+	
 	return true;
 }
 
