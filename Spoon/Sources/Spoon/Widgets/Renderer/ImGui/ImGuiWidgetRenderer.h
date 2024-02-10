@@ -2,7 +2,7 @@
 
 #include "..\DrawingWidgetInterface.h"
 
-class ImGuiWidgetRenderer : public DrawingWidgetInterface
+class SPOON_API ImGuiWidgetRenderer : public DrawingWidgetInterface
 {
 	public:
 		ImGuiWidgetRenderer() = default;

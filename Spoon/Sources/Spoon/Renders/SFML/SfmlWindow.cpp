@@ -5,13 +5,16 @@
 #include "Events/MouseEvent.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "TextureMgr.h"
-
+#include "Widgets/WidgetManager.h"
+#include "Core/Application.h"
+#include "..\..\Widgets\Renderer\SFML\SFMLWidgetRenderer.h"
+#include "..\..\Widgets\Renderer\ImGui\ImGuiWidgetRenderer.h"
+#include "..\..\Widgets\Renderer\DrawingWidgetInterfaceManager.h"
+#include <Renders/SFML/SfmlWindow.h>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <implot.h>
 
-#include "Core/Application.h"
-#include "Widgets/WidgetManager.h"
 #include <Core/Level.h>
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
@@ -28,9 +31,16 @@ Window* Window::Create(const WindowsProps& props)
 }
 
 // Creation d'une nouvelle fenetre call init page
-SfmlWindow::SfmlWindow(const WindowsProps& props)
+SfmlWindow::SfmlWindow(const WindowsProps& props) :
+	WidgetInterfaceSelectedIndex( new char[10] ),
+	WidgetInterfaceSelectedPreviousIndex( new char[10] ),
+	WidgetDrawingInterfaces()
 {
 	Init(props);
+
+	WidgetDrawingInterfaces["SFML"] = std::make_shared<SFMLWidgetRenderer>();
+	WidgetDrawingInterfaces["ImGUI"] = std::make_shared<ImGuiWidgetRenderer>();
+
 }
 
 SfmlWindow::~SfmlWindow()
@@ -73,7 +83,7 @@ void SfmlWindow::OnRender()
 	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
-	Application::Get().SetWidgetDrawingInterface(Application::Get().currenltyUsesSfml);
+	HandleSelectedWidgetInterfaceChanged();
 
 	WindowRef->display();
 }
@@ -338,11 +348,31 @@ void SfmlWindow::DrawImGuiWin()
 			WindowRef->setFramerateLimit(Configuration::FrameRate);
 		}
 	}
-
+	 
 	ImGui::Separator();
 
-	ImGui::Checkbox("UseSfml", &Application::Get().currenltyUsesSfml);
-	
+	static const char* current_item = WidgetInterfaceSelectedIndex; 
+
+	if (ImGui::BeginCombo("Widget Interface", current_item))
+	{
+		for (auto& [key, value] : WidgetDrawingInterfaces)  
+		{
+			bool is_selected = (current_item == key); 
+			if (ImGui::Selectable(key, is_selected))
+			{
+				current_item = key; 
+				strcpy(WidgetInterfaceSelectedIndex, key);
+			}
+
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus(); 
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
 	ImGui::Separator();
 
 	// Ici y a un pb avec le faite de pouvoir changer le frame rate.
@@ -370,4 +400,40 @@ void SfmlWindow::DrawImGuiWin()
 	}
 
 	ImGui::End();
+}
+
+void SfmlWindow::HandleSelectedWidgetInterfaceChanged()
+{
+	if (strcmp( WidgetInterfaceSelectedPreviousIndex, WidgetInterfaceSelectedIndex) != 0)
+	{
+		SetWidgetDrawingInterface(WidgetInterfaceSelectedIndex);
+	}
+}
+
+void SfmlWindow::OnWidgetInterfaceSet( const char* key, std::shared_ptr<DrawingWidgetInterface> value )
+{
+	strcpy(WidgetInterfaceSelectedIndex, key);
+	strcpy(WidgetInterfaceSelectedPreviousIndex, WidgetInterfaceSelectedIndex);
+			 
+	DrawingWidgetInterfaceManager::getInstance().setWidgetDrawingInterface( value );
+}
+
+void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
+{
+	for (auto& [key, value] : WidgetDrawingInterfaces)
+	{
+		if (strcmp(key, _interfaceName) == 0)
+		{
+			OnWidgetInterfaceSet( key, value );
+			return;
+		}
+	}
+	
+	for (auto& [key, value] : WidgetDrawingInterfaces)
+	{
+		OnWidgetInterfaceSet( key, value );
+		return;
+	}
+
+	std::cout << "Interface not found" << std::endl;
 }

@@ -2,7 +2,6 @@
 #include "Library/TColor.h"
 #include "Renders/SFML/SfmlWindow.h"
 #include <imgui.h>
-#include <Spoon.h>
 
 void ImGuiWidgetRenderer::RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size)
 {

@@ -2,12 +2,13 @@
 #include "snpch.h"
 #include "Core/Window.h"
 #include "Library/TVector.h"
-
+#include "..\..\Widgets\Renderer\DrawingWidgetInterfaceManager.h"
+#include "Widgets/Renderer/DrawingWidgetInterface.h"
 #include <SFML/Graphics.hpp>
 
 namespace sf { class Shape; };
 
-class SfmlWindow : public Window
+class SPOON_API SfmlWindow : public Window
 {
 
 	std::mutex _mutex;
@@ -40,6 +41,8 @@ public:
 	void SetCollidingState(sf::Shape& _shape, SActor* _actor);
 	void SetCommonShapeProperties(sf::Shape& _shape, class SShapeComponent* _actor);
 	void RenderDrawable( sf::Drawable& _drawable);
+
+	void SetWidgetDrawingInterface(const char* _interfaceName);
 
 private:
 	
@@ -75,10 +78,16 @@ private:
 	void HandleEvent(sf::Event& event);
 
 	void DrawImGuiWin();
+	void HandleSelectedWidgetInterfaceChanged();
+	void OnWidgetInterfaceSet(const char* key, std::shared_ptr<DrawingWidgetInterface> value); 
 
 	// Function to callback
 	EventCallBackFn EventCallBack;
 
 	std::function<void()> EventRenderBack;
-};
 
+	char* WidgetInterfaceSelectedIndex;
+	char* WidgetInterfaceSelectedPreviousIndex;
+	
+	std::map<const char*, std::shared_ptr<DrawingWidgetInterface>> WidgetDrawingInterfaces;
+};

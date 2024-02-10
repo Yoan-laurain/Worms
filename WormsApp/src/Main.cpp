@@ -1,6 +1,7 @@
 #include "Spoon.h"
 #include "Levels/WormLevel.h"
 #include "Config.h"
+#include <Renders/SFML/SfmlWindow.h>
 
 class App : public Application
 {
@@ -8,7 +9,8 @@ class App : public Application
 		App() : Application("Spoon", FVector2D(Config::WindowWidth, Config::WindowHeight))
 		{
 			SetLevel(new WormLevel());
-			SetWidgetDrawingInterface(true);
+			 
+			dynamic_cast<SfmlWindow*>(GetWindow())->SetWidgetDrawingInterface("SFML");
 		}
 };
 

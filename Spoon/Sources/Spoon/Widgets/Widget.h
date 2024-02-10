@@ -27,7 +27,7 @@ class SPOON_API Widget : public SObject
         void AddToViewport();
         void RemoveFromParent();
 
-        void SetParent(std::unique_ptr<SObject> parent);
+        void SetParent(SObject* parent);
     
         void UpdateWorldPosition();
         bool IsPointInWidget( const FVector2D& mousePosition);
@@ -36,7 +36,7 @@ class SPOON_API Widget : public SObject
         bool bIsEnabled;
         Visibility visibility;
 
-        std::unique_ptr<SObject> parent;
+        SObject* parent;
 
         FVector2D relativePosition;
         FVector2D worldPosition;

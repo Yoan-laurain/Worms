@@ -35,8 +35,6 @@ public:
 	// Dispatch Event
 	void OnEvent(SpoonEvent& e);
 
-	void SetWidgetDrawingInterface(bool useSFML);
-
 	Level* GetWorld() const;
 
 	static Application& Get() { return *s_Instance; }
@@ -76,10 +74,6 @@ private:
 	std::string WindowName;
 
 	#pragma endregion
-
-public:
-	bool currenltyUsesSfml;
-	bool wasUsingSfml;
 	
 private:
 

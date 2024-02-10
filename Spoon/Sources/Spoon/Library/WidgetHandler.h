@@ -19,7 +19,7 @@ struct SPOON_API WidgetHandler
         WidgetT* widget = new WidgetT();
         if (widget)
         {
-            widget->SetParent(std::unique_ptr<SObject>(OwningObject)); 
+            widget->SetParent(OwningObject); 
 
             WidgetManager::GetInstance()->AddWidget(std::shared_ptr<WidgetT>(widget));
 

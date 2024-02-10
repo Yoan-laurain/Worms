@@ -2,7 +2,7 @@
 
 #include "..\DrawingWidgetInterface.h"
 
-class SFMLWidgetRenderer : public DrawingWidgetInterface
+class SPOON_API SFMLWidgetRenderer : public DrawingWidgetInterface
 {
 	public:
 		void RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size) override;

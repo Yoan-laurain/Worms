@@ -3,7 +3,7 @@
 #include "DrawingWidgetInterface.h"
 #include <memory>
 
-class DrawingWidgetInterfaceManager 
+class SPOON_API DrawingWidgetInterfaceManager
 {
     public:
         static DrawingWidgetInterfaceManager& getInstance();

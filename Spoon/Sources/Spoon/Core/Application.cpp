@@ -10,18 +10,11 @@
 #include "Objects/Prefab/RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "Objects/Prefab/CircleObject.h"
-#include "..\Widgets\Renderer\SFML\SFMLWidgetRenderer.h"
-#include "..\Widgets\Renderer\ImGui\ImGuiWidgetRenderer.h"
-#include "..\Widgets\Renderer\DrawingWidgetInterfaceManager.h"
 #include "Widgets/WidgetManager.h"
-#include <imgui.h>
-#include <Renders/SFML/SfmlWindow.h>
 
 Application* Application::s_Instance = nullptr;
 
 Application::Application() : 
-	currenltyUsesSfml(false),
-	wasUsingSfml(false),
 	ScreenSize(FVector2D(720, 1080)),
 	WindowName("SpoonEngine"),
 	_InputMgr(nullptr),
@@ -90,32 +83,6 @@ void Application::OnEvent(SpoonEvent& e)
 
 	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(Application::OnMousePressed));
 
-}
-
-void Application::SetWidgetDrawingInterface(bool useSFML)
-{
-	if (wasUsingSfml == useSFML)
-	{
-		return;
-	}
-	
-	std::shared_ptr<DrawingWidgetInterface> interfaceD;
-
-	currenltyUsesSfml = useSFML;
-	wasUsingSfml = currenltyUsesSfml;
-
-	if (useSFML)
-	{
-		SFMLWidgetRenderer* sfml = new SFMLWidgetRenderer();
-		interfaceD = std::shared_ptr<SFMLWidgetRenderer>(sfml);
-	}
-	else
-	{
-		ImGuiWidgetRenderer* imgui = new ImGuiWidgetRenderer();
-		interfaceD = std::shared_ptr<ImGuiWidgetRenderer>(imgui);
-	}
-
-	DrawingWidgetInterfaceManager::getInstance().setWidgetDrawingInterface(interfaceD);
 }
 
 void Application::SetLevel(class Level* _newLevel, const bool DestroyPrevious /*= false*/)

@@ -28,17 +28,17 @@ void Widget::AddToViewport()
     bIsAddedToViewport = true;
 }
 
-void Widget::SetParent(std::unique_ptr<SObject> parent)
+void Widget::SetParent(SObject* parent)
 {
-    this->parent = std::move(parent);   
+	this->parent = parent;
 }
 
 void Widget::UpdateWorldPosition()
 {
 	worldPosition = relativePosition;
-	if (parent.get())
+	if (parent != nullptr)
 	{
-		SActor* parentActor = dynamic_cast<SActor*>(parent.get());
+		SActor* parentActor = dynamic_cast<SActor*>(parent);
 
 		if (parentActor)
 		{
@@ -46,7 +46,7 @@ void Widget::UpdateWorldPosition()
 			return;
 		}
 
-		Widget* parentWidget = dynamic_cast<Widget*>(parent.get());
+		Widget* parentWidget = dynamic_cast<Widget*>(parent);
 		if (parentWidget)
 		{
 			worldPosition = parentWidget->worldPosition + relativePosition;

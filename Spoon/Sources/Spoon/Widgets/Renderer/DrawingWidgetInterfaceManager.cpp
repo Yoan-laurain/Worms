@@ -8,7 +8,7 @@ DrawingWidgetInterfaceManager& DrawingWidgetInterfaceManager::getInstance()
 
 void DrawingWidgetInterfaceManager::setWidgetDrawingInterface(std::shared_ptr<DrawingWidgetInterface> interface)
 {
-    widgetDrawingInterface = std::move(interface);
+    widgetDrawingInterface = interface;
 }
 
 std::shared_ptr<DrawingWidgetInterface> DrawingWidgetInterfaceManager::getWidgetDrawingInterface() const
