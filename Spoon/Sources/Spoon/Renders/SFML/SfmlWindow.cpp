@@ -14,6 +14,7 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <implot.h>
+#include <Windows.h>
 
 #include <Core/Level.h>
 
@@ -34,13 +35,13 @@ Window* Window::Create(const WindowsProps& props)
 SfmlWindow::SfmlWindow(const WindowsProps& props) :
 	WidgetInterfaceSelectedIndex( new char[10] ),
 	WidgetInterfaceSelectedPreviousIndex( new char[10] ),
-	WidgetDrawingInterfaces()
+	WidgetDrawingInterfaces(),
+	bIsHoveringSomething(false)
 {
 	Init(props);
 
 	WidgetDrawingInterfaces["SFML"] = std::make_shared<SFMLWidgetRenderer>();
 	WidgetDrawingInterfaces["ImGUI"] = std::make_shared<ImGuiWidgetRenderer>();
-
 }
 
 SfmlWindow::~SfmlWindow()
@@ -69,9 +70,10 @@ void SfmlWindow::OnRender()
 		HandleEvent(event);
 	}
 
+	HandleCursorState();
 	m_ClockDraw.restart();
-
 	WindowRef->clear();
+
 	EventRenderBack();
 
 	ImGui::SFML::Update(*WindowRef, m_GlobalClock.getElapsedTime());
@@ -183,18 +185,22 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	FVector2D ownerLocation = _component->GetOwner()->GetLocation();
 
+
+
 	for (int i = 0; i < _component->Points.size(); i++)
 	{
 		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 
-		// For debug purpose only
+#if DEBUG
 		sf::CircleShape point( 3 );
 		point.setOrigin( 3, 3 );
 		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 		point.setFillColor(sf::Color::White);
 		WindowRef->draw(point);
-		// end debug
+#endif
 	}
+
+
 
 	SetCollidingState(drawShape, _component->GetOwner());
 
@@ -203,18 +209,19 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	if (_component->texturePath != "")
 	{
-		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->name))
+		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->texturePath))
 		{
-			Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath);
+			Application::Get().GetTextureMgr()->LoadTexture(_component->texturePath, _component->texturePath);
 		}
 		
-		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->name);
+		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->texturePath);
 		drawShape.setTexture(texture);
 	}
 }
 
 void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 {
+#if DEBUG
 	if (_actor->bIsColliding)
 	{
 		_shape.setOutlineColor(sf::Color::Red);
@@ -230,6 +237,7 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 	}
 
 	_shape.setOutlineThickness(1);
+#endif
 }
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
@@ -293,6 +301,8 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 		MouseMovedEvent tmpevent(FVector2D(event.mouseMove.x, event.mouseMove.y));
 		EventCallBack(tmpevent);
 		m_mousePos = tmpevent.GetLoc();
+
+		WidgetManager::GetInstance()->HandleWidgetHoverState(m_mousePos, bIsHoveringSomething);
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
 	{
@@ -436,4 +446,9 @@ void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
 	}
 
 	std::cout << "Interface not found" << std::endl;
+}
+
+void SfmlWindow::HandleCursorState()
+{
+	SetCursor(LoadCursorA(NULL, bIsHoveringSomething ? IDC_HAND : IDC_ARROW));
 }

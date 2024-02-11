@@ -44,6 +44,11 @@ public:
 
 	void SetWidgetDrawingInterface(const char* _interfaceName);
 
+	void HandleCursorState();
+
+public:
+	bool bIsHoveringSomething;
+
 private:
 	
 	// Todo voir comment faire des petits class pour juste garder la logique des graph

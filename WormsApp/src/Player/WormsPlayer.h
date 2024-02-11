@@ -4,10 +4,7 @@
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
 #include "Objects/SPlayer.h"
 
-class TextBlockWidget;
-class ImageWidget;
-class ButtonWidget;
-class ProgressBarWidget;
+class PlayerWidget;
 
 class WormsPlayer : public SPlayer, public ITurnObserver
 {
@@ -22,13 +19,15 @@ public :
 		void onTurnChange(int currentPlayer) override;
 		/* End ITurnObserver Implementation */
 
-		void SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy);
+		void SetWeaponStrategy(std::shared_ptr<WeaponStrategy> weapon);
 		WeaponStrategy* GetWeaponStrategy() const;
 
 		bool OnDamageTaken(int damage);
+		void Init();
 
 		int PlayerId;
 		float currentHealth;
+		float maxHealth;
 private :
 
 	void MoveVertical(float value, float sign);
@@ -36,19 +35,12 @@ private :
 	void ApplyBinding();
 	void Shoot();
 	bool IsMyTurn();
-	
-	std::unique_ptr<WeaponStrategy> weaponStrategy;
 
-	TextBlockWidget* healthText;
-	ImageWidget* healthImage;
-	ButtonWidget* UpgradeButton;
-	ProgressBarWidget* healthBar;
+	std::shared_ptr<WeaponStrategy> weaponStrategy;
 
-	void UpgradeWeapon();
+	void CreateHUD();
 
-	float maxHealth;
+	std::unique_ptr<PlayerWidget> playerWidget;
+
 	bool HasShot;
-
-protected:
-	void BeginPlay() override;
 };

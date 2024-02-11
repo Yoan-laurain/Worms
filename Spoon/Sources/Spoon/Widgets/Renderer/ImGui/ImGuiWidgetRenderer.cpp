@@ -1,40 +1,58 @@
 #include "ImGuiWidgetRenderer.h"
 #include "Library/TColor.h"
 #include "Renders/SFML/SfmlWindow.h"
+#include "Widgets/Image/ImageWidget.h"
+#include "Widgets/TextBlock/TextBlockWidget.h"
+#include "Widgets/ProgressBar/ProgressBarWidget.h"
+#include "Widgets/Button/ButtonWidget.h"
 #include <imgui.h>
 
-void ImGuiWidgetRenderer::RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void ImGuiWidgetRenderer::RenderImage(const ImageWidget& image)
 {
 	// TODO : Handle texture rendering with ImGui
 
-	ImGui::SetCursorPos(ImVec2(position.X, position.Y));
-	ImGui::Image( ImTextureID( imagePath.c_str() ), ImVec2(size.X, size.Y));	 
+	ImGui::SetCursorPos(ImVec2(image.worldPosition.X, image.worldPosition.Y));
+	ImGui::Image( ImTextureID(image.imagePath.c_str() ), ImVec2(image.size.X, image.size.Y));
 }
 
-void ImGuiWidgetRenderer::RenderText( const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void ImGuiWidgetRenderer::RenderText(const TextBlockWidget& textBlock)
 {
 	// TODO: Handle font size
 
-    ImGui::SetCursorPos(ImVec2(position.X, position.Y));
+    ImGui::SetCursorPos(ImVec2(textBlock.worldPosition.X, textBlock.worldPosition.Y));
 
-    ImGui::TextColored(ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f), text.c_str());
+    ImGui::TextColored(ImVec4(textBlock.color.R / 255.0f, textBlock.color.G / 255.0f,
+		textBlock.color.B / 255.0f, textBlock.color.A / 255.0f), textBlock.text.c_str());
 }
 
-void ImGuiWidgetRenderer::RenderProgressBar(const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void ImGuiWidgetRenderer::RenderProgressBar(const ProgressBarWidget& progressBar)
 {
-	ImGui::SetCursorPos(ImVec2(position.X, position.Y));
-	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
-	ImGui::ProgressBar(percentage, ImVec2(size.X, size.Y), "");
+	ImGui::SetCursorPos(ImVec2(progressBar.worldPosition.X, progressBar.worldPosition.Y));
+	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(progressBar.color.R / 255.0f, progressBar.color.G / 255.0f,
+		progressBar.color.B / 255.0f, progressBar.color.A / 255.0f));
+	ImGui::ProgressBar(progressBar.progress, ImVec2(progressBar.size.X, progressBar.size.Y), "");
 	ImGui::PopStyleColor();
 }
 
-void ImGuiWidgetRenderer::RenderButton(const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void ImGuiWidgetRenderer::RenderButton(const ButtonWidget& button)
 {
 	// TODO : Handle button color
 
-	ImGui::SetCursorPos(ImVec2(position.X, position.Y));
+	ImGui::SetCursorPos(ImVec2(button.worldPosition.X, button.worldPosition.Y));
 
-	const char* textChar = text.c_str();
+	if (button.GetImage())
+	{
+		ImGui::ImageButton(ImTextureID(button.GetImage()->imagePath.c_str()), ImVec2(button.size.X, button.size.Y));
+	}
+	else
+	{
+		const char* textChar = "##";
 
-	ImGui::Button(textChar, ImVec2(size.X, size.Y));
+		if (button.GetTextBlock())
+		{
+			textChar = button.GetTextBlock()->text.c_str();
+		}
+
+		ImGui::Button(textChar, ImVec2(button.size.X, button.size.Y));
+	}
 }

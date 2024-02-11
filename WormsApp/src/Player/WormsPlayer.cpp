@@ -4,13 +4,11 @@
 #include "Inputs/InputAction.h"
 #include "Spoon/Core/Level.h"
 #include "Objects/Components/SShapeComponent.h"
+#include "../Weapons/FragGrenade/GrenadeLauncher.h"
 #include "../Levels/WormLevel.h"
-#include <Widgets/Image/ImageWidget.h> 
+#include "PlayerWidget.h"
 #include <Inputs/InputType.h>
-#include <Widgets/TextBlock/TextBlockWidget.h>
-#include <Widgets/ProgressBar/ProgressBarWidget.h>
-#include <Widgets/Button/ButtonWidget.h>
-#include <Library/WidgetHandler.h>
+#include <Core/Application.h>
 
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
@@ -18,11 +16,9 @@ WormsPlayer::WormsPlayer() :
 	maxHealth(100),
 	HasShot(false)
 {
-	GetPolygonComponent()->texturePath = "Ressources/WormsPlayer.png";
-	GetPolygonComponent()->name = "WormsPlayer";
 	SetDensity(2.f);
 
-	SetWeaponStrategy( std::make_unique<SimpleGun>() );
+	SetWeaponStrategy(std::make_shared<SimpleGun>());
 
 	ApplyBinding();
 }
@@ -33,9 +29,9 @@ WormsPlayer::~WormsPlayer()
 	level->m_TurnManager->unregisterObserver(this);	 
 }
 
-void WormsPlayer::SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy)
+void WormsPlayer::SetWeaponStrategy(std::shared_ptr<WeaponStrategy> weapon)
 {
-	this->weaponStrategy = std::move(weaponStrategy);
+	this->weaponStrategy = weapon;
 }
 
 WeaponStrategy* WormsPlayer::GetWeaponStrategy() const
@@ -46,8 +42,13 @@ WeaponStrategy* WormsPlayer::GetWeaponStrategy() const
 void WormsPlayer::onTurnChange(int currentWormsPlayer)
 {
 	if (!IsMyTurn())
+	{
+		playerWidget->DisableWidget();
 		return;
+	}
 
+	playerWidget->EnableWidget();
+	playerWidget->SelectCurentWeapon();
 	HasShot = false;
 }
 
@@ -110,49 +111,21 @@ bool WormsPlayer::IsMyTurn()
 	return level->m_TurnManager->currentPlayer == PlayerId;
 }
 
-void WormsPlayer::UpgradeWeapon()
+void WormsPlayer::CreateHUD()
 {
-	std::cout << "Upgrade" << std::endl;
-}
-
-void WormsPlayer::BeginPlay()
-{
-	healthText = WidgetHandler::CreateWidget<TextBlockWidget>(this);
-	healthText->text = "Life : " + std::to_string(currentHealth);
-	healthText->size = FVector2D(100.f, 100.f);
-	healthText->fontSize = 20;
-	healthText->color = FColor(255, 255, 255, 255);
-	healthText->relativePosition = FVector2D( -GetSize().X *2 , -GetSize().Y * 2 - healthText->size.Y);
-	healthText->AddToViewport();
-
-	healthImage = WidgetHandler::CreateWidget<ImageWidget>(this);
-	healthImage->imagePath = "Ressources/WormsPlayer.png";
-	healthImage->size = FVector2D(50.f, 50.f);
-	healthImage->relativePosition = FVector2D( -healthImage->size.X / 2.f, -GetSize().Y * 2 - healthImage->size.Y / 2.f);
-	healthImage->AddToViewport();
-
-	UpgradeButton = WidgetHandler::CreateWidget<ButtonWidget>(this);
-	UpgradeButton->size = FVector2D(100.f, 30.f);
-	UpgradeButton->relativePosition = FVector2D(-UpgradeButton->size.X / 2.f, -GetSize().Y * 2 - UpgradeButton->size.Y * 2);
-	UpgradeButton->SetText("Upgrade");
-	UpgradeButton->onClick = std::bind(&WormsPlayer::UpgradeWeapon, this);
-	UpgradeButton->AddToViewport();
-
-	healthBar = WidgetHandler::CreateWidget<ProgressBarWidget>(this);
-	healthBar->size = FVector2D(100.f, 10.f);
-	healthBar->relativePosition = FVector2D(-healthBar->size.X / 2.f, -GetSize().Y * 2 - healthBar->size.Y * 12);
-	healthBar->progress = currentHealth / maxHealth;
-	healthBar->BackgroundColor = FColor(127, 127, 127, 150);
-	healthBar->color = FColor(0, 255, 0, 255);
-	healthBar->AddToViewport();
+	playerWidget = std::make_unique<PlayerWidget>(this);
+	playerWidget->player = this;
+	playerWidget->Init();
 }
 
 bool WormsPlayer::OnDamageTaken(int damage)
 {
 	currentHealth = std::max(0.f, std::min(currentHealth - damage, maxHealth));
 
-	healthBar->progress = currentHealth / maxHealth;
-	healthText->text = "Life : " + std::to_string(currentHealth);
+	if (playerWidget)
+	{
+		playerWidget->SetHealthBarProgress(currentHealth, maxHealth);
+	}
 
 	if (currentHealth <= 0)
 	{
@@ -163,4 +136,11 @@ bool WormsPlayer::OnDamageTaken(int damage)
 	}
 
 	return currentHealth > 0;
+}
+
+void WormsPlayer::Init()
+{
+	GetPolygonComponent()->name = "WormsPlayer " + std::to_string(PlayerId);
+	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
+	CreateHUD();
 }

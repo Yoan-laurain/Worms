@@ -10,5 +10,5 @@ ImageWidget::ImageWidget() : imagePath("")
 void ImageWidget::render()
 {
 	UpdateWorldPosition();
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(imagePath, worldPosition, size);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(*this);
 }

@@ -15,6 +15,7 @@ void WormLevel::CreatePlayer(const FTransform& SpawnLocation,int PlayerId)
 
 	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
 	playerPtr->PlayerId = PlayerId;
+	playerPtr->Init();
 
 	m_TurnManager->registerObserver(playerPtr);
 }
@@ -32,4 +33,6 @@ void WormLevel::BeginPlay()
 	{
 		CreatePlayer(m_Field->GetSpawnPoint(),i);
 	}
+
+	m_TurnManager->nextTurn();
 }

@@ -9,7 +9,9 @@ Widget::Widget() :
     , relativePosition(0, 0)
 	, worldPosition(0, 0)
     , size(0, 0)
-	, BackgroundColor(127,127,127,127)
+	, BackgroundColor(127,127,127,0)
+	, parent(nullptr)
+	, bIsHovered(false)
 {
 }
 
@@ -62,4 +64,34 @@ bool Widget::IsPointInWidget(const FVector2D& mousePosition)
 		return true;
 	}
 	return false;
+}
+
+bool Widget::IsHovered() const
+{
+	return bIsHovered;
+}
+
+void Widget::OnHover()
+{
+	bIsHovered = true;
+}
+
+void Widget::OnUnhover()
+{
+	bIsHovered = false;
+}
+
+void Widget::SetIsEnabled(bool bIsEnabled)
+{
+	this->bIsEnabled = bIsEnabled;
+
+	if (!bIsEnabled)
+	{
+		bIsHovered = false;
+	}
+}
+
+bool Widget::IsEnabled() const
+{
+	return bIsEnabled;
 }

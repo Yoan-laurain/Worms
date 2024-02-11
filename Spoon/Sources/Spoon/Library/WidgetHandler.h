@@ -10,16 +10,13 @@ struct SPOON_API WidgetHandler
     template <typename WidgetT>
     static WidgetT* CreateWidget(SObject* OwningObject)
     {
-        if (!OwningObject)
-        {
-            assert(false, " The owning object of the widget is null");
-            return nullptr;
-        }
-
         WidgetT* widget = new WidgetT();
         if (widget)
         {
-            widget->SetParent(OwningObject); 
+            if (OwningObject)
+            {
+                widget->SetParent(OwningObject);
+            }
 
             WidgetManager::GetInstance()->AddWidget(std::shared_ptr<WidgetT>(widget));
 

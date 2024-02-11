@@ -32,8 +32,15 @@ class SPOON_API Widget : public SObject
         void UpdateWorldPosition();
         bool IsPointInWidget( const FVector2D& mousePosition);
 
+        bool IsHovered() const;
+        void OnHover();
+        void OnUnhover();
+
+        virtual void SetIsEnabled(bool bIsEnabled);
+        bool IsEnabled() const;
+
         bool bIsAddedToViewport;
-        bool bIsEnabled;
+
         Visibility visibility;
 
         SObject* parent;
@@ -42,4 +49,9 @@ class SPOON_API Widget : public SObject
         FVector2D worldPosition;
         FVector2D size;
         FColor BackgroundColor;
+        std::function<void()> onHover;
+
+    private:
+        bool bIsHovered;
+        bool bIsEnabled;
 };

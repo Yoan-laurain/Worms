@@ -58,7 +58,7 @@ void WidgetManager::HandleWidgetOnClicked(const FVector2D& mousePosition)
 {
 	for (auto& widget : Widgets)
 	{
-		if (widget.get()->bIsAddedToViewport)
+		if (widget.get()->bIsAddedToViewport && widget.get()->IsEnabled() )
 		{
 			if (widget.get()->IsPointInWidget(mousePosition))
 			{
@@ -66,7 +66,44 @@ void WidgetManager::HandleWidgetOnClicked(const FVector2D& mousePosition)
 				if (button)
 				{
 					button->OnClick(); 
+					UnSelectAllOtherButtons(button);
 				}
+			}
+		}
+	}
+}
+
+void WidgetManager::HandleWidgetHoverState(const FVector2D& mousePosition, bool& bIsHoveringSomething) 
+{
+	bool bIsHovering = false;
+	for (auto& widget : Widgets)
+	{
+		if (widget.get()->bIsAddedToViewport && widget.get()->IsEnabled())
+		{
+			if (widget.get()->IsPointInWidget(mousePosition) && !widget.get()->IsHovered() )
+			{
+				widget.get()->OnHover();
+				bIsHovering = true;
+
+			}
+			else if (widget.get()->IsHovered() && !widget.get()->IsPointInWidget(mousePosition))
+			{
+				widget.get()->OnUnhover(); 
+			}
+		}
+	}
+	bIsHoveringSomething = bIsHovering || bIsHoveringSomething;
+}
+
+void WidgetManager::UnSelectAllOtherButtons(Widget* widget)
+{
+	for (auto& currentWidget : Widgets)
+	{
+		if (currentWidget.get() != widget && currentWidget.get()->bIsAddedToViewport )
+		{
+			if (ButtonWidget* button = dynamic_cast<ButtonWidget*>(currentWidget.get()))
+			{
+				button->bIsSelected = false;
 			}
 		}
 	}

@@ -7,6 +7,7 @@ class WeaponStrategy : public SActor
 	public:
 
 		WeaponStrategy( int maxAmunition, int damage );
+		WeaponStrategy() = default;
 
 		virtual ~WeaponStrategy() = default;
 	
