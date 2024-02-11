@@ -86,13 +86,8 @@ void PlayerWidget::DestroyTimer()
 	}
 }
 
-void PlayerWidget::Tick(float deltaTime)
+void PlayerWidget::UpdateTimer(float deltaTime)
 {
-	Widget::Tick(deltaTime);
-
-	if (!isTimerActive)
-		return;
-
 	float timeElapsed = clock.getElapsedTime().asSeconds();
 	float remainingTime = 15.f - timeElapsed;
 
@@ -110,6 +105,16 @@ void PlayerWidget::Tick(float deltaTime)
 
 	TimerText->relativePosition = FVector2D(SectionForOnePlayer - (TimerText->text.size() * TimerText->fontSize) / 4.f,
 		20.f + TimerText->fontSize);
+}
+
+void PlayerWidget::Tick(float deltaTime)
+{
+	Widget::Tick(deltaTime);
+
+	if (!isTimerActive)
+		return;
+
+	UpdateTimer(deltaTime);
 }
 
 void PlayerWidget::render()

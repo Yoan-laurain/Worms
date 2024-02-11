@@ -11,7 +11,11 @@ void WormLevel::CreatePlayer(const FTransform& SpawnLocation,int PlayerId)
 {
 	FTransform transform = SpawnLocation;
 	transform.Size = FVector2D(25.f, 25.f);
+
+
+	std::cout << "Spawn point: " << transform.Location.X << " " << transform.Location.Y << std::endl;
 	transform.Location -= transform.Size;
+
 
 	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
 	playerPtr->PlayerId = PlayerId;

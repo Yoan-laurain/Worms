@@ -200,9 +200,6 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	SetCollidingState(drawShape, _component->GetOwner());
 
-	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
-
 	if (_component->texturePath != "")
 	{
 		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->texturePath))
@@ -212,6 +209,11 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 		
 		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->texturePath);
 		drawShape.setTexture(texture);
+	}
+	else
+	{
+		drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+			_component->ObjectColor.B, _component->ObjectColor.A));
 	}
 }
 

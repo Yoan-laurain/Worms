@@ -166,6 +166,7 @@ void WormsPlayer::Init()
 {
 	GetPolygonComponent()->name = "WormsPlayer " + std::to_string(PlayerId);
 	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
+
 	CreateHUD();
 }
 

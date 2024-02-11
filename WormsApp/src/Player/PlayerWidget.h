@@ -34,6 +34,7 @@ class PlayerWidget : public Widget
 		void StartTimer();
 		void StopTimer();
 		void DestroyTimer();
+		void UpdateTimer( float deltaTime);
 
 		ButtonWidget* SimpleGunButton;
 		TextBlockWidget* SimpleGunText;

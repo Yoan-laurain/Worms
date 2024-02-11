@@ -102,15 +102,19 @@ void WidgetManager::HandleWidgetHoverState(const FVector2D& mousePosition, bool&
 			{
 				widget.get()->OnHover();
 				bIsHovering = true;
-
 			}
 			else if (widget.get()->IsHovered() && !widget.get()->IsPointInWidget(mousePosition))
 			{
 				widget.get()->OnUnhover(); 
+				bIsHovering = false;
+			}
+			else if (widget.get()->IsHovered() && widget.get()->IsPointInWidget(mousePosition))
+			{
+				bIsHovering = true;
 			}
 		}
 	}
-	bIsHoveringSomething = bIsHovering || bIsHoveringSomething;
+	bIsHoveringSomething = bIsHovering;
 }
 
 void WidgetManager::UnSelectAllOtherButtons(Widget* widget)

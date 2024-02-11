@@ -34,7 +34,6 @@ void Field::GenerateFieldCurve()
             FTransform spawnPoint = FTransform(point, FVector2D(0.f, 0.f), 0.f);
             AddSpawnPoint(spawnPoint);
         }
-
     }
 
     // Add symetric points to close convex
@@ -53,7 +52,7 @@ FTransform& Field::GetSpawnPoint()
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist6(0, m_SpawnPoints.size() - 1);
 	int index = dist6(rng);
-	FTransform& spawnPoint = m_SpawnPoints[index];
+	FTransform spawnPoint = m_SpawnPoints[index];
 
     m_SpawnPoints.erase(m_SpawnPoints.begin() + index);
 
