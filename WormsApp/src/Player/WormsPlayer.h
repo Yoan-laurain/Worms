@@ -28,19 +28,22 @@ public :
 		int PlayerId;
 		float currentHealth;
 		float maxHealth;
-private :
+		std::vector<std::shared_ptr<WeaponStrategy>> weapons;
 
-	void MoveVertical(float value, float sign);
-	void MoveHorizontal(float value, float sign);
-	void ApplyBinding();
-	void Shoot();
-	bool IsMyTurn();
+	private :
 
-	std::shared_ptr<WeaponStrategy> weaponStrategy;
+		void ApplyBinding();
 
-	void CreateHUD();
+		void MoveVertical(float value, float sign);
+		void MoveHorizontal(float value, float sign);
+		void Shoot();
+		void Reload();
 
-	std::unique_ptr<PlayerWidget> playerWidget;
+		bool IsMyTurn();
+		void CreateHUD();
 
-	bool HasShot;
+		std::shared_ptr<WeaponStrategy> weaponStrategy;
+		std::unique_ptr<PlayerWidget> playerWidget;
+
+		bool HasShot;
 };

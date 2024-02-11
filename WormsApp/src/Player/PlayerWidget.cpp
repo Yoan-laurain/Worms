@@ -19,6 +19,10 @@ PlayerWidget::PlayerWidget()
 	, playerName(nullptr)
 	, SectionForOnePlayer(0)
 	, CenterOfSection(0)
+	, SimpleGunText(nullptr)
+	, GrenadeText(nullptr)
+	, GravitonButton(nullptr)
+	, GravitonText(nullptr)
 {
 
 }
@@ -31,6 +35,10 @@ PlayerWidget::PlayerWidget(WormsPlayer* player)
 	, playerName(nullptr)
 	, SectionForOnePlayer(0)
 	, CenterOfSection(0)
+	, SimpleGunText(nullptr)
+	, GrenadeText(nullptr)
+	, GravitonButton(nullptr)
+	, GravitonText(nullptr)
 {
 }
 
@@ -59,8 +67,24 @@ void PlayerWidget::CreateHealthBar()
 
 void PlayerWidget::CreateWeaponButtons()
 {
-	SimpleGunButton = CreateWeaponButton("Ressources/SimpleGun.png", std::make_shared<SimpleGun>(), 0.f);
-	GrenadeButton = CreateWeaponButton("Ressources/GrenadeLauncher.png", std::make_shared<GrenadeLauncher>(), 50.f);
+	SimpleGunButton = CreateWeaponButton("Ressources/SimpleGun.png", player->weapons[0], -50.f);
+	GrenadeButton = CreateWeaponButton("Ressources/GrenadeLauncher.png", player->weapons[1], 0.f);
+	GravitonButton = CreateWeaponButton("Ressources/Graviton.png", player->weapons[2], 50.f);
+
+	CreateAmmunitionText(SimpleGunText, SimpleGunButton, 0);
+	CreateAmmunitionText(GrenadeText, GrenadeButton, 1);
+	CreateAmmunitionText(GravitonText, GravitonButton, 2);
+
+	UpdateAmountOfAmmo();
+}
+
+void PlayerWidget::CreateAmmunitionText(TextBlockWidget*& textWidget, ButtonWidget* button, int weaponIndex)
+{
+	textWidget = WidgetHandler::CreateWidget<TextBlockWidget>(button);
+
+	textWidget->fontSize = 10;
+	textWidget->relativePosition = FVector2D(20.f, 38.f);
+	textWidget->AddToViewport();
 }
 
 void PlayerWidget::SetHealthBarProgress(float health, float maxHealth)
@@ -94,7 +118,7 @@ void PlayerWidget::CreatePlayerName()
 	playerName->text = "Player " + std::to_string(player->PlayerId);
 	playerName->fontSize = 20;
 	playerName->relativePosition = FVector2D(CenterOfSection + SectionForOnePlayer * player->PlayerId -
-									(playerName->text.size() * playerName->fontSize) / 4.f + 25.f, 50.f + playerName->fontSize);
+									(playerName->text.size() * playerName->fontSize) / 4.f, 50.f + playerName->fontSize);
 	playerName->AddToViewport();
 }
 
@@ -102,7 +126,7 @@ void PlayerWidget::CreateLogoPlayer()
 {
 	ImageWidget* logo = WidgetHandler::CreateWidget<ImageWidget>(nullptr);
 	logo->size = FVector2D(50.f, 50.f);
-	logo->relativePosition = FVector2D(CenterOfSection + SectionForOnePlayer * player->PlayerId - logo->size.X / 2.f + 25.f, 20.f);
+	logo->relativePosition = FVector2D(CenterOfSection + SectionForOnePlayer * player->PlayerId - logo->size.X / 2.f, 20.f);
 	logo->imagePath = player->PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
 	logo->AddToViewport();
 }
@@ -111,12 +135,14 @@ void PlayerWidget::DisableWidget()
 {
 	SimpleGunButton->SetIsEnabled(false);
 	GrenadeButton->SetIsEnabled(false);
+	GravitonButton->SetIsEnabled(false);
 }
 
 void PlayerWidget::EnableWidget()
 {
 	SimpleGunButton->SetIsEnabled(true);
 	GrenadeButton->SetIsEnabled(true);
+	GravitonButton->SetIsEnabled(true);
 }
 
 void PlayerWidget::SelectCurentWeapon()
@@ -129,4 +155,11 @@ void PlayerWidget::SelectCurentWeapon()
 	{
 		GrenadeButton->bIsSelected = true;
 	}
+}
+
+void PlayerWidget::UpdateAmountOfAmmo()
+{
+	SimpleGunText->text = std::to_string(player->weapons[0]->currentAmunition) + "/" + std::to_string(player->weapons[0]->munitionInMagazine);
+	GrenadeText->text = std::to_string(player->weapons[1]->currentAmunition) + "/" + std::to_string(player->weapons[1]->munitionInMagazine);
+	GravitonText->text = std::to_string(player->weapons[2]->currentAmunition) + "/" + std::to_string(player->weapons[2]->munitionInMagazine);
 }

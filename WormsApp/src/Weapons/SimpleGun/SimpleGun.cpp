@@ -4,7 +4,11 @@
 #include <Spoon/Core/Level.h>
 #include <iostream>
 
-SimpleGun::SimpleGun() : WeaponStrategy( 2,50)
+SimpleGun::SimpleGun() : WeaponStrategy( 4,50,1)
+{
+}
+
+SimpleGun::~SimpleGun()
 {
 }
 
@@ -14,11 +18,17 @@ void SimpleGun::DoDamage(SActor* target)
 	wormsPlayer->OnDamageTaken(damage);
 }
 
-void SimpleGun::Shoot(Level& world, FTransform shootingPoint)
+bool SimpleGun::Shoot(Level& world, FTransform shootingPoint)
 {
-	Bullet* bullet = world.SpawnActor<Bullet>(shootingPoint);
+	if (WeaponStrategy::Shoot(world, shootingPoint))
+	{
+		Bullet* bullet = world.SpawnActor<Bullet>(shootingPoint);
 
-	FVector2D force = FVector2D(10000000, 0.f);
+		FVector2D force = FVector2D(10000000, 0.f);
 
-	bullet->AddForce(force);
+		bullet->AddForce(force);
+
+		return true;
+	}
+	return false;
 }

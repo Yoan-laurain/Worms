@@ -1,10 +1,14 @@
 #include "GrenadeLauncher.h"
 #include "Grenade/Grenade.h"
+#include "../../Player/WormsPlayer.h"
 #include <Core/Level.h>
 #include <iostream>
-#include "../../Player/WormsPlayer.h"
 
-GrenadeLauncher::GrenadeLauncher() : WeaponStrategy(2,80)
+GrenadeLauncher::GrenadeLauncher() : WeaponStrategy(2,80,1)
+{
+}
+
+GrenadeLauncher::~GrenadeLauncher()
 {
 }
 
@@ -17,8 +21,14 @@ void GrenadeLauncher::DoDamage(SActor* target)
 	}
 }
 
-void GrenadeLauncher::Shoot(Level& world, FTransform shootingPoint)
+bool GrenadeLauncher::Shoot(Level& world, FTransform shootingPoint)
 {
-	Grenade* grenade = world.SpawnActor<Grenade>(shootingPoint);
-	grenade->AddForce(FVector2D(1000000, -100000));
+	if (WeaponStrategy::Shoot(world, shootingPoint))
+	{
+		Grenade* grenade = world.SpawnActor<Grenade>(shootingPoint);
+		grenade->AddForce(FVector2D(1000000, -100000));
+		return true;
+	}
+
+	return false;
 }

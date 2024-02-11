@@ -5,6 +5,7 @@
 #include "Spoon/Core/Level.h"
 #include "Objects/Components/SShapeComponent.h"
 #include "../Weapons/FragGrenade/GrenadeLauncher.h"
+#include "../Weapons/Graviton/Graviton.h"
 #include "../Levels/WormLevel.h"
 #include "PlayerWidget.h"
 #include <Inputs/InputType.h>
@@ -18,7 +19,11 @@ WormsPlayer::WormsPlayer() :
 {
 	SetDensity(2.f);
 
-	SetWeaponStrategy(std::make_shared<SimpleGun>());
+	weapons.push_back(std::make_shared<SimpleGun>());
+	weapons.push_back(std::make_shared<GrenadeLauncher>());
+	weapons.push_back(std::make_shared<Graviton>());
+
+	SetWeaponStrategy( weapons[0] );
 
 	ApplyBinding();
 }
@@ -89,6 +94,7 @@ void WormsPlayer::ApplyBinding()
 	BindFunctionToInputAction(InputAction::Down, std::bind(&WormsPlayer::MoveVertical, this, std::placeholders::_1, 1.f), InputType::Hold);
 
 	BindFunctionToInputAction(InputAction::Fire, std::bind(&WormsPlayer::Shoot, this), InputType::Pressed);
+	BindFunctionToInputAction(InputAction::Reload, std::bind(&WormsPlayer::Reload, this), InputType::Pressed);
 }
 
 void WormsPlayer::Shoot()
@@ -96,19 +102,30 @@ void WormsPlayer::Shoot()
 	if (!IsMyTurn() || HasShot)
 		return;
 
-	HasShot = true;
-
 	FVector2D location = GetLocation();
 	location.X += GetForwardVector().X * GetSize().X + 10.f;
 	FTransform transform = FTransform(location, FVector2D(5.f, 5.f));
 
-	weaponStrategy->Shoot(*GetWorld(),transform);
+	if (weaponStrategy->Shoot(*GetWorld(), transform))
+	{
+		HasShot = true;
+		playerWidget->UpdateAmountOfAmmo(); 
+	}
 }
 
 bool WormsPlayer::IsMyTurn()
 {
 	WormLevel* level = static_cast<WormLevel*>(GetWorld());
 	return level->m_TurnManager->currentPlayer == PlayerId;
+}
+
+void WormsPlayer::Reload()
+{
+	if (!IsMyTurn() || HasShot)
+		return;
+
+	weaponStrategy->Reload(); 
+	playerWidget->UpdateAmountOfAmmo(); 
 }
 
 void WormsPlayer::CreateHUD()

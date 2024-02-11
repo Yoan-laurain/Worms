@@ -7,9 +7,10 @@ class GrenadeLauncher : public WeaponStrategy
 	public:
 
 		GrenadeLauncher();
+		~GrenadeLauncher() override;
 
 		/* WeaponStrategy IMPLEMENTATION */
 		void DoDamage(SActor* target) override;
-		virtual void Shoot(Level& world, FTransform shootingPoint) override;
+		bool Shoot(Level& world, FTransform shootingPoint) override;
 		/* END WeaponStrategy IMPLEMENTATION */
 };

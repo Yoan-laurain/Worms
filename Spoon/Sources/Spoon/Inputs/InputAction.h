@@ -7,6 +7,7 @@ enum class InputAction
 	Fire,
 	Up,
 	Down,
+	Reload,
 
 	Num
 };

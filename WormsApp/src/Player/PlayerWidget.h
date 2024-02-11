@@ -24,12 +24,21 @@ class PlayerWidget
 		void DisableWidget();
 		void EnableWidget();
 		void SelectCurentWeapon();
+		void UpdateAmountOfAmmo();
+		void CreateAmmunitionText(TextBlockWidget*& textWidget, ButtonWidget* button, int weaponIndex);
 
 		void SetHealthBarProgress(float health,float maxHealth);
 		void Init();
 
 		ButtonWidget* SimpleGunButton;
+		TextBlockWidget* SimpleGunText;
+
 		ButtonWidget* GrenadeButton;
+		TextBlockWidget* GrenadeText;
+
+		ButtonWidget* GravitonButton;
+		TextBlockWidget* GravitonText;
+
 		ProgressBarWidget* healthBar;
 		TextBlockWidget* playerName;
 

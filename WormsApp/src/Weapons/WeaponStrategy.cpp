@@ -1,7 +1,12 @@
 #include "WeaponStrategy.h"
+#include <Library/MathLibrary.h>
 
 
-WeaponStrategy::WeaponStrategy(int maxAmunition, int damage) : maxAmunition(maxAmunition), damage(damage), currentAmunition(maxAmunition)
+WeaponStrategy::WeaponStrategy(int munitionInMagazine, int damage, int munitionByClip)
+	: munitionInMagazine(munitionInMagazine)
+	, damage(damage)
+	, currentAmunition(munitionByClip)
+	, munitionByClip(munitionByClip)
 {
 }
 
@@ -12,17 +17,22 @@ void WeaponStrategy::DoDamage(SActor* target)
 
 void WeaponStrategy::Reload()
 {
-	currentAmunition = maxAmunition;
+	if (currentAmunition == munitionByClip)
+	{
+		return;
+	}
+
+	munitionInMagazine = MathLibrary::Clamp(munitionInMagazine - munitionByClip, 0, munitionInMagazine);
+	currentAmunition = MathLibrary::Clamp(munitionInMagazine, 0, munitionByClip);
 }
 
-void WeaponStrategy::Shoot(Level& world, FTransform shootingPoint)
+bool WeaponStrategy::Shoot(Level& world, FTransform shootingPoint)
 {
 	if (currentAmunition > 0)
 	{
 		currentAmunition--;
+		return true;
 	}
-	else
-	{
-		Reload();
-	}
+
+	return false;
 }
