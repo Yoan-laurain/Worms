@@ -24,6 +24,7 @@ public :
 
 		bool OnDamageTaken(int damage);
 		void Init();
+		void ChangeTurn();
 
 		int PlayerId;
 		float currentHealth;
@@ -43,7 +44,7 @@ public :
 		void CreateHUD();
 
 		std::shared_ptr<WeaponStrategy> weaponStrategy;
-		std::unique_ptr<PlayerWidget> playerWidget;
+		PlayerWidget* playerWidget;
 
 		bool HasShot;
 };

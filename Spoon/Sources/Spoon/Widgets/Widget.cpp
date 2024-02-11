@@ -12,17 +12,14 @@ Widget::Widget() :
 	, BackgroundColor(127,127,127,0)
 	, parent(nullptr)
 	, bIsHovered(false)
+	, IsMarkedForDestruction(false)
+	, bIsTickable(false)
 {
 }
 
 void Widget::RemoveFromParent()
 { 
-    if (parent == nullptr)
-	{
-		return;
-	}
-
-    WidgetManager::GetInstance()->RemoveWidget(this);
+    IsMarkedForDestruction = true;	
 }
 
 void Widget::AddToViewport()
@@ -79,6 +76,10 @@ void Widget::OnHover()
 void Widget::OnUnhover()
 {
 	bIsHovered = false;
+}
+
+void Widget::Tick(float deltaTime)
+{
 }
 
 void Widget::SetIsEnabled(bool bIsEnabled)

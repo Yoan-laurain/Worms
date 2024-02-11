@@ -16,13 +16,16 @@ class SPOON_API WidgetManager
     static WidgetManager* GetInstance();
 
     void AddWidget(std::shared_ptr<Widget> widget);
-    void RemoveWidget(Widget* child);
+    void DestroyWidgetMarkedForDestruction();
+    void DestroyWidget(std::shared_ptr<Widget> widget);
     void GetWidgetToRender();
     void HandleWidgetOnClicked(const FVector2D& mousePosition);
     void HandleWidgetHoverState(const FVector2D& mousePosition, bool& bIsHoveringSomething);
 
     void BeforeRenderImGui();
     void AfterRenderImGui();
+
+    void Tick(float deltaTime);
 
     private:
         void UnSelectAllOtherButtons(Widget* widget);

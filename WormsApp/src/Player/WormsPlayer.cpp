@@ -10,6 +10,7 @@
 #include "PlayerWidget.h"
 #include <Inputs/InputType.h>
 #include <Core/Application.h>
+#include <Library/WidgetHandler.h>
 
 WormsPlayer::WormsPlayer() :
 	currentHealth(100),
@@ -49,11 +50,14 @@ void WormsPlayer::onTurnChange(int currentWormsPlayer)
 	if (!IsMyTurn())
 	{
 		playerWidget->DisableWidget();
+		playerWidget->DestroyTimer();
 		return;
 	}
 
 	playerWidget->EnableWidget();
 	playerWidget->SelectCurentWeapon();
+	playerWidget->StartTimer();
+
 	HasShot = false;
 }
 
@@ -110,6 +114,7 @@ void WormsPlayer::Shoot()
 	{
 		HasShot = true;
 		playerWidget->UpdateAmountOfAmmo(); 
+		playerWidget->StopTimer();
 	}
 }
 
@@ -130,9 +135,11 @@ void WormsPlayer::Reload()
 
 void WormsPlayer::CreateHUD()
 {
-	playerWidget = std::make_unique<PlayerWidget>(this);
+	playerWidget = WidgetHandler::CreateWidget<PlayerWidget>(nullptr);
 	playerWidget->player = this;
+	playerWidget->bIsTickable = true;
 	playerWidget->Init();
+	playerWidget->AddToViewport();
 }
 
 bool WormsPlayer::OnDamageTaken(int damage)
@@ -160,4 +167,9 @@ void WormsPlayer::Init()
 	GetPolygonComponent()->name = "WormsPlayer " + std::to_string(PlayerId);
 	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
 	CreateHUD();
+}
+
+void WormsPlayer::ChangeTurn()
+{
+	dynamic_cast<WormLevel*>(GetWorld())->m_TurnManager->nextTurn();
 }

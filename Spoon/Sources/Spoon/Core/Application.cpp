@@ -116,6 +116,7 @@ bool Application::OnAppTick(AppTickEvent& e)
 {
 	_InputMgr->Update(e.GetDeltaTime());
 	CurrentLevel->UpdateEntity(e.GetDeltaTime());
+	WidgetManager::GetInstance()->Tick(e.GetDeltaTime());
 	return true;
 }
 

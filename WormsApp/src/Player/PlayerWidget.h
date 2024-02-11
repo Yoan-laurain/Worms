@@ -1,7 +1,8 @@
 #pragma once
 
+#include <Spoon/Widgets/Widget.h>
 #include <string>
-
+#include <SFML/Graphics.hpp>
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
 
 class ButtonWidget;
@@ -9,7 +10,7 @@ class ProgressBarWidget;
 class WormsPlayer;
 class TextBlockWidget;
 
-class PlayerWidget 
+class PlayerWidget : public Widget
 {
 	public : 
 
@@ -30,6 +31,10 @@ class PlayerWidget
 		void SetHealthBarProgress(float health,float maxHealth);
 		void Init();
 
+		void StartTimer();
+		void StopTimer();
+		void DestroyTimer();
+
 		ButtonWidget* SimpleGunButton;
 		TextBlockWidget* SimpleGunText;
 
@@ -42,8 +47,17 @@ class PlayerWidget
 		ProgressBarWidget* healthBar;
 		TextBlockWidget* playerName;
 
+		TextBlockWidget* TimerText;
+		
+		sf::Clock clock;
+
 		WormsPlayer* player;
 
 		int SectionForOnePlayer;
 		int CenterOfSection;
+		bool isTimerActive;
+
+protected:
+	void Tick(float deltaTime) override;
+	void render() override;
 };

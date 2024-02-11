@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Objects/Prefab/CircleObject.h"
 #include <snpch.h>
+#include <Widgets/WidgetManager.h>
 
 Level::Level() : 
 	bIsListBeingEdit(false),
@@ -53,6 +54,8 @@ void Level::UpdateEntity(double deltatime)
 			entity->DestroyActor();
 		}
 	}
+
+	WidgetManager::GetInstance()->DestroyWidgetMarkedForDestruction(); 
 }
 
 void Level::ResolveCollision(Manifold& contact)

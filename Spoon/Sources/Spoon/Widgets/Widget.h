@@ -35,11 +35,13 @@ class SPOON_API Widget : public SObject
         bool IsHovered() const;
         void OnHover();
         void OnUnhover();
+        virtual void Tick(float deltaTime);
 
         virtual void SetIsEnabled(bool bIsEnabled);
         bool IsEnabled() const;
 
         bool bIsAddedToViewport;
+        bool bIsTickable;
 
         Visibility visibility;
 
@@ -50,6 +52,8 @@ class SPOON_API Widget : public SObject
         FVector2D size;
         FColor BackgroundColor;
         std::function<void()> onHover;
+
+        bool IsMarkedForDestruction;
 
     private:
         bool bIsHovered;

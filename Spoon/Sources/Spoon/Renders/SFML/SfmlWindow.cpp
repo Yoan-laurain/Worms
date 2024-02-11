@@ -185,8 +185,6 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	FVector2D ownerLocation = _component->GetOwner()->GetLocation();
 
-
-
 	for (int i = 0; i < _component->Points.size(); i++)
 	{
 		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
@@ -199,8 +197,6 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 		WindowRef->draw(point);
 #endif
 	}
-
-
 
 	SetCollidingState(drawShape, _component->GetOwner());
 

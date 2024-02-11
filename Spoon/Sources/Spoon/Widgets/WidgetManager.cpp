@@ -24,9 +24,27 @@ void WidgetManager::AddWidget(std::shared_ptr<Widget> widget)
 	Widgets.push_back(widget);
 }
 
-void WidgetManager::RemoveWidget(Widget* child)
+void WidgetManager::DestroyWidgetMarkedForDestruction()
 {
-	auto it = std::find_if(Widgets.begin(), Widgets.end(), [child](std::shared_ptr<Widget> widget) { return widget.get() == child; });
+	std::vector<std::shared_ptr<Widget>> widgetsToDestroy;
+
+	for (auto& widget : Widgets)
+	{
+		if (widget.get()->IsMarkedForDestruction)
+		{
+			widgetsToDestroy.push_back(widget);
+		}
+	}
+
+	for (auto& widget : widgetsToDestroy)
+	{
+		WidgetManager::GetInstance()->DestroyWidget(widget);
+	}
+}
+
+void WidgetManager::DestroyWidget(std::shared_ptr<Widget> widget)
+{
+	auto it = std::find(Widgets.begin(), Widgets.end(), widget);
 	if (it != Widgets.end())
 	{
 		Widgets.erase(it);
@@ -127,4 +145,15 @@ void WidgetManager::BeforeRenderImGui()
 void WidgetManager::AfterRenderImGui()
 {
 	ImGui::End();
+}
+
+void WidgetManager::Tick(float deltaTime)
+{
+	for (auto& widget : Widgets)
+	{
+		if (widget.get()->bIsAddedToViewport && widget.get()->bIsTickable)
+		{
+			widget.get()->Tick(deltaTime);
+		}
+	}
 }

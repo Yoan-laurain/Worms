@@ -10,6 +10,7 @@
 #include <Library/WidgetHandler.h>
 #include <Core/Application.h>
 #include <Core/Window.h>
+#include <Renders/SFML/SfmlWindow.h>
 
 PlayerWidget::PlayerWidget()
 	: player(nullptr)
@@ -23,6 +24,9 @@ PlayerWidget::PlayerWidget()
 	, GrenadeText(nullptr)
 	, GravitonButton(nullptr)
 	, GravitonText(nullptr)
+	, clock()
+	, TimerText(nullptr)
+	, isTimerActive(false)
 {
 
 }
@@ -39,6 +43,9 @@ PlayerWidget::PlayerWidget(WormsPlayer* player)
 	, GrenadeText(nullptr)
 	, GravitonButton(nullptr)
 	, GravitonText(nullptr)
+	, clock()
+	, TimerText(nullptr)
+	, isTimerActive(false)
 {
 }
 
@@ -52,6 +59,61 @@ void PlayerWidget::Init()
 	CreateWeaponButtons();
 	CreatePlayerName();
 	CreateLogoPlayer();
+}
+
+void PlayerWidget::StartTimer()
+{
+	clock.restart();
+	TimerText = WidgetHandler::CreateWidget<TextBlockWidget>(nullptr);
+	TimerText->fontSize = 20;
+	TimerText->AddToViewport(); 
+
+	isTimerActive = true;
+	std::cout << "Timer started" << std::endl;
+}
+
+void PlayerWidget::StopTimer()
+{
+	isTimerActive = false;
+}
+
+void PlayerWidget::DestroyTimer()
+{
+	if (TimerText)
+	{
+		StopTimer();
+		TimerText->RemoveFromParent();
+	}
+}
+
+void PlayerWidget::Tick(float deltaTime)
+{
+	Widget::Tick(deltaTime);
+
+	if (!isTimerActive)
+		return;
+
+	float timeElapsed = clock.getElapsedTime().asSeconds();
+	float remainingTime = 15.f - timeElapsed;
+
+	float remainingTimeMs = (remainingTime - (int)remainingTime) * 100;
+
+	if (remainingTime <= 0 && remainingTimeMs <= 0)
+	{
+		DestroyTimer();
+		player->ChangeTurn();
+		return;
+	}
+
+	std::string time = std::to_string((int)remainingTime) + ":" + std::to_string((int)remainingTimeMs);
+	TimerText->text = time;
+
+	TimerText->relativePosition = FVector2D(SectionForOnePlayer - (TimerText->text.size() * TimerText->fontSize) / 4.f,
+		20.f + TimerText->fontSize);
+}
+
+void PlayerWidget::render()
+{
 }
 
 void PlayerWidget::CreateHealthBar()
