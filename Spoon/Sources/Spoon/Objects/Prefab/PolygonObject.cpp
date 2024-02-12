@@ -7,7 +7,6 @@ SPolygonObject::SPolygonObject() :
 	Vertices(),
 	bUpdateVerticesRequired(true)
 {
-	PolygonComponent->ObjectColor = FColor(152, 251, 152, 255);
 }
 
 SPolygonObject::~SPolygonObject() = default;

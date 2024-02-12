@@ -14,6 +14,7 @@ Widget::Widget() :
 	, bIsHovered(false)
 	, IsMarkedForDestruction(false)
 	, bIsTickable(false)
+	, rotation(0)
 {
 }
 

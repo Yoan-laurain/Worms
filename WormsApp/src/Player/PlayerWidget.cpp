@@ -11,6 +11,7 @@
 #include <Core/Application.h>
 #include <Core/Window.h>
 #include <Renders/SFML/SfmlWindow.h>
+#include "../Levels/WormLevel.h"
 
 PlayerWidget::PlayerWidget()
 	: player(nullptr)
@@ -69,7 +70,6 @@ void PlayerWidget::StartTimer()
 	TimerText->AddToViewport(); 
 
 	isTimerActive = true;
-	std::cout << "Timer started" << std::endl;
 }
 
 void PlayerWidget::StopTimer()
@@ -115,6 +115,10 @@ void PlayerWidget::Tick(float deltaTime)
 		return;
 
 	UpdateTimer(deltaTime);
+
+	// TODO: Move this to the level
+	Level* level = Application::Get().GetWorld();
+	dynamic_cast<WormLevel*>(level)->UpdateWindDirection(dynamic_cast<WormLevel*>(level)->WindDirection->rotation + 40.f * deltaTime);
 }
 
 void PlayerWidget::render()

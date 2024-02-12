@@ -12,11 +12,16 @@
 #include <Core/Application.h>
 #include <Library/WidgetHandler.h>
 
-WormsPlayer::WormsPlayer() :
-	currentHealth(100),
-	weaponStrategy(nullptr),
-	maxHealth(100),
-	HasShot(false)
+WormsPlayer::WormsPlayer() 
+	: currentHealth(100)
+	, weaponStrategy(nullptr)
+	, maxHealth(100)
+	, HasShot(false)
+	, BeenHit(false)
+	, TimerBeingHit( sf::Clock() )
+	, PlayerId(0)
+	, HitColor(FColor(255, 0, 0, 255))
+	, DefaultColor(FColor::Zero())
 {
 	SetDensity(2.f);
 
@@ -142,8 +147,36 @@ void WormsPlayer::CreateHUD()
 	playerWidget->AddToViewport();
 }
 
+void WormsPlayer::Tick(float DeltaTime)
+{
+	if (BeenHit)
+	{
+		float elapsedTime = TimerBeingHit.getElapsedTime().asSeconds();
+
+		if (fmod(elapsedTime, 0.2f) <= DeltaTime)
+		{
+			if (GetPolygonComponent()->ObjectColor == DefaultColor)
+			{
+				GetPolygonComponent()->ObjectColor = HitColor;
+			}
+			else 
+			{
+				GetPolygonComponent()->ObjectColor = DefaultColor;
+			}
+		}
+
+		if (elapsedTime >= 2.f)
+		{
+			BeenHit = false;
+			TimerBeingHit.restart();
+			GetPolygonComponent()->ObjectColor = DefaultColor;
+		}
+	}
+}
+
 bool WormsPlayer::OnDamageTaken(int damage)
 {
+	BeenHit = true;
 	currentHealth = std::max(0.f, std::min(currentHealth - damage, maxHealth));
 
 	if (playerWidget)
@@ -158,6 +191,8 @@ bool WormsPlayer::OnDamageTaken(int damage)
 		WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
 		level->m_TurnManager->OnEndGame();
 	}
+
+	TimerBeingHit.restart();
 
 	return currentHealth > 0;
 }

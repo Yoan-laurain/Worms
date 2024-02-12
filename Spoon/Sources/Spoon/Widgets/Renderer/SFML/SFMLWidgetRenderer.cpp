@@ -28,9 +28,11 @@ void SFMLWidgetRenderer::RenderImage(const ImageWidget& image)
 	
 	texture = Application::Get().GetTextureMgr()->GetTexture(image.imagePath);
 
-	sprite.setPosition(image.worldPosition.X, image.worldPosition.Y);
+	sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+	sprite.setPosition(image.worldPosition.X + image.size.X / 2.f, image.worldPosition.Y + image.size.Y / 2.f);
 	sprite.setScale(image.size.X / texture.getSize().x, image.size.Y / texture.getSize().y);
 	sprite.setTexture(texture);
+	sprite.setRotation(image.rotation);
 
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 

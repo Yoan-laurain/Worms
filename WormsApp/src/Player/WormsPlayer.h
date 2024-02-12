@@ -3,6 +3,8 @@
 #include "../Turn/ITurnObserver.h"
 #include "../Weapons/WeaponStrategy.h" // On peut pas forward
 #include "Objects/SPlayer.h"
+#include <Library/TColor.h>
+#include <SFML/System.hpp>
 
 class PlayerWidget;
 
@@ -47,4 +49,13 @@ public :
 		PlayerWidget* playerWidget;
 
 		bool HasShot;
+		bool BeenHit;
+
+		FColor HitColor;
+		FColor DefaultColor;
+
+		sf::Clock TimerBeingHit;
+
+protected:
+	void Tick(float DeltaTime) override;
 };

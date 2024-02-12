@@ -9,6 +9,7 @@ class ButtonWidget;
 class ProgressBarWidget;
 class WormsPlayer;
 class TextBlockWidget;
+class ImageWidget;
 
 class PlayerWidget : public Widget
 {

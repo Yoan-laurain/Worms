@@ -7,6 +7,7 @@
 #include <memory>
 
 class Field;
+class ImageWidget;
 
 class WormLevel : public Level
 {
@@ -17,8 +18,13 @@ class WormLevel : public Level
 		void CreatePlayer(const FTransform& SpawnLocation, int PlayerId);
 
 		void BeginPlay() override;
+		void CreateWind();
+		void UpdateWindDirection(float windDirection);
 
 		FTransform SpawnLocation;
+
+		ImageWidget* WindLogo;
+		ImageWidget* WindDirection;
 
 		std::unique_ptr<TurnManager> m_TurnManager;
 private:
