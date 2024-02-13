@@ -198,7 +198,7 @@ void PlayerWidget::CreateLogoPlayer()
 	ImageWidget* logo = WidgetHandler::CreateWidget<ImageWidget>(nullptr);
 	logo->size = FVector2D(50.f, 50.f);
 	logo->relativePosition = FVector2D(CenterOfSection + SectionForOnePlayer * player->PlayerId - logo->size.X / 2.f, 20.f);
-	logo->imagePath = player->PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
+	logo->imagePath = player->PlayerId == 0 ? "Ressources/WormsPlayerRight.png" : "Ressources/WormsPlayer2Right.png";
 	logo->AddToViewport();
 }
 

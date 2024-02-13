@@ -91,6 +91,19 @@ void WormsPlayer::MoveHorizontal(float value, float sign)
 		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
 
 		AddForce(direction * value * 500.f); 
+		UpdateSpriteDirection(direction);
+	}
+}
+
+void WormsPlayer::UpdateSpriteDirection(FVector2D direction)
+{
+	if (direction.X > 0)
+	{
+		GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerRight.png" : "Ressources/WormsPlayer2Right.png";
+	}
+	else
+	{
+		GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerLeft.png" : "Ressources/WormsPlayer2Left.png";
 	}
 }
 
@@ -149,6 +162,7 @@ void WormsPlayer::CreateHUD()
 
 void WormsPlayer::Tick(float DeltaTime)
 {
+	SPlayer::Tick(DeltaTime);
 	if (BeenHit)
 	{
 		float elapsedTime = TimerBeingHit.getElapsedTime().asSeconds();
@@ -200,7 +214,7 @@ bool WormsPlayer::OnDamageTaken(int damage)
 void WormsPlayer::Init()
 {
 	GetPolygonComponent()->name = "WormsPlayer " + std::to_string(PlayerId);
-	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayer.png" : "Ressources/WormsPlayer2.png";
+	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerRight.png" : "Ressources/WormsPlayer2Right.png";
 
 	CreateHUD();
 }

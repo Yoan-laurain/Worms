@@ -183,6 +183,7 @@ FVector2D SActor::GetSize() const
 	return ObjectTransform.Size;
 }
 
+// Does not work since the rotation is not implemented
 FVector2D SActor::GetForwardVector() const
 {
 	FVector2D direction = FVector2D(cosf(ObjectTransform.Rotation), sinf(ObjectTransform.Rotation));

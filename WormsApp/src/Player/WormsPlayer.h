@@ -39,6 +39,7 @@ public :
 
 		void MoveVertical(float value, float sign);
 		void MoveHorizontal(float value, float sign);
+		void UpdateSpriteDirection(FVector2D direction);
 		void Shoot();
 		void Reload();
 
