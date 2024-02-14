@@ -34,3 +34,6 @@
 /vcpkg
 /build
 /.idea
+
+*.json
+*.sqlite
