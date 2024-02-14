@@ -2,33 +2,32 @@
 #include "../../Player/WormsPlayer.h"
 #include "Bullet/Bullet.h"
 #include <Spoon/Core/Level.h>
-#include <iostream>
 
 SimpleGun::SimpleGun() : WeaponStrategy( 4,50,1)
 {
 }
 
-SimpleGun::~SimpleGun()
+void SimpleGun::DoDamage(SActor* Target)
 {
-}
-
-void SimpleGun::DoDamage(SActor* target)
-{
-	WormsPlayer* wormsPlayer = dynamic_cast<WormsPlayer*>(target);
-	wormsPlayer->OnDamageTaken(damage);
-}
-
-bool SimpleGun::Shoot(Level& world, FTransform shootingPoint)
-{
-	if (WeaponStrategy::Shoot(world, shootingPoint))
+	WormsPlayer* MyWormsPlayer = dynamic_cast<WormsPlayer*>(Target);
+	
+	if (MyWormsPlayer)
 	{
-		Bullet* bullet = world.SpawnActor<Bullet>(shootingPoint);
+		MyWormsPlayer->OnDamageTaken(Damage);
+	}
+}
 
-		FVector2D force = FVector2D(10000000, 0.f);
+bool SimpleGun::Shoot(Level& World, FTransform ShootingPoint)
+{
+	if (WeaponStrategy::Shoot(World, ShootingPoint))
+	{
+		Bullet* MyBullet = World.SpawnActor<Bullet>(ShootingPoint);
 
-		bullet->AddForce(force);
-
-		return true;
+		if (MyBullet)
+		{
+			MyBullet->AddForce(FVector2D(10000000, 0.f));
+			return true;
+		}
 	}
 	return false;
 }

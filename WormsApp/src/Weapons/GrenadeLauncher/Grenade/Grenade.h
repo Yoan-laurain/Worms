@@ -5,31 +5,36 @@
 class GrenadeFragment : public SCircleObject
 {
 public:
-	GrenadeFragment();
-	~GrenadeFragment();
+	GrenadeFragment() = default;
+	~GrenadeFragment() override;
 
 	/* SActor IMPLEMENTATION */
-	virtual void OnCollide(Manifold& contact) override;
+	void OnCollide(Manifold& Contact) override;
 	/* SActor IMPLEMENTATION */
 
 	std::function<void()> OnFragmentDestroyCallback;
 
 };
 
+// TODO : Re design the grenade mechanics
 class Grenade : public SCircleObject
 {
 	public :
 		Grenade();
-		~Grenade();
+		~Grenade() override;
+	
+		void SpawnFragment(int FragmentIndex);
 
 		/* SActor IMPLEMENTATION */
-		virtual void OnCollide(Manifold& contact) override;
+		void OnCollide(Manifold& Contact) override;
 		/* SActor IMPLEMENTATION */
 
 		void OnFragmentDestroy();
 
 		int NumberOfFragmentsToSpawn = 3;
 		int NumberOfFragmentsRemaining = 3;
+	
 		bool bIsExploded = false;
-		std::vector<GrenadeFragment*> fragments;
+	
+		std::vector<GrenadeFragment*> Fragments;
 };

@@ -4,17 +4,17 @@
 
 Widget::Widget() : 
     bIsAddedToViewport(false)
-    , bIsEnabled(true)
+    , bIsTickable(false)
     , visibility(Visibility::VISIBLE)
-    , relativePosition(0, 0)
-	, worldPosition(0, 0)
-    , size(0, 0)
+    , parent(nullptr)
+	, RelativePosition(0, 0)
+    , worldPosition(0, 0)
+	, Size(0, 0)
+	, Rotation(0)
 	, BackgroundColor(127,127,127,0)
-	, parent(nullptr)
-	, bIsHovered(false)
 	, IsMarkedForDestruction(false)
-	, bIsTickable(false)
-	, rotation(0)
+	, bIsHovered(false)
+	, bIsEnabled(true)
 {
 }
 
@@ -35,29 +35,29 @@ void Widget::SetParent(SObject* parent)
 
 void Widget::UpdateWorldPosition()
 {
-	worldPosition = relativePosition;
+	worldPosition = RelativePosition;
 	if (parent != nullptr)
 	{
 		SActor* parentActor = dynamic_cast<SActor*>(parent);
 
 		if (parentActor)
 		{
-			worldPosition = parentActor->GetLocation() + relativePosition;
+			worldPosition = parentActor->GetLocation() + RelativePosition;
 			return;
 		}
 
 		Widget* parentWidget = dynamic_cast<Widget*>(parent);
 		if (parentWidget)
 		{
-			worldPosition = parentWidget->worldPosition + relativePosition;
+			worldPosition = parentWidget->worldPosition + RelativePosition;
 		}
 	}
 }
 
 bool Widget::IsPointInWidget(const FVector2D& mousePosition)
 {
-	if (mousePosition.X > worldPosition.X && mousePosition.X < worldPosition.X + size.X &&
-		mousePosition.Y > worldPosition.Y && mousePosition.Y < worldPosition.Y + size.Y)
+	if (mousePosition.X > worldPosition.X && mousePosition.X < worldPosition.X + Size.X &&
+		mousePosition.Y > worldPosition.Y && mousePosition.Y < worldPosition.Y + Size.Y)
 	{
 		return true;
 	}

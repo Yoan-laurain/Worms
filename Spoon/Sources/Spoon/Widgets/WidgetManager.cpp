@@ -62,7 +62,7 @@ void WidgetManager::GetWidgetToRender()
 	{
 		if (widget.get() && widget.get()->bIsAddedToViewport)
 		{
-			widget.get()->render();
+			widget.get()->Render();
 		}
 	}
 
@@ -98,19 +98,22 @@ void WidgetManager::HandleWidgetHoverState(const FVector2D& mousePosition, bool&
 	{
 		if (widget.get()->bIsAddedToViewport && widget.get()->IsEnabled())
 		{
-			if (widget.get()->IsPointInWidget(mousePosition) && !widget.get()->IsHovered() )
+			if ( dynamic_cast<ButtonWidget*>(widget.get()) ) 
 			{
-				widget.get()->OnHover();
-				bIsHovering = true;
-			}
-			else if (widget.get()->IsHovered() && !widget.get()->IsPointInWidget(mousePosition))
-			{
-				widget.get()->OnUnhover(); 
-				bIsHovering = false;
-			}
-			else if (widget.get()->IsHovered() && widget.get()->IsPointInWidget(mousePosition))
-			{
-				bIsHovering = true;
+				if (widget.get()->IsPointInWidget(mousePosition) && !widget.get()->IsHovered() )
+				{
+					widget.get()->OnHover();
+					bIsHovering = true;
+				}
+				else if (widget.get()->IsHovered() && !widget.get()->IsPointInWidget(mousePosition))
+				{
+					widget.get()->OnUnhover(); 
+					bIsHovering = false;
+				}
+				else if (widget.get()->IsHovered() && widget.get()->IsPointInWidget(mousePosition))
+				{
+					bIsHovering = true;
+				}
 			}
 		}
 	}

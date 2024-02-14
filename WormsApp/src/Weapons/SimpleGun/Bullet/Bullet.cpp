@@ -1,29 +1,28 @@
-
 #include "Bullet.h"
-#include <Spoon/Core/Level.h>
 #include "../../WormsApp/src/Player/WormsPlayer.h"
 #include "../../../Levels/WormLevel.h"
-
-Bullet::Bullet()
-{
-}
+#include <Spoon/Core/Level.h>
 
 Bullet::~Bullet()
 {
-	WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
-	level->m_TurnManager->nextTurn();
+	WormLevel* Level = dynamic_cast<WormLevel*>(GetWorld());
+
+	if (Level)
+	{
+		Level->ATurnManager->NextTurn();
+	}
 }
 
-void Bullet::OnCollide(Manifold& contact)
+void Bullet::OnCollide(Manifold& Contact)
 {
 	MarkActorToDestruction();
 
-	if (contact.BodyA)
+	if (Contact.BodyA)
 	{
-		WormsPlayer* player = dynamic_cast<WormsPlayer*>(contact.BodyA);
-		if (player && contact.BodyB)
+		WormsPlayer* Player = dynamic_cast<WormsPlayer*>(Contact.BodyA);
+		if (Player && Contact.BodyB)
 		{
-			player->GetWeaponStrategy()->DoDamage(player);
+			Player->WeaponStrategy->DoDamage(Player);
 		}
 	}
 }

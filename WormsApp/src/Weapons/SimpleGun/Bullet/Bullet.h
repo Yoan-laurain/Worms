@@ -6,10 +6,10 @@
 class Bullet : public SCircleObject
 {
 public:
-	Bullet();
-	virtual ~Bullet() override;
+	Bullet() = default;
+	~Bullet() override;
 
 	/* SActor IMPLEMENTATION */
-	virtual void OnCollide(Manifold& contact) override;
+	void OnCollide(Manifold& Contact) override;
 	/* SActor IMPLEMENTATION */
 };

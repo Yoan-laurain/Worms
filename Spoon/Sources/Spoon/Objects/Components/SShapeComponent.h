@@ -40,9 +40,9 @@ class SPOON_API SPolygonComponent : public SShapeComponent
 {
 	GENERATE()
 public:
-	SPolygonComponent(class SActor* _owner) : SShapeComponent(_owner), Points(), texturePath(""), name("") { Type = ActorType_Polygon; };
+	SPolygonComponent(class SActor* _owner) : SShapeComponent(_owner), Points(), TexturePath(""), Name("") { Type = ActorType_Polygon; };
 
 	std::vector<FVector2D> Points;
-	std::string texturePath;
-	std::string name;
+	std::string TexturePath;
+	std::string Name;
 };

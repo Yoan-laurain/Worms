@@ -1,36 +1,35 @@
 #include "WeaponStrategy.h"
 #include <Library/MathLibrary.h>
 
-
-WeaponStrategy::WeaponStrategy(int munitionInMagazine, int damage, int munitionByClip)
-	: munitionInMagazine(munitionInMagazine)
-	, damage(damage)
-	, currentAmunition(munitionByClip)
-	, munitionByClip(munitionByClip)
+WeaponStrategy::WeaponStrategy(int MunitionInMagazine, int Damage, int MunitionByClip)
+	: CurrentAmmunition(MunitionByClip)
+    , MunitionInMagazine(MunitionInMagazine)
+    , MunitionByClip(MunitionByClip)
+    , Damage(Damage)
 {
 }
 
-void WeaponStrategy::DoDamage(SActor* target)
+void WeaponStrategy::DoDamage(SActor* Target)
 {
 	
 }
 
 void WeaponStrategy::Reload()
 {
-	if (currentAmunition == munitionByClip)
+	if (CurrentAmmunition == MunitionByClip)
 	{
 		return;
 	}
 
-	munitionInMagazine = MathLibrary::Clamp(munitionInMagazine - munitionByClip, 0, munitionInMagazine);
-	currentAmunition = MathLibrary::Clamp(munitionInMagazine, 0, munitionByClip);
+	MunitionInMagazine = MathLibrary::Clamp(MunitionInMagazine - MunitionByClip, 0, MunitionInMagazine);
+	CurrentAmmunition = MathLibrary::Clamp(MunitionInMagazine, 0, MunitionByClip);
 }
 
-bool WeaponStrategy::Shoot(Level& world, FTransform shootingPoint)
+bool WeaponStrategy::Shoot(Level& World, FTransform ShootingPoint)
 {
-	if (currentAmunition > 0)
+	if (CurrentAmmunition > 0)
 	{
-		currentAmunition--;
+		CurrentAmmunition--;
 		return true;
 	}
 

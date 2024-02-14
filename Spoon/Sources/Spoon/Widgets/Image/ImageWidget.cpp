@@ -3,11 +3,11 @@
 #include "Core/Window.h"
 #include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
-ImageWidget::ImageWidget() : imagePath("")
+ImageWidget::ImageWidget() : ImagePath("")
 {
 }
 
-void ImageWidget::render()
+void ImageWidget::Render()
 {
 	UpdateWorldPosition();
 	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(*this);

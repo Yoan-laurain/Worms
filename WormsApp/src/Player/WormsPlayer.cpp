@@ -1,225 +1,143 @@
 #include "WormsPlayer.h"
-#include "../Weapons/WeaponStrategy.h"
 #include "../Weapons/SimpleGun/SimpleGun.h"
-#include "Inputs/InputAction.h"
-#include "Spoon/Core/Level.h"
-#include "Objects/Components/SShapeComponent.h"
-#include "../Weapons/FragGrenade/GrenadeLauncher.h"
 #include "../Weapons/Graviton/Graviton.h"
+#include "../Weapons/GrenadeLauncher/GrenadeLauncher.h"
 #include "../Levels/WormLevel.h"
-#include "PlayerWidget.h"
-#include <Inputs/InputType.h>
+#include "../Widgets/Player/PlayerWidget.h"
+#include "../Config.h"
+#include "Controller/WormsPlayerController.h"
+#include <Objects/Components/SShapeComponent.h>
+#include <Spoon/Core/Level.h>
 #include <Core/Application.h>
 #include <Library/WidgetHandler.h>
 
 WormsPlayer::WormsPlayer() 
-	: currentHealth(100)
-	, weaponStrategy(nullptr)
-	, maxHealth(100)
-	, HasShot(false)
-	, BeenHit(false)
-	, TimerBeingHit( sf::Clock() )
-	, PlayerId(0)
+	: PlayerId(0)
+	, CurrentHealth(100)
+	, MaxHealth(100)
+	, bHasShot(false)
+	, MyPlayerWidget(nullptr)
+	, WeaponStrategy(nullptr)
+	, PlayerController(nullptr)
+	, bBeenHit(false)
 	, HitColor(FColor(255, 0, 0, 255))
 	, DefaultColor(FColor::Zero())
+	, TimerBeingHit( sf::Clock() )
 {
-	SetDensity(2.f);
+	Weapons.push_back(std::make_shared<SimpleGun>());
+	Weapons.push_back(std::make_shared<GrenadeLauncher>());
+	Weapons.push_back(std::make_shared<Graviton>());
 
-	weapons.push_back(std::make_shared<SimpleGun>());
-	weapons.push_back(std::make_shared<GrenadeLauncher>());
-	weapons.push_back(std::make_shared<Graviton>());
+	WeaponStrategy = Weapons[0];
 
-	SetWeaponStrategy( weapons[0] );
-
-	ApplyBinding();
+	PlayerController = new WormsPlayerController();
+	PlayerController->Player = this;
+	PlayerController->ApplyBinding();
 }
 
-WormsPlayer::~WormsPlayer()
+void WormsPlayer::Init()
 {
-	WormLevel* level = static_cast<WormLevel*>(GetWorld());
-	level->m_TurnManager->unregisterObserver(this);	 
+	// TODO : Store the texture path in a config file
+	GetPolygonComponent()->TexturePath = PlayerId == 0 ? Config::Player1Right : Config::Player2Right;
+	
+	CreateHUD();
 }
 
-void WormsPlayer::SetWeaponStrategy(std::shared_ptr<WeaponStrategy> weapon)
-{
-	this->weaponStrategy = weapon;
-}
-
-WeaponStrategy* WormsPlayer::GetWeaponStrategy() const
-{
-	return weaponStrategy.get();
-}
-
-void WormsPlayer::onTurnChange(int currentWormsPlayer)
+void WormsPlayer::OnTurnChange(int CurrentWormsPlayer)
 {
 	if (!IsMyTurn())
 	{
-		playerWidget->DisableWidget();
-		playerWidget->DestroyTimer();
+		MyPlayerWidget->SetWeaponsButtonEnabled(false);
+		MyPlayerWidget->DestroyTimer();
 		return;
 	}
 
-	playerWidget->EnableWidget();
-	playerWidget->SelectCurentWeapon();
-	playerWidget->StartTimer();
+	MyPlayerWidget->SetWeaponsButtonEnabled(true);
+	MyPlayerWidget->SelectCurrentWeapon();
+	MyPlayerWidget->StartTimer();
 
-	HasShot = false;
+	bHasShot = false;
 }
 
-void WormsPlayer::MoveVertical(float value, float sign)
+void WormsPlayer::SetBeingHit(bool bBeingHit)
 {
-	if (!IsMyTurn() || HasShot)
-		return;
-	
-	if (value > 0.f)
-	{	
-		// TODO : Adapt object to world size
-		FVector2D direction = FVector2D(0.f, sign * GetSize().Y);
-
-		AddForce(direction * value * 500.f);
-	}
-}
-
-void WormsPlayer::MoveHorizontal(float value, float sign)
-{
-	if (!IsMyTurn() || HasShot)
-		return;
-
-	if (value > 0.f)
-	{	
-		// TODO : Adapt object to world size
-		FVector2D direction = FVector2D(sign * GetSize().X, 0.f);
-
-		AddForce(direction * value * 500.f); 
-		UpdateSpriteDirection(direction);
-	}
-}
-
-void WormsPlayer::UpdateSpriteDirection(FVector2D direction)
-{
-	if (direction.X > 0)
-	{
-		GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerRight.png" : "Ressources/WormsPlayer2Right.png";
-	}
-	else
-	{
-		GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerLeft.png" : "Ressources/WormsPlayer2Left.png";
-	}
-}
-
-void WormsPlayer::ApplyBinding()
-{
-	BindFunctionToInputAction(InputAction::Left, std::bind(&WormsPlayer::MoveHorizontal, this, std::placeholders::_1, -1.f),InputType::Hold);
-	BindFunctionToInputAction(InputAction::Right, std::bind(&WormsPlayer::MoveHorizontal, this, std::placeholders::_1, 1.f), InputType::Hold);
-
-	BindFunctionToInputAction(InputAction::Up, std::bind(&WormsPlayer::MoveVertical, this, std::placeholders::_1, -1.f), InputType::Hold);
-	BindFunctionToInputAction(InputAction::Down, std::bind(&WormsPlayer::MoveVertical, this, std::placeholders::_1, 1.f), InputType::Hold);
-
-	BindFunctionToInputAction(InputAction::Fire, std::bind(&WormsPlayer::Shoot, this), InputType::Pressed);
-	BindFunctionToInputAction(InputAction::Reload, std::bind(&WormsPlayer::Reload, this), InputType::Pressed);
-}
-
-void WormsPlayer::Shoot()
-{
-	if (!IsMyTurn() || HasShot)
-		return;
-
-	FVector2D location = GetLocation();
-	location.X += GetForwardVector().X * GetSize().X + 10.f;
-	FTransform transform = FTransform(location, FVector2D(5.f, 5.f));
-
-	if (weaponStrategy->Shoot(*GetWorld(), transform))
-	{
-		HasShot = true;
-		playerWidget->UpdateAmountOfAmmo(); 
-		playerWidget->StopTimer();
-	}
-}
-
-bool WormsPlayer::IsMyTurn()
-{
-	WormLevel* level = static_cast<WormLevel*>(GetWorld());
-	return level->m_TurnManager->currentPlayer == PlayerId;
-}
-
-void WormsPlayer::Reload()
-{
-	if (!IsMyTurn() || HasShot)
-		return;
-
-	weaponStrategy->Reload(); 
-	playerWidget->UpdateAmountOfAmmo(); 
+	this->bBeenHit = bBeingHit;
+	TimerBeingHit.restart();
 }
 
 void WormsPlayer::CreateHUD()
 {
-	playerWidget = WidgetHandler::CreateWidget<PlayerWidget>(nullptr);
-	playerWidget->player = this;
-	playerWidget->bIsTickable = true;
-	playerWidget->Init();
-	playerWidget->AddToViewport();
+	MyPlayerWidget = WidgetHandler::CreateWidget<PlayerWidget>(nullptr);
+	MyPlayerWidget->Player = this;
+	MyPlayerWidget->bIsTickable = true;
+	MyPlayerWidget->Init();
+	MyPlayerWidget->AddToViewport();
 }
 
 void WormsPlayer::Tick(float DeltaTime)
 {
 	SPlayer::Tick(DeltaTime);
-	if (BeenHit)
+	
+	if (bBeenHit)
+		DisplayHitEffect(DeltaTime);
+}
+
+void WormsPlayer::DisplayHitEffect(float DeltaTime)
+{
+	const float ElapsedTime = TimerBeingHit.getElapsedTime().asSeconds();
+
+	if (fmod(ElapsedTime, 0.2f) <= DeltaTime) // Blink every 0.2 seconds
 	{
-		float elapsedTime = TimerBeingHit.getElapsedTime().asSeconds();
+		GetPolygonComponent()->ObjectColor = GetPolygonComponent()->ObjectColor == DefaultColor ? HitColor : DefaultColor;
+	}
 
-		if (fmod(elapsedTime, 0.2f) <= DeltaTime)
-		{
-			if (GetPolygonComponent()->ObjectColor == DefaultColor)
-			{
-				GetPolygonComponent()->ObjectColor = HitColor;
-			}
-			else 
-			{
-				GetPolygonComponent()->ObjectColor = DefaultColor;
-			}
-		}
-
-		if (elapsedTime >= 2.f)
-		{
-			BeenHit = false;
-			TimerBeingHit.restart();
-			GetPolygonComponent()->ObjectColor = DefaultColor;
-		}
+	if (ElapsedTime >= 2.f) // Stop Hit Effect after 2 seconds
+	{
+		SetBeingHit(false);
+		GetPolygonComponent()->ObjectColor = DefaultColor;
 	}
 }
 
-bool WormsPlayer::OnDamageTaken(int damage)
+void WormsPlayer::HandlePlayerDeath()
 {
-	BeenHit = true;
-	currentHealth = std::max(0.f, std::min(currentHealth - damage, maxHealth));
+	MarkActorToDestruction();
 
-	if (playerWidget)
-	{
-		playerWidget->SetHealthBarProgress(currentHealth, maxHealth);
-	}
-
-	if (currentHealth <= 0)
-	{
-		MarkActorToDestruction();
-
-		WormLevel* level = dynamic_cast<WormLevel*>(GetWorld());
-		level->m_TurnManager->OnEndGame();
-	}
-
-	TimerBeingHit.restart();
-
-	return currentHealth > 0;
+	WormLevel* Level = dynamic_cast<WormLevel*>(GetWorld());
+	
+	if (Level)
+		Level->ATurnManager->OnEndGame();
 }
 
-void WormsPlayer::Init()
+bool WormsPlayer::OnDamageTaken(int Damage)
 {
-	GetPolygonComponent()->name = "WormsPlayer " + std::to_string(PlayerId);
-	GetPolygonComponent()->texturePath = PlayerId == 0 ? "Ressources/WormsPlayerRight.png" : "Ressources/WormsPlayer2Right.png";
+	CurrentHealth = std::max(0.f, std::min(CurrentHealth - Damage, MaxHealth));
 
-	CreateHUD();
+	if (MyPlayerWidget)
+		MyPlayerWidget->SetHealthBarProgress(CurrentHealth, MaxHealth);
+
+	if (CurrentHealth <= 0)
+		HandlePlayerDeath();
+
+	SetBeingHit(true);
+
+	return CurrentHealth > 0;
 }
 
 void WormsPlayer::ChangeTurn()
 {
-	dynamic_cast<WormLevel*>(GetWorld())->m_TurnManager->nextTurn();
+	WormLevel* Level = dynamic_cast<WormLevel*>(GetWorld());
+	if (Level)
+	{
+		Level->ATurnManager->NextTurn();
+	}
+}
+
+bool WormsPlayer::IsMyTurn() const
+{
+	WormLevel* Level = dynamic_cast<WormLevel*>(GetWorld());
+	if (Level)
+	{
+		return Level->ATurnManager->IsMyTurn(PlayerId);
+	}
+	return false;
 }

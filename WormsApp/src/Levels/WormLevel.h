@@ -1,32 +1,31 @@
 #pragma once
 
-#include "../Turn/TurnManager.h" // Forwards declaration ne fonctionne pas sur les unique_ptr
-#include "Core/Level.h"
-#include "Library/TStruct.h"
-
+#include "../Turn/TurnManager.h" 
+#include <Core/Level.h>
+#include <Library/TStruct.h>
 #include <memory>
 
+class WindWidget;
 class Field;
-class ImageWidget;
 
 class WormLevel : public Level
 {
 	public:
 
 		WormLevel();
+		~WormLevel() override = default;
+	
+		void SpawnPlayers();
+		void SpawnField();
+		void CreatePlayer(FTransform& SpawnLocation, int PlayerId);
+	
+		WindWidget* MyWindWidget;
 
-		void CreatePlayer(const FTransform& SpawnLocation, int PlayerId);
+		std::unique_ptr<TurnManager> ATurnManager;
+	
+	private:
+		Field* MyField;
 
+	protected:
 		void BeginPlay() override;
-		void CreateWind();
-		void UpdateWindDirection(float windDirection);
-
-		FTransform SpawnLocation;
-
-		ImageWidget* WindLogo;
-		ImageWidget* WindDirection;
-
-		std::unique_ptr<TurnManager> m_TurnManager;
-private:
-		Field* m_Field;
 };

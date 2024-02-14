@@ -9,13 +9,13 @@
 #include "..\Renderer\ImGui\ImGuiWidgetRenderer.h"
 
 ButtonWidget::ButtonWidget() 
-	: onClick(nullptr)
+	: OnClick(nullptr)
 	, textBlock(nullptr)
 	, bIsSelected(false)
 {
 }
 
-void ButtonWidget::render()
+void ButtonWidget::Render()
 {
 	UpdateWorldPosition();
 
@@ -25,27 +25,27 @@ void ButtonWidget::render()
 	{
 		if (textBlock)
 		{
-			textBlock->fontSize = 10.f;
-			textBlock->relativePosition = FVector2D(size.X / 2.f - (textBlock->text.size() / 2.f * textBlock->fontSize / 2.f),
-				size.Y / 2.f - textBlock->fontSize / 2.f);
+			textBlock->FontSize = 10.f;
+			textBlock->RelativePosition = FVector2D(Size.X / 2.f - (textBlock->Text.size() / 2.f * textBlock->FontSize / 2.f),
+				Size.Y / 2.f - textBlock->FontSize / 2.f);
 			textBlock->color = FColor(255, 255, 255, 255);
-			textBlock->render();
+			textBlock->Render();
 		}
 
 		if (image)
 		{
-			image->size = size;
-			image->render();
+			image->Size = Size;
+			image->Render();
 		}
 	}
 }
 
-void ButtonWidget::OnClick()
+void ButtonWidget::CallOnClick()
 {
 	bIsSelected = !bIsSelected;
-	if ( onClick )
+	if ( OnClick )
 	{
-		onClick(); 
+		OnClick(); 
 	}
 }
 
@@ -56,7 +56,7 @@ void ButtonWidget::SetText(const std::string& text)
 		TextBlockWidget* TBWidget = WidgetHandler::CreateWidget<TextBlockWidget>(this);
 		textBlock = std::unique_ptr<TextBlockWidget>(TBWidget);
 	}
-	textBlock->text = text;
+	textBlock->Text = text;
 }
 
 void ButtonWidget::SetBackgroundImage(const std::string& imagePath)
@@ -70,7 +70,7 @@ void ButtonWidget::SetBackgroundImage(const std::string& imagePath)
 			return;
 		}
 
-		imgWidget->imagePath = imagePath;
+		imgWidget->ImagePath = imagePath;
 		image = std::unique_ptr<ImageWidget>(imgWidget);
 	}
 }

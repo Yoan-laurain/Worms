@@ -10,8 +10,8 @@ class SPOON_API ButtonWidget : public Widget
 		ButtonWidget();
 		~ButtonWidget() override = default;
 
-		void render() override;
-		virtual void OnClick();
+		void Render() override;
+		virtual void CallOnClick();
 
 		void SetText(const std::string& text);
 		void SetBackgroundImage(const std::string& imagePath);
@@ -20,7 +20,7 @@ class SPOON_API ButtonWidget : public Widget
 		ImageWidget* GetImage() const;
 		TextBlockWidget* GetTextBlock() const;
 
-		std::function<void()> onClick; 
+		std::function<void()> OnClick; 
 
 		bool bIsSelected;
 

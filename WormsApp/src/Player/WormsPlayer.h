@@ -1,62 +1,58 @@
 #pragma once
 
 #include "../Turn/ITurnObserver.h"
-#include "../Weapons/WeaponStrategy.h" // On peut pas forward
-#include "Objects/SPlayer.h"
+#include "../Weapons/WeaponStrategy.h" 
+#include <Objects/SPlayer.h>
 #include <Library/TColor.h>
 #include <SFML/System.hpp>
 
+class WormsPlayerController;
 class PlayerWidget;
 
 class WormsPlayer : public SPlayer, public ITurnObserver
 {
 	GENERATE()
 
-public :
+	public :
 
 		WormsPlayer();
-		~WormsPlayer() override;
+		~WormsPlayer() override = default;
 
 		/* Begin ITurnObserver Implementation */
-		void onTurnChange(int currentPlayer) override;
+		void OnTurnChange(int CurrentPlayer) override;
 		/* End ITurnObserver Implementation */
 
-		void SetWeaponStrategy(std::shared_ptr<WeaponStrategy> weapon);
-		WeaponStrategy* GetWeaponStrategy() const;
-
-		bool OnDamageTaken(int damage);
 		void Init();
+		bool OnDamageTaken(int Damage);
 		void ChangeTurn();
-
+		bool IsMyTurn() const;
+	
 		int PlayerId;
-		float currentHealth;
-		float maxHealth;
-		std::vector<std::shared_ptr<WeaponStrategy>> weapons;
+		float CurrentHealth;
+		float MaxHealth;
+		bool bHasShot;
+	
+		PlayerWidget* MyPlayerWidget;
+	
+		std::vector<std::shared_ptr<WeaponStrategy>> Weapons;
+		std::shared_ptr<WeaponStrategy> WeaponStrategy;
 
 	private :
-
-		void ApplyBinding();
-
-		void MoveVertical(float value, float sign);
-		void MoveHorizontal(float value, float sign);
-		void UpdateSpriteDirection(FVector2D direction);
-		void Shoot();
-		void Reload();
-
-		bool IsMyTurn();
+	
 		void CreateHUD();
-
-		std::shared_ptr<WeaponStrategy> weaponStrategy;
-		PlayerWidget* playerWidget;
-
-		bool HasShot;
-		bool BeenHit;
+		void DisplayHitEffect(float DeltaTime);
+		void SetBeingHit(bool BeingHit);
+		void HandlePlayerDeath();
+	
+		WormsPlayerController* PlayerController;
+	
+		bool bBeenHit;
 
 		FColor HitColor;
 		FColor DefaultColor;
 
 		sf::Clock TimerBeingHit;
 
-protected:
-	void Tick(float DeltaTime) override;
+	protected:
+		void Tick(float DeltaTime) override;
 };

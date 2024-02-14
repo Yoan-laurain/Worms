@@ -5,16 +5,12 @@ Graviton::Graviton() : WeaponStrategy(1, 100, 1)
 {
 }
 
-Graviton::~Graviton()
-{
-}
-
-void Graviton::DoDamage(SActor* target)
+void Graviton::DoDamage(SActor* Target)
 {
 	std::cout << "Graviton::DoDamage" << std::endl;
 }
 
-bool Graviton::Shoot(Level& world, FTransform shootingPoint)
+bool Graviton::Shoot(Level& World, FTransform ShootingPoint)
 {
     return false;
 }

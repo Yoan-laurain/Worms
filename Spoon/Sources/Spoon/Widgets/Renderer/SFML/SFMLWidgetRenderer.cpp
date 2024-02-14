@@ -13,7 +13,7 @@
 
 void SFMLWidgetRenderer::RenderImage(const ImageWidget& image)
 {
-	if (image.imagePath.empty())
+	if (image.ImagePath.empty())
 	{
 		return;
 	}
@@ -21,18 +21,18 @@ void SFMLWidgetRenderer::RenderImage(const ImageWidget& image)
 	sf::Sprite sprite;
 	sf::Texture texture;
 
-	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(image.imagePath))
+	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(image.ImagePath))
 	{
-		Application::Get().GetTextureMgr()->LoadTexture(image.imagePath, image.imagePath);
+		Application::Get().GetTextureMgr()->LoadTexture(image.ImagePath, image.ImagePath);
 	}
 	
-	texture = Application::Get().GetTextureMgr()->GetTexture(image.imagePath);
+	texture = Application::Get().GetTextureMgr()->GetTexture(image.ImagePath);
 
 	sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
-	sprite.setPosition(image.worldPosition.X + image.size.X / 2.f, image.worldPosition.Y + image.size.Y / 2.f);
-	sprite.setScale(image.size.X / texture.getSize().x, image.size.Y / texture.getSize().y);
+	sprite.setPosition(image.worldPosition.X + image.Size.X / 2.f, image.worldPosition.Y + image.Size.Y / 2.f);
+	sprite.setScale(image.Size.X / texture.getSize().x, image.Size.Y / texture.getSize().y);
 	sprite.setTexture(texture);
-	sprite.setRotation(image.rotation);
+	sprite.setRotation(image.Rotation);
 
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
@@ -55,8 +55,8 @@ void SFMLWidgetRenderer::RenderText(const TextBlockWidget& textBlock)
 	font = Application::Get().GetTextureMgr()->GetFont("Roboto-Black");
 
 	sfText.setFont(font);
-	sfText.setString(textBlock.text);
-	sfText.setCharacterSize(textBlock.fontSize);
+	sfText.setString(textBlock.Text);
+	sfText.setCharacterSize(textBlock.FontSize);
 	sfText.setFillColor(sf::Color(textBlock.color.R, textBlock.color.G, textBlock.color.B, textBlock.color.A));
 	sfText.setPosition(textBlock.worldPosition.X, textBlock.worldPosition.Y);
 
@@ -71,12 +71,12 @@ void SFMLWidgetRenderer::RenderText(const TextBlockWidget& textBlock)
 void SFMLWidgetRenderer::RenderProgressBar(const ProgressBarWidget& progressBar)
 {
 	sf::RectangleShape background; 
-	background.setSize(sf::Vector2f(progressBar.size.X, progressBar.size.Y));
+	background.setSize(sf::Vector2f(progressBar.Size.X, progressBar.Size.Y));
 	background.setFillColor(sf::Color(progressBar.BackgroundColor.R, progressBar.BackgroundColor.G, progressBar.BackgroundColor.B, progressBar.BackgroundColor.A));
 	background.setPosition(progressBar.worldPosition.X, progressBar.worldPosition.Y);
 
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(progressBar.size.X * progressBar.progress, progressBar.size.Y));
+	rectangle.setSize(sf::Vector2f(progressBar.Size.X * progressBar.progress, progressBar.Size.Y));
 	rectangle.setFillColor(sf::Color(progressBar.color.R, progressBar.color.G, progressBar.color.B, progressBar.color.A));
 	rectangle.setPosition(progressBar.worldPosition.X, progressBar.worldPosition.Y);
 
@@ -92,7 +92,7 @@ void SFMLWidgetRenderer::RenderProgressBar(const ProgressBarWidget& progressBar)
 void SFMLWidgetRenderer::RenderButton(const ButtonWidget& button)
 {
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(button.size.X, button.size.Y));
+	rectangle.setSize(sf::Vector2f(button.Size.X, button.Size.Y));
 
 	float alpha = MathLibrary::Clamp(button.BackgroundColor.A / 255.f, 0.f, 1.f);
 

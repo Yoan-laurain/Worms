@@ -4,14 +4,14 @@
 #include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
 TextBlockWidget::TextBlockWidget() :
-	fontSize(1.0f),
-	text(""),
+	FontSize(1.0f),
+	Text(""),
 	color(FColor::White())
 {
 	
 }
 
-void TextBlockWidget::render()
+void TextBlockWidget::Render()
 {
 	UpdateWorldPosition();
 	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderText(*this);

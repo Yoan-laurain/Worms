@@ -22,7 +22,7 @@ class SPOON_API Widget : public SObject
         Widget();
         ~Widget() override = default;
 
-        virtual void render() = 0;
+        virtual void Render() = 0;
 
         void AddToViewport();
         void RemoveFromParent();
@@ -47,10 +47,10 @@ class SPOON_API Widget : public SObject
 
         SObject* parent;
 
-        FVector2D relativePosition;
+        FVector2D RelativePosition;
         FVector2D worldPosition;
-        FVector2D size;
-        float rotation;
+        FVector2D Size;
+        float Rotation;
         FColor BackgroundColor;
         std::function<void()> onHover;
 
