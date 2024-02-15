@@ -80,6 +80,9 @@ void Level::ResolveCollision(Manifold& contact)
 
 #endif
 
+	bodyA->OnCollide(bodyB);
+	bodyB->OnCollide(bodyA);
+
 	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 
 	if (FVector2D::DotProduct(relativeVelocity, normal) > 0.f) {
@@ -95,9 +98,6 @@ void Level::ResolveCollision(Manifold& contact)
 
 	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
 	bodyB->LinearVelocity += impulse * bodyB->InvMass;
-
-	bodyA->OnCollide( bodyB );
-	bodyB->OnCollide( bodyA );
 }
 
 AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
