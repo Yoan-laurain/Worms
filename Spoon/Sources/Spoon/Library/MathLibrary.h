@@ -23,5 +23,8 @@ namespace MathLibrary
 
 	template <typename T>
 	static T Clamp(const T& value, const T& min, const T& max) { return (value < min) ? min : ( (value > max) ? max : value); }
+	
+	template <typename T>
+	static T Abs(const T& value) { return (value < 0) ? -value : value; }
 
 }

@@ -12,7 +12,7 @@ class Field : public SPolygonObject
 		void GenerateField();
 	
 		void CreateSpawnPoints();
-		FTransform& GetSpawnPoint();
+		FTransform GetSpawnPoint();
 
 	private:
 

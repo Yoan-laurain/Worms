@@ -8,6 +8,7 @@
 
 WormLevel::WormLevel() 
 	: MyWindWidget(nullptr)
+	, NumberOfGrenadeFragmentsRemaining(0)
 	, MyField(nullptr)
 {
 }
@@ -42,11 +43,11 @@ void WormLevel::SpawnPlayers()
 {
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
-		CreatePlayer(MyField->GetSpawnPoint(),i);
+		CreatePlayer( MyField->GetSpawnPoint() , i);
 	}
 }
 
-void WormLevel::CreatePlayer(FTransform& SpawnLocation, int PlayerId)
+void WormLevel::CreatePlayer(FTransform SpawnLocation, int PlayerId)
 {
 	WormsPlayer* PlayerPtr = SpawnActor<WormsPlayer>(SpawnLocation);
 	
@@ -56,5 +57,14 @@ void WormLevel::CreatePlayer(FTransform& SpawnLocation, int PlayerId)
 		PlayerPtr->Init();
 
 		ATurnManager->RegisterObserver(PlayerPtr);
+	}
+}
+
+void WormLevel::OnGrenadeFragmentDestroy()
+{
+	NumberOfGrenadeFragmentsRemaining--;
+	if (NumberOfGrenadeFragmentsRemaining == 0)
+	{
+		ATurnManager->NextTurn();
 	}
 }

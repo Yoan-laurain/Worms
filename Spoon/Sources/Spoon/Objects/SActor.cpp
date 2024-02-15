@@ -125,6 +125,16 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 
 	LinearVelocity += Gravity * DeltaTime + Force;
 
+	if ( Force != FVector2D::Zero()) // We clamp the velocity to the max velocity if needed
+	{
+		FVector2D MaxVelocity = Gravity + Force;
+
+		MaxVelocity = FVector2D(MathLibrary::Abs(MaxVelocity.X), MathLibrary::Abs(MaxVelocity.Y));	
+	
+		LinearVelocity.X = MathLibrary::Clamp(LinearVelocity.X, -MaxVelocity.X , MaxVelocity.X);
+		LinearVelocity.Y = MathLibrary::Clamp(LinearVelocity.Y, -MaxVelocity.Y, MaxVelocity.Y);
+	}
+	
 	if (LinearVelocity != FVector2D::Zero())
 	{
 		bNeedToUpdateBoundingBox = true;

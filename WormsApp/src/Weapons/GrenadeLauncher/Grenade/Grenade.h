@@ -16,12 +16,11 @@ public:
 
 };
 
-// TODO : Re design the grenade mechanics
 class Grenade : public SCircleObject
 {
 	public :
 		Grenade();
-		~Grenade() override;
+		~Grenade() override = default;
 	
 		void SpawnFragment(int FragmentIndex);
 
@@ -29,12 +28,7 @@ class Grenade : public SCircleObject
 		void OnCollide(SObject* Actor) override;
 		/* SActor IMPLEMENTATION */
 
-		void OnFragmentDestroy();
-
 		int NumberOfFragmentsToSpawn = 3;
-		int NumberOfFragmentsRemaining = 3;
 	
 		bool bIsExploded = false;
-	
-		std::vector<GrenadeFragment*> Fragments;
 };

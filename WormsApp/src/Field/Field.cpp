@@ -23,26 +23,27 @@ void Field::GenerateField()
 
 void Field::CreateSpawnPoints()
 {
-    std::random_device Rd;
-    std::mt19937 Gen(Rd());
-        
-    float Size = GetSize().X;
-    std::uniform_real_distribution Dist((-Size / 2.f) * 0.75f, (Size / 2.f) * 0.75f);
+    float Offsets [] = { -500.f, -300.f, 0.f, 200.f, 500.f };
     
-    for ( int i = 0; i < 5; i++ )
+    for (const int Offset : Offsets)
     {
-        SpawnPoints.emplace_back( FTransform( FVector2D( GetSize().X / 2.f + Dist(Gen),
+        SpawnPoints.emplace_back( FTransform( FVector2D( GetSize().X / 2.f + Offset,
             GetLocation().Y - GetSize().Y / 2.f - Config::PlayerSize / 2.f ),
             FVector2D( Config::PlayerSize ),
             0.f ) );
     }
 }
 
-FTransform& Field::GetSpawnPoint()
+FTransform Field::GetSpawnPoint()
 {
-	FTransform SpawnPoint = SpawnPoints[ SpawnPoints.size() - 1 ];
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, SpawnPoints.size() - 1);
+    int RandomIndex = dis(gen);
+    
+	FTransform Spawn = SpawnPoints[RandomIndex];
 
-    SpawnPoints.erase(SpawnPoints.begin() + SpawnPoints.size() - 1);
+    SpawnPoints.erase( SpawnPoints.begin() + RandomIndex );
 
-    return SpawnPoint;
+    return Spawn;
 }
