@@ -1,10 +1,12 @@
 #include "Grenade.h"
+#include "../../../Config.h"
 #include "../../../Player/WormsPlayer.h"
 #include "../../../Levels/WormLevel.h"
+#include "Objects/Components/SShapeComponent.h"
 
 Grenade::Grenade() : NumberOfFragmentsRemaining(0)
 {
-
+	GetComponent<SShapeComponent>()->TexturePath = Config::Grenade;
 }
 
 Grenade::~Grenade()
@@ -59,6 +61,11 @@ void Grenade::OnFragmentDestroy()
 }
 
 // GrenadeFragment
+
+GrenadeFragment::GrenadeFragment()
+{
+	GetComponent<SShapeComponent>()->TexturePath = Config::GrenadePieces;
+}
 
 GrenadeFragment::~GrenadeFragment()
 {

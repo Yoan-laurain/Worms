@@ -23,4 +23,7 @@ namespace Config {
     inline std::string Graviton = "Ressources/Graviton.png";
     inline std::string Wind = "Ressources/Wind.png";
     inline std::string WindDirection = "Ressources/WindDirection.png";
+    inline std::string Bullet = "Ressources/Saw.png";
+    inline std::string Grenade = "Ressources/Grenade.png";
+    inline std::string GrenadePieces = "Ressources/GrenadePieces.png";
 }

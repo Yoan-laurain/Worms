@@ -163,10 +163,28 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
+void SfmlWindow::SetTexture( SShapeComponent* _component, sf::Shape& _shape )
+{
+	if (_component->TexturePath != "")
+	{
+		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->TexturePath))
+		{
+			Application::Get().GetTextureMgr()->LoadTexture(_component->TexturePath, _component->TexturePath);
+		}
+
+		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->TexturePath);
+		_shape.setTexture(texture);
+	}
+}
+
 void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
 {
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
 	_circle.setRadius(_component->Radius);
+	
+	SetTexture(_component, _circle);
+
+#if DEBUG
 
 	sf::Vertex line[] =
 	{
@@ -176,6 +194,8 @@ void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circ
 
 	WindowRef->draw(line, 2, sf::Lines);
 
+#endif
+	
 	SetCommonShapeProperties(_circle, _component);
 }
 
@@ -200,16 +220,7 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 
 	SetCollidingState(drawShape, _component->GetOwner());
 
-	if (_component->TexturePath != "")
-	{
-		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->TexturePath))
-		{
-			Application::Get().GetTextureMgr()->LoadTexture(_component->TexturePath, _component->TexturePath);
-		}
-		
-		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->TexturePath);
-		drawShape.setTexture(texture);
-	}
+	SetTexture(_component, drawShape);
 
 	if (_component->TexturePath != "" && _component->ObjectColor.A == 0.f)
 		return;
@@ -242,10 +253,11 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
 {
-	//_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		//_component->ObjectColor.B, _component->ObjectColor.A));
+	if (_component->TexturePath == "" || _component->ObjectColor.A == 0.f)
+	{
+		_shape.setFillColor(sf::Color(0, 0, 0, 0));
+	}
 
-	_shape.setFillColor(sf::Color(0, 0, 0, 0));
 	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 	_shape.setRotation(_component->GetOwner()->GetTransform().Rotation);
 

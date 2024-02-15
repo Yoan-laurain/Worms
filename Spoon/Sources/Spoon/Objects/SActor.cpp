@@ -123,8 +123,7 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 		return;
 	}
 
-	// TODO : Get a list of forces
-	LinearVelocity += (Gravity + Force) * DeltaTime;
+	LinearVelocity += Gravity * DeltaTime + Force;
 
 	if (LinearVelocity != FVector2D::Zero())
 	{

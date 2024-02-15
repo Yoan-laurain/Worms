@@ -100,10 +100,10 @@ public:
 
 protected:
 
-	// Funciton called lorsque l'objet est ajouté à la list update
+	// Funciton called lorsque l'objet est ajoutÃ© Ã  la list update
 	virtual void BeginPlay();
 
-	// Function called à chaque boucle du LogicThread
+	// Function called Ã  chaque boucle du LogicThread
 	virtual void Tick(float DeltaTime);
 
 	bool OnMouseEvent(class MouseMovedEvent& _event);
@@ -114,7 +114,7 @@ protected:
 
 	virtual float CalculateRotationInertia();
 
-	// Function à called pour cree un component
+	// Function Ã  called pour cree un component
 	template<typename T>
 	T* CreateComponent(const std::string& name)
 	{

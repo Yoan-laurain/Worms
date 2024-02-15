@@ -1,7 +1,14 @@
 #include "Bullet.h"
 #include "../../WormsApp/src/Player/WormsPlayer.h"
 #include "../../../Levels/WormLevel.h"
+#include "Objects/Components/SShapeComponent.h"
+#include "../../../Config.h"
 #include <Spoon/Core/Level.h>
+
+Bullet::Bullet()
+{
+	GetComponent<SCircleComponent>()->TexturePath = Config::Bullet;
+}
 
 Bullet::~Bullet()
 {

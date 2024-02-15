@@ -9,7 +9,8 @@
 #include <Objects/Components/SShapeComponent.h>
 
 WormsPlayerController::WormsPlayerController() 
-    : PlayerSpeed(10.f)
+    : Player(nullptr)
+    , PlayerSpeed(10.f)
 {
 }
 
@@ -36,7 +37,10 @@ void WormsPlayerController::Shoot()
     FVector2D Location = Player->GetLocation();
     Location.X += Player->GetForwardVector().X * Player->GetSize().X + 10.f;
 
-    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), FTransform(Location, FVector2D(5.f, 5.f))))
+    FTransform ShootingPoint(Location, FVector2D(0.f), 0.f);
+
+    // TODO : Remplacer par le forward vector du player quand il sera correctement orienté
+    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), ShootingPoint, FVector2D(1.f, 0.f)))
     {
         Player->bHasShot = true;
         Player->MyPlayerWidget->UpdateAmountOfAmmo(); 

@@ -5,7 +5,7 @@
 class GrenadeFragment : public SCircleObject
 {
 public:
-	GrenadeFragment() = default;
+	GrenadeFragment();
 	~GrenadeFragment() override;
 
 	/* SActor IMPLEMENTATION */

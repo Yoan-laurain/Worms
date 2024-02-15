@@ -8,6 +8,8 @@
 
 namespace sf { class Shape; };
 
+class SShapeComponent;
+
 class SPOON_API SfmlWindow : public Window
 {
 
@@ -34,6 +36,7 @@ public:
 	
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
+	void SetTexture(SShapeComponent* _component, sf::Shape& _shape);
 
 	void DrawCircle(class SCircleComponent* _component, sf::CircleShape& _circle);
 	void DrawConvex(class SPolygonComponent* _component, sf::ConvexShape& _convex);

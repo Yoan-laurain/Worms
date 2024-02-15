@@ -12,6 +12,6 @@ class Graviton : public WeaponStrategy
 
 		/* WeaponStrategy IMPLEMENTATION */
 			void DoDamage(SActor* Target) override;
-			bool Shoot(Level& World, FTransform ShootingPoint) override;
+			bool Shoot(Level& World, FTransform& ShootingPoint,const FVector2D& Direction) override;
 		/* END WeaponStrategy IMPLEMENTATION */
 };

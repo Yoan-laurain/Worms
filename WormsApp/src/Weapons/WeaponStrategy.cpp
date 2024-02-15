@@ -1,11 +1,12 @@
 #include "WeaponStrategy.h"
 #include <Library/MathLibrary.h>
 
-WeaponStrategy::WeaponStrategy(int MunitionInMagazine, int Damage, int MunitionByClip)
+WeaponStrategy::WeaponStrategy(int MunitionInMagazine, int Damage, int MunitionByClip, float BulletSpeed)
 	: CurrentAmmunition(MunitionByClip)
-    , MunitionInMagazine(MunitionInMagazine)
-    , MunitionByClip(MunitionByClip)
+	, MunitionInMagazine(MunitionInMagazine)
+	, MunitionByClip(MunitionByClip)
     , Damage(Damage)
+	, BulletSpeed(BulletSpeed)
 {
 }
 
@@ -25,7 +26,7 @@ void WeaponStrategy::Reload()
 	CurrentAmmunition = MathLibrary::Clamp(MunitionInMagazine, 0, MunitionByClip);
 }
 
-bool WeaponStrategy::Shoot(Level& World, FTransform ShootingPoint)
+bool WeaponStrategy::Shoot(Level& World, FTransform& ShootingPoint,const FVector2D& Direction)
 {
 	if (CurrentAmmunition > 0)
 	{

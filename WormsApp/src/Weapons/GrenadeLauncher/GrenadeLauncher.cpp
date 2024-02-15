@@ -3,7 +3,7 @@
 #include "../../Player/WormsPlayer.h"
 #include <Core/Level.h>
 
-GrenadeLauncher::GrenadeLauncher() : WeaponStrategy(2,80,1)
+GrenadeLauncher::GrenadeLauncher() : WeaponStrategy(2,80,1,150.f)
 {
 }
 
@@ -16,15 +16,18 @@ void GrenadeLauncher::DoDamage(SActor* Target)
 	}
 }
 
-bool GrenadeLauncher::Shoot(Level& World, FTransform ShootingPoint)
+bool GrenadeLauncher::Shoot(Level& World, FTransform& ShootingPoint,const FVector2D& Direction)
 {
-	if (WeaponStrategy::Shoot(World, ShootingPoint))
+	if (WeaponStrategy::Shoot(World, ShootingPoint,Direction))
 	{
-		Grenade* MyGrenade = World.SpawnActor<Grenade>(ShootingPoint);
+		FVector2D Size = FVector2D(30.f, 30.f);
+		ShootingPoint.Location.X += Size.X / 2.f;
+		
+		Grenade* MyGrenade = World.SpawnActor<Grenade>(FTransform(ShootingPoint.Location, Size, 0.f));
 		
 		if (MyGrenade)
 		{
-			MyGrenade->AddForce(FVector2D(1000000, -100000));
+			MyGrenade->AddForce( Direction * BulletSpeed);
 			return true;
 		}
 	}
