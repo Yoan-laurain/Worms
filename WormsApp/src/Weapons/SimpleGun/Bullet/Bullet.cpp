@@ -13,16 +13,13 @@ Bullet::~Bullet()
 	}
 }
 
-void Bullet::OnCollide(Manifold& Contact)
+void Bullet::OnCollide(SObject* Actor)
 {
 	MarkActorToDestruction();
 
-	if (Contact.BodyA)
+	WormsPlayer* Player = dynamic_cast<WormsPlayer*>(Actor);
+	if (Player)
 	{
-		WormsPlayer* Player = dynamic_cast<WormsPlayer*>(Contact.BodyA);
-		if (Player && Contact.BodyB)
-		{
-			Player->WeaponStrategy->DoDamage(Player);
-		}
+		Player->WeaponStrategy->DoDamage(Player);
 	}
 }

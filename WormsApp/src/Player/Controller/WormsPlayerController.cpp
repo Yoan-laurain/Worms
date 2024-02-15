@@ -8,6 +8,11 @@
 #include <Library/TStruct.h>
 #include <Objects/Components/SShapeComponent.h>
 
+WormsPlayerController::WormsPlayerController() 
+    : PlayerSpeed(10.f)
+{
+}
+
 void WormsPlayerController::ApplyBinding()
 {
     if (Player)
@@ -52,13 +57,12 @@ void WormsPlayerController::MoveVertical(float Value, float Sign)
 {
     if (!CanPerformAction())
         return;
-	
+
     if (Value > 0.f)
     {	
-        // TODO : Adapt object to world size
-        FVector2D Direction = FVector2D(0.f, Sign * Player->GetSize().Y);
+        FVector2D Direction = FVector2D( 0.f, Sign * Value);
 
-        Player->AddForce(Direction * Value * 500.f);
+        Player->AddForce(Direction * Value * PlayerSpeed);
     }
 }
 
@@ -69,10 +73,10 @@ void WormsPlayerController::MoveHorizontal(float Value, float Sign)
 
     if (Value > 0.f)
     {	
-        // TODO : Adapt object to world size
-        FVector2D Direction = FVector2D(Sign * Player->GetSize().X, 0.f);
+        FVector2D Direction = FVector2D(Sign * Value, 0.f);
 
-        Player->AddForce(Direction * Value * 500.f); 
+        Player->AddForce(Direction * Value * PlayerSpeed);
+
         UpdateSpriteDirection(Direction);
     }
 }

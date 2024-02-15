@@ -17,7 +17,7 @@ Grenade::~Grenade()
 	}
 }
 
-void Grenade::OnCollide(Manifold& Contact)
+void Grenade::OnCollide(SObject* Actor)
 {
 	if (bIsExploded)
 		return;
@@ -65,16 +65,13 @@ GrenadeFragment::~GrenadeFragment()
 	OnFragmentDestroyCallback();
 }
 
-void GrenadeFragment::OnCollide(Manifold& Contact)
+void GrenadeFragment::OnCollide(SObject* Actor)
 {
 	MarkActorToDestruction();
 
-	if (Contact.BodyA)
+	WormsPlayer* Player = dynamic_cast<WormsPlayer*>(Actor);
+	if (Player)
 	{
-		WormsPlayer* Player = dynamic_cast<WormsPlayer*>(Contact.BodyA);
-		if (Player && Contact.BodyB)
-		{
-			Player->WeaponStrategy->DoDamage(Player);
-		}
+		Player->WeaponStrategy->DoDamage(Player);
 	}
 }

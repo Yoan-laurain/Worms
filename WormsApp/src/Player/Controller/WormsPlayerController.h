@@ -7,6 +7,8 @@ class WormsPlayer;
 class WormsPlayerController
 {
     public:
+
+        WormsPlayerController();
         
         /* Inputs */
         void ApplyBinding();
@@ -20,4 +22,5 @@ class WormsPlayerController
         bool CanPerformAction() const;
 
         WormsPlayer* Player;
+        float PlayerSpeed;
 };

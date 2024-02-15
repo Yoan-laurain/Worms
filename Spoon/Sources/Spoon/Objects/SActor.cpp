@@ -245,12 +245,7 @@ bool SActor::IsInBound(const FVector2D& _loc)
 	return false;
 }
 
-void SActor::OnCollide(Manifold& contact)
+void SActor::OnCollide(SObject* Actor)
 {
-	if ( contact.BodyA == nullptr || contact.BodyB == nullptr)
-	{
-		return;
-	}
 
-	GetWorld()->ResolveCollision(contact);
 }

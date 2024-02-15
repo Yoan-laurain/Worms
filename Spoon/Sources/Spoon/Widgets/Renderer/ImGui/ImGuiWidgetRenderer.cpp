@@ -6,6 +6,7 @@
 #include "Widgets/ProgressBar/ProgressBarWidget.h"
 #include "Widgets/Button/ButtonWidget.h"
 #include <imgui.h>
+#include <imgui-SFML.h>
 
 void ImGuiWidgetRenderer::RenderImage(const ImageWidget& image)
 {

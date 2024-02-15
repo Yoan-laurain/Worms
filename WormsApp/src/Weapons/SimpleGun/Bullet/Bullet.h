@@ -10,6 +10,6 @@ public:
 	~Bullet() override;
 
 	/* SActor IMPLEMENTATION */
-	void OnCollide(Manifold& Contact) override;
+	void OnCollide(SObject* Actor) override;
 	/* SActor IMPLEMENTATION */
 };

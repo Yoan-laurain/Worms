@@ -35,6 +35,18 @@ WormsPlayer::WormsPlayer()
 	PlayerController->ApplyBinding();
 }
 
+WormsPlayer::~WormsPlayer()
+{
+	WormLevel* Level = dynamic_cast<WormLevel*>(GetWorld());
+
+	if (Level)
+	{
+		Level->ATurnManager->OnEndGame();
+	}
+
+	delete PlayerController;
+}
+
 void WormsPlayer::Init()
 {
 	// TODO : Store the texture path in a config file

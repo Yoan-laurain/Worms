@@ -54,7 +54,7 @@ public:
 	/************************************************************************/
 
 	virtual bool IsInBound(const FVector2D& _loc);
-	virtual void OnCollide(Manifold& contact);
+	virtual void OnCollide(SObject* Actor);
 
 	/************************************************************************/
 	/* Component Getter														*/

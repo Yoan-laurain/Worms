@@ -9,7 +9,7 @@ public:
 	~GrenadeFragment() override;
 
 	/* SActor IMPLEMENTATION */
-	void OnCollide(Manifold& Contact) override;
+	void OnCollide(SObject* Actor) override;
 	/* SActor IMPLEMENTATION */
 
 	std::function<void()> OnFragmentDestroyCallback;
@@ -26,7 +26,7 @@ class Grenade : public SCircleObject
 		void SpawnFragment(int FragmentIndex);
 
 		/* SActor IMPLEMENTATION */
-		void OnCollide(Manifold& Contact) override;
+		void OnCollide(SObject* Actor) override;
 		/* SActor IMPLEMENTATION */
 
 		void OnFragmentDestroy();

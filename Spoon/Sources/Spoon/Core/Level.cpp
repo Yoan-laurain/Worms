@@ -95,6 +95,9 @@ void Level::ResolveCollision(Manifold& contact)
 
 	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
 	bodyB->LinearVelocity += impulse * bodyB->InvMass;
+
+	bodyA->OnCollide( bodyB );
+	bodyB->OnCollide( bodyA );
 }
 
 AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
@@ -245,22 +248,18 @@ void Level::NarrowPhase(SActor* entity, SActor* obj)
 
 	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision); 
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision); 
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision);
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision);
 	}
 }
