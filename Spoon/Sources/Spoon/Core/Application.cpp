@@ -159,27 +159,18 @@ Window* Application::GetWindow() const
 	return m_WindowRef;
 }
 
-bool Application::BindAction(SPlayer* player, InputAction inputAction, std::function<void(float)> func, InputType inputType)
+bool Application::BindAction(const SPlayer* Player, const InputAction InputAction, const std::function<void(float)>& Func, const InputType InputType)
 {
 	int index = -1;
 	for (int i = 0; i < Players.size(); ++i)
 	{
-		if (Players[i] == player)
+		if (Players[i] == Player)
 		{
 			index = i;
 		}
 	}
-
-#if _DEBUG
-	assert(index != -1);
-#else
-	if (index == -1)
-	{
-		return false;
-	}
-#endif
-
-	_InputMgr->BindAction(index, inputAction, func,inputType);
+	
+	_InputMgr->BindAction(index, InputAction, Func,InputType);
 	return true;
 }
 
@@ -209,29 +200,25 @@ bool Application::OnMouseMoved(MouseMovedEvent& e)
 
 void Application::SpawnCircleObject()
 {
-	float radius = rand() % 30 + 5;
+	float Radius = rand() % 30 + 5;
 
-	m_WindowRef->GetMousePos();
-
-	FColor color = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
-
-	std::unique_lock<std::mutex> lock(_mutex);
-	SCircleObject* circle = GetWorld()->SpawnActor<SCircleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(radius, radius)));
-	circle->GetComponent<SShapeComponent>()->ObjectColor = color;
+	std::unique_lock Lock(_mutex);
+	
+	SCircleObject* Circle = GetWorld()->SpawnActor<SCircleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(Radius, Radius)));
+	
+	Circle->GetComponent<SShapeComponent>()->ObjectColor = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
 }
 
 void Application::SpawnRectangleObject()
 {
-	float width = rand() % 30 + 5;
-	float height = rand() % 30 + 5;
-		
-	m_WindowRef->GetMousePos();
-
-	FColor color = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
-
-	std::unique_lock<std::mutex> lock(_mutex);
-	SRectangleObject* rect = GetWorld()->SpawnActor<SRectangleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(width, height)));
-	rect->GetComponent<SShapeComponent>()->ObjectColor = color;
+	float Width = rand() % 30 + 5;
+	float Height = rand() % 30 + 5;
+	
+	std::unique_lock lock(_mutex);
+	
+	SRectangleObject* rect = GetWorld()->SpawnActor<SRectangleObject>(FTransform(m_WindowRef->GetMousePos(), FVector2D(Width, Height)));
+	
+	rect->GetComponent<SShapeComponent>()->ObjectColor = FColor(rand() % 255, rand() % 255, rand() % 255, 255);
 }
 
 bool Application::OnMousePressed(MouseButtonPressedEvent& e)

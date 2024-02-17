@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Widget.h"
-#include "Widgets/TextBlock/TextBlockWidget.h" // On peut pas forward
-#include "Widgets/Image/ImageWidget.h" // On peut pas forward
+#include "Widgets/TextBlock/TextBlockWidget.h" 
+#include "Widgets/Image/ImageWidget.h"
 
 class SPOON_API ButtonWidget : public Widget
 {
@@ -13,8 +13,8 @@ class SPOON_API ButtonWidget : public Widget
 		void Render() override;
 		virtual void CallOnClick();
 
-		void SetText(const std::string& text);
-		void SetBackgroundImage(const std::string& imagePath);
+		void SetText(const std::string& Text);
+		void SetBackgroundImage(const std::string& ImagePath);
 		void SetIsEnabled(bool bIsEnabled) override;
 
 		ImageWidget* GetImage() const;
@@ -30,6 +30,6 @@ class SPOON_API ButtonWidget : public Widget
 
 private:
 		 		
-		std::unique_ptr<TextBlockWidget> textBlock;
-		std::unique_ptr<ImageWidget> image;
+		std::unique_ptr<TextBlockWidget> TextBlock;
+		std::unique_ptr<ImageWidget> Image;
 };

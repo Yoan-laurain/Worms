@@ -14,5 +14,3 @@ INIT_DEFAULT_BIND(1, InputBindInfo(1, InputAction::Fire, sf::Keyboard::Space))
 INIT_DEFAULT_BIND(1, InputBindInfo(1, InputAction::Up, sf::Keyboard::Z))
 INIT_DEFAULT_BIND(1, InputBindInfo(1, InputAction::Down, sf::Keyboard::S))
 INIT_DEFAULT_BIND(1, InputBindInfo(1, InputAction::Reload, sf::Keyboard::R))
-
-

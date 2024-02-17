@@ -1,20 +1,17 @@
 #include "RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
 
-SRectangleObject::SRectangleObject()
+void SRectangleObject::SetTransform(const FTransform& Transform)
 {
-}
-
-void SRectangleObject::SetTransform(const FTransform& transform)
-{
-	SActor::SetTransform(transform);
+	SActor::SetTransform(Transform);
+	
 	PolygonComponent->Points.clear();
 
-	float X = transform.Size.X;
-	float Y = transform.Size.Y;
+	const float X = Transform.Size.X;
+	const float Y = Transform.Size.Y;
 
-	PolygonComponent->Points.push_back(FVector2D(-X, -Y));
-	PolygonComponent->Points.push_back(FVector2D(-X, Y));
-	PolygonComponent->Points.push_back(FVector2D(X, Y));
-	PolygonComponent->Points.push_back(FVector2D(X, -Y));
+	PolygonComponent->Points.emplace_back(-X, -Y);
+	PolygonComponent->Points.emplace_back(-X, Y);
+	PolygonComponent->Points.emplace_back(X, Y);
+	PolygonComponent->Points.emplace_back(X, -Y);
 }

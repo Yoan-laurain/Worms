@@ -2,134 +2,116 @@
 #include "Widget.h"
 #include "Objects/SActor.h"
 #include "Button/ButtonWidget.h"
-#include "Core/Window.h"
 #include "Renderer\DrawingWidgetInterfaceManager.h"
 #include "Renderer\ImGui\ImGuiWidgetRenderer.h"
 #include <imgui.h>
-#include <SFML/Graphics/Drawable.hpp>
 
-WidgetManager* WidgetManager::instance = nullptr;
+WidgetManager* WidgetManager::Instance = nullptr;
 
 WidgetManager* WidgetManager::GetInstance()
 {
-    if (instance == nullptr)
+    if (Instance == nullptr)
 	{
-		instance = new WidgetManager();
+		Instance = new WidgetManager();
 	}
-	return instance;
+	return Instance;
 }
 
-void WidgetManager::AddWidget(std::shared_ptr<Widget> widget)
+void WidgetManager::AddWidget(const std::shared_ptr<Widget>& Widget)
 {
-	Widgets.push_back(widget);
+	Widgets.push_back(Widget);
 }
 
 void WidgetManager::DestroyWidgetMarkedForDestruction()
 {
-	std::vector<std::shared_ptr<Widget>> widgetsToDestroy;
+	std::vector<std::shared_ptr<Widget>> WidgetsToDestroy;
 
-	for (auto& widget : Widgets)
+	for (auto& Widget : Widgets)
 	{
-		if (widget.get()->IsMarkedForDestruction)
+		if (Widget.get()->IsMarkedForDestruction)
 		{
-			widgetsToDestroy.push_back(widget);
+			WidgetsToDestroy.push_back(Widget);
 		}
 	}
 
-	for (auto& widget : widgetsToDestroy)
+	for (auto& Widget : WidgetsToDestroy)
 	{
-		WidgetManager::GetInstance()->DestroyWidget(widget);
+		GetInstance()->DestroyWidget(Widget);
 	}
 }
 
-void WidgetManager::DestroyWidget(std::shared_ptr<Widget> widget)
+void WidgetManager::DestroyWidget(const std::shared_ptr<Widget>& Widget)
 {
-	auto it = std::find(Widgets.begin(), Widgets.end(), widget);
-	if (it != Widgets.end())
+	auto It = std::find(Widgets.begin(), Widgets.end(), Widget);
+	if (It != Widgets.end())
 	{
-		Widgets.erase(it);
+		Widgets.erase(It);
 	}
 }
 
-void WidgetManager::GetWidgetToRender()
+void WidgetManager::RenderWidgets()
 {
-	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
+	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::GetInstance().GetWidgetDrawingInterface().get()))
 	{
 		BeforeRenderImGui();
 	}
 
-	for (auto& widget : Widgets)
+	for (auto& Widget : Widgets)
 	{
-		if (widget.get() && widget.get()->bIsAddedToViewport)
+		if (Widget.get() && Widget.get()->bIsAddedToViewport)
 		{
-			widget.get()->Render();
+			Widget.get()->Render();
 		}
 	}
 
-	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
+	if (dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::GetInstance().GetWidgetDrawingInterface().get()))
 	{
 		AfterRenderImGui();
 	}
 }
 
-void WidgetManager::HandleWidgetOnClicked(const FVector2D& mousePosition)
+void WidgetManager::HandleWidgetOnClicked(const FVector2D& MousePosition)
 {
-	for (auto& widget : Widgets)
+	for (auto& Widget : Widgets)
 	{
-		if (widget.get()->bIsAddedToViewport && widget.get()->IsEnabled() )
+		if (Widget.get()->bIsAddedToViewport && Widget.get()->IsEnabled() )
 		{
-			if (widget.get()->IsPointInWidget(mousePosition))
+			if (Widget.get()->IsPointInWidget(MousePosition))
 			{
-				ButtonWidget* button = dynamic_cast<ButtonWidget*>(widget.get());
-				if (button)
+				ButtonWidget* Button = dynamic_cast<ButtonWidget*>(Widget.get());
+				if (Button)
 				{
-					button->OnClick();
-					button->bIsSelected = true;
-					UnSelectAllOtherButtons(button);
+					Button->OnClick();
+					Button->bIsSelected = true;
+					UnSelectAllOtherButtons(Button);
 				}
 			}
 		}
 	}
 }
 
-void WidgetManager::HandleWidgetHoverState(const FVector2D& mousePosition, bool& bIsHoveringSomething) 
+void WidgetManager::HandleWidgetHoverState(const FVector2D& MousePosition, bool& bIsHoveringSomething) 
 {
-	bool bIsHovering = false;
-	for (auto& widget : Widgets)
+	bIsHoveringSomething = false;
+	
+	for (auto& Widget : Widgets)
 	{
-		if (widget.get()->bIsAddedToViewport && widget.get()->IsEnabled())
+		if (Widget.get()->bIsAddedToViewport && Widget.get()->IsEnabled())
 		{
-			if ( dynamic_cast<ButtonWidget*>(widget.get()) ) 
-			{
-				if (widget.get()->IsPointInWidget(mousePosition) && !widget.get()->IsHovered() )
-				{
-					widget.get()->OnHover();
-					bIsHovering = true;
-				}
-				else if (widget.get()->IsHovered() && !widget.get()->IsPointInWidget(mousePosition))
-				{
-					widget.get()->OnUnhover(); 
-					bIsHovering = false;
-				}
-				else if (widget.get()->IsHovered() && widget.get()->IsPointInWidget(mousePosition))
-				{
-					bIsHovering = true;
-				}
-			}
+			bIsHoveringSomething = Widget.get()->HandleHoverState(MousePosition) || bIsHoveringSomething;
 		}
 	}
-	bIsHoveringSomething = bIsHovering;
 }
 
-void WidgetManager::UnSelectAllOtherButtons(Widget* widget)
+void WidgetManager::UnSelectAllOtherButtons(const Widget* Widget)
 {
-	for (auto& currentWidget : Widgets)
+	for (auto& CurrentWidget : Widgets) 
 	{
-		if (currentWidget.get() != widget && currentWidget.get()->bIsAddedToViewport )
+		if (CurrentWidget.get() != Widget && CurrentWidget.get()->bIsAddedToViewport )
 		{
-			if (ButtonWidget* button = dynamic_cast<ButtonWidget*>(currentWidget.get()))
+			if (ButtonWidget* Button = dynamic_cast<ButtonWidget*>(CurrentWidget.get()))
 			{
-				button->bIsSelected = false;
+				Button->bIsSelected = false;
 			}
 		}
 	}
@@ -155,13 +137,13 @@ void WidgetManager::AfterRenderImGui()
 	ImGui::End();
 }
 
-void WidgetManager::Tick(float deltaTime)
+void WidgetManager::Tick(float DeltaTime)
 {
-	for (auto& widget : Widgets)
+	for (auto& Widget : Widgets)
 	{
-		if (widget.get()->bIsAddedToViewport && widget.get()->bIsTickable)
+		if (Widget.get()->bIsAddedToViewport && Widget.get()->bIsTickable)
 		{
-			widget.get()->Tick(deltaTime);
+			Widget.get()->Tick(DeltaTime);
 		}
 	}
 }

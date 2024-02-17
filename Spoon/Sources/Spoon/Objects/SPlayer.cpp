@@ -1,14 +1,10 @@
 #include "Objects/SPlayer.h"
 #include "Core/Application.h"
-#include "Inputs/InputAction.h"
+#include "Inputs/Enums/InputAction.h"
 
 SPlayer::SPlayer()
 {
 	Application::Get().AddNewPlayer(this);
-}
-
-SPlayer::~SPlayer()
-{
 }
 
 void SPlayer::Tick(float DeltaTime)
@@ -17,7 +13,7 @@ void SPlayer::Tick(float DeltaTime)
 }
 
 // TODO : Move this in a PlayerController class
-void SPlayer::BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func , InputType inputType)
+void SPlayer::BindFunctionToInputAction(const InputAction InputAction, const std::function<void(float)>& Func , const InputType InputType)
 {
-	Application::Get().BindAction(this, inputAction, func, inputType);
+	Application::Get().BindAction(this, InputAction, Func, InputType);
 }

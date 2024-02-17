@@ -5,22 +5,22 @@
 
 class OBJECT_API AlignAxisBoundingBox
 {
-public:
-    const FVector2D Min;
-    const FVector2D Max;
+    public:
+        const FVector2D Min;
+        const FVector2D Max;
 
-    AlignAxisBoundingBox(const FVector2D& min, const FVector2D& max) : Min(min), Max(max) {} 
+        AlignAxisBoundingBox(const FVector2D& Min, const FVector2D& Max) : Min(Min), Max(Max) {} 
 
-    AlignAxisBoundingBox(float minX, float minY, float maxX, float maxY) : Min(minX, minY), Max(maxX, maxY) {} 
+        AlignAxisBoundingBox(float MinX, float MinY, float MaxX, float MaxY) : Min(MinX, MinY), Max(MaxX, MaxY) {} 
 
-    AlignAxisBoundingBox& operator=(const AlignAxisBoundingBox& other)
-    {
-        if (this == &other)
+        AlignAxisBoundingBox& operator=(const AlignAxisBoundingBox& Other)
+        {
+            if (this == &Other)
+                return *this;
+
+            const_cast<FVector2D&>(Min) = Other.Min;
+            const_cast<FVector2D&>(Max) = Other.Max;
+
             return *this;
-
-        const_cast<FVector2D&>(Min) = other.Min;
-        const_cast<FVector2D&>(Max) = other.Max;
-
-        return *this;
-    }
+        }
 };

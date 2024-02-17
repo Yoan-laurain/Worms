@@ -1,259 +1,259 @@
 #include "Library/Collision.h"
-#include <snpch.h>
 #include "Manifold.h"
+#include <snpch.h>
 
-bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
-    const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
+bool Collision::IntersectCirclePolygon(const FVector2D& CircleCenter, float CircleRadius,
+    const FVector2D& polygonCenter, const std::vector<FVector2D>& Vertices, FVector2D& Normal, float& Depth)
 {
-    normal = FVector2D::Zero();
-    depth = std::numeric_limits<float>::max();
+    Normal = FVector2D::Zero();
+    Depth = std::numeric_limits<float>::max();
 
-    FVector2D axis = FVector2D::Zero();
-    float axisDepth = 0.f;
-    float minA, maxA, minB, maxB;
+    FVector2D Axis = FVector2D::Zero();
+    float AxisDepth = 0.f;
+    float MinA, MaxA, MinB, MaxB;
 
-    for (size_t i = 0; i < vertices.size(); ++i)
+    for (size_t i = 0; i < Vertices.size(); ++i)
     {
-        const FVector2D& va = vertices[i];
-        const FVector2D& vb = vertices[(i + 1) % vertices.size()];
+        const FVector2D& Va = Vertices[i];
+        const FVector2D& Vb = Vertices[(i + 1) % Vertices.size()];
 
-        const FVector2D edge = vb - va;
-        axis = FVector2D(-edge.Y, edge.X);
-        axis = FVector2D::Normalize(axis);
+        const FVector2D Edge = Vb - Va;
+        Axis = FVector2D(-Edge.Y, Edge.X);
+        Axis = FVector2D::Normalize(Axis);
 
-        ProjectVertices(vertices, axis, minA, maxA);
-        ProjectCircle(circleCenter, circleRadius, axis, minB, maxB);
+        ProjectVertices(Vertices, Axis, MinA, MaxA);
+        ProjectCircle(CircleCenter, CircleRadius, Axis, MinB, MaxB);
 
-        if (minA >= maxB || minB >= maxA)
+        if (MinA >= MaxB || MinB >= MaxA)
         {
             return false;
         }
 
-        axisDepth = std::min(maxB - minA, maxA - minB);
+        AxisDepth = std::min(MaxB - MinA, MaxA - MinB);
 
-        if (axisDepth < depth)
+        if (AxisDepth < Depth)
         {
-            depth = axisDepth;
-            normal = axis;
+            Depth = AxisDepth;
+            Normal = Axis;
         }
     }
 
-    size_t cpIndex = FindClosestPointOnPolygon(circleCenter, vertices);
-    const FVector2D& cp = vertices[cpIndex];
+    size_t CpIndex = FindClosestPointOnPolygon(CircleCenter, Vertices);
+    const FVector2D& Cp = Vertices[CpIndex];
 
-    axis = cp - circleCenter;
-    axis = FVector2D::Normalize(axis);
+    Axis = Cp - CircleCenter;
+    Axis = FVector2D::Normalize(Axis);
 
-    ProjectVertices(vertices, axis, minA, maxA);
-    ProjectCircle(circleCenter, circleRadius, axis, minB, maxB);
+    ProjectVertices(Vertices, Axis, MinA, MaxA);
+    ProjectCircle(CircleCenter, CircleRadius, Axis, MinB, MaxB);
 
-    if (minA >= maxB || minB >= maxA)
+    if (MinA >= MaxB || MinB >= MaxA)
     {
         return false;
     }
 
-    axisDepth = std::min(maxB - minA, maxA - minB);
+    AxisDepth = std::min(MaxB - MinA, MaxA - MinB);
 
-    if (axisDepth < depth)
+    if (AxisDepth < Depth)
     {
-        depth = axisDepth;
-        normal = axis;
+        Depth = AxisDepth;
+        Normal = Axis;
     }
 
-    const FVector2D direction = polygonCenter - circleCenter;
+    const FVector2D Direction = polygonCenter - CircleCenter;
 
-    if (FVector2D::DotProduct(direction, normal) < 0.0f)
+    if (FVector2D::DotProduct(Direction, Normal) < 0.0f)
     {
-        normal.ReverseVector();
+        Normal.ReverseVector();
     }
 
     return true;
 }
 
-bool Collision::IntersectCircles(const FVector2D& centerA, float radiusA, const FVector2D& centerB, float radiusB, FVector2D& normal, float& depth)
+bool Collision::IntersectCircles(const FVector2D& CenterA, float RadiusA, const FVector2D& CenterB, float RadiusB, FVector2D& Normal, float& Depth)
 {
-    normal = FVector2D::Zero();
-    depth = 0.0f;
+    Normal = FVector2D::Zero();
+    Depth = 0.0f;
 
-    const float distance = FVector2D::Distance(centerA, centerB);
-    const float radii = radiusA + radiusB;
+    const float Distance = FVector2D::Distance(CenterA, CenterB);
+    const float Radii = RadiusA + RadiusB;
 
-    if (distance >= radii)
+    if (Distance >= Radii)
     {
         return false;
     }
 
-    normal = FVector2D::Normalize(centerB - centerA);
-    depth = radii - distance;
+    Normal = FVector2D::Normalize(CenterB - CenterA);
+    Depth = Radii - Distance;
 
     return true;
 }
 
-void Collision::ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth)
+void Collision::ApplyCollision(SActor& First, SActor& Other, const FVector2D& Normal, float Depth)
 {
-    first.bIsColliding = true;
-    other.bIsColliding = true;
+    First.bIsColliding = true;
+    Other.bIsColliding = true;
 
-    if (first.bIsStatic && other.bIsStatic)
+    if (First.bIsStatic && Other.bIsStatic)
     {
         return;
     }
 
-    if (first.bIsStatic)
+    if (First.bIsStatic)
     {
-        other.Move(normal * depth);
+        Other.Move(Normal * Depth);
     }
-    else if (other.bIsStatic)
+    else if (Other.bIsStatic)
     {
-        first.Move(FVector2D(normal * depth).ReverseVector());
+        First.Move(FVector2D(Normal * Depth).ReverseVector());
     }
     else
     {
-        first.Move(FVector2D(normal * depth / 2.f).ReverseVector());
-        other.Move(normal * depth / 2.f);
+        First.Move(FVector2D(Normal * Depth / 2.f).ReverseVector());
+        Other.Move(Normal * Depth / 2.f);
     }
 }
 
-bool Collision::IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB, const FVector2D& polygonCenterB, FVector2D& normal, float& depth)
+bool Collision::IntersectPolygons(const std::vector<FVector2D>& VerticesA, const FVector2D& PolygonCenterA, const std::vector<FVector2D>& VerticesB, const FVector2D& PolygonCenterB, FVector2D& Normal, float& Depth)
 {
-    normal = FVector2D::Zero();
-    depth = std::numeric_limits<float>::max();
+    Normal = FVector2D::Zero();
+    Depth = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < verticesA.size(); ++i)
+    for (size_t i = 0; i < VerticesA.size(); ++i)
     {
-        const FVector2D& va = verticesA[i];
-        const FVector2D& vb = verticesA[(i + 1) % verticesA.size()];
+        const FVector2D& Va = VerticesA[i];
+        const FVector2D& Vb = VerticesA[(i + 1) % VerticesA.size()];
 
-        const FVector2D edge = vb - va;
-        FVector2D axis = FVector2D(-edge.Y, edge.X);
-        axis = FVector2D::Normalize(axis);
+        const FVector2D Edge = Vb - Va;
+        FVector2D Axis = FVector2D(-Edge.Y, Edge.X);
+        Axis = FVector2D::Normalize(Axis);
 
-        float minA, maxA, minB, maxB;
+        float MinA, MaxA, MinB, MaxB;
 
-        ProjectVertices(verticesA, axis, minA, maxA);
-        ProjectVertices(verticesB, axis, minB, maxB);
+        ProjectVertices(VerticesA, Axis, MinA, MaxA);
+        ProjectVertices(VerticesB, Axis, MinB, MaxB);
 
-        if (minA >= maxB || minB >= maxA)
+        if (MinA >= MaxB || MinB >= MaxA)
         {
             return false;
         }
 
-        const float axisDepth = std::min(maxB - minA, maxA - minB);
+        const float AxisDepth = std::min(MaxB - MinA, MaxA - MinB);
 
-        if (axisDepth < depth)
+        if (AxisDepth < Depth)
         {
-            depth = axisDepth;
-            normal = axis;
+            Depth = AxisDepth;
+            Normal = Axis;
         }
     }
 
-    for (size_t i = 0; i < verticesB.size(); ++i)
+    for (size_t i = 0; i < VerticesB.size(); ++i)
     {
-        const FVector2D& va = verticesB[i];
-        const FVector2D& vb = verticesB[(i + 1) % verticesB.size()];
+        const FVector2D& Va = VerticesB[i];
+        const FVector2D& Vb = VerticesB[(i + 1) % VerticesB.size()];
 
-        const FVector2D edge = vb - va;
-        FVector2D axis = FVector2D(-edge.Y, edge.X);
-        axis = FVector2D::Normalize(axis);
+        const FVector2D Edge = Vb - Va;
+        FVector2D Axis = FVector2D(-Edge.Y, Edge.X);
+        Axis = FVector2D::Normalize(Axis);
 
-        float minA, maxA, minB, maxB;
+        float MinA, MaxA, MinB, MaxB;
 
-        ProjectVertices(verticesA, axis, minA, maxA);
-        ProjectVertices(verticesB, axis, minB, maxB);
+        ProjectVertices(VerticesA, Axis, MinA, MaxA);
+        ProjectVertices(VerticesB, Axis, MinB, MaxB);
 
-        if (minA >= maxB || minB >= maxA)
+        if (MinA >= MaxB || MinB >= MaxA)
         {
             return false;
         }
 
-        const float axisDepth = std::min(maxB - minA, maxA - minB);
+        const float AxisDepth = std::min(MaxB - MinA, MaxA - MinB);
 
-        if (axisDepth < depth)
+        if (AxisDepth < Depth)
         {
-            depth = axisDepth;
-            normal = axis;
+            Depth = AxisDepth;
+            Normal = Axis;
         }
     }
 
-    const FVector2D direction = polygonCenterB - polygonCenterA;
+    const FVector2D Direction = PolygonCenterB - PolygonCenterA;
 
-    if (FVector2D::DotProduct(direction, normal) < 0.0f)
+    if (FVector2D::DotProduct(Direction, Normal) < 0.0f)
     {
-        normal.ReverseVector();
+        Normal.ReverseVector();
     }
 
     return true;
 }
 
-void Collision::ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max)
+void Collision::ProjectVertices(const std::vector<FVector2D>& Vertices, const FVector2D& Axis, float& Min, float& Max)
 {
-    min = std::numeric_limits<float>::max();
-    max = std::numeric_limits<float>::min();
+    Min = std::numeric_limits<float>::max();
+    Max = std::numeric_limits<float>::min();
 
-    for (const auto& vertex : vertices)
+    for (const auto& Vertex : Vertices)
     {
-        const float projection = FVector2D::DotProduct(vertex, axis);
+        const float Projection = FVector2D::DotProduct(Vertex, Axis);
 
-        if (projection < min)
+        if (Projection < Min)
         {
-            min = projection;
+            Min = Projection;
         }
 
-        if (projection > max)
+        if (Projection > Max)
         {
-            max = projection;
+            Max = Projection;
         }
+    }
+}
+
+void Collision::ProjectCircle(const FVector2D& Center, float Radius, const FVector2D& Axis, float& Min, float& Max)
+{
+    const FVector2D Direction = FVector2D::Normalize(Axis);
+    const FVector2D DirectionAndRadius = Direction * Radius;
+
+    const FVector2D P1 = Center + DirectionAndRadius;
+    const FVector2D P2 = Center - DirectionAndRadius;
+
+    Min = FVector2D::DotProduct(P1, Axis);
+    Max = FVector2D::DotProduct(P2, Axis);
+
+    if (Min > Max)
+    {
+        std::swap(Min, Max);
     }
 }
 
-void Collision::ProjectCircle(const FVector2D& center, float radius, const FVector2D& axis, float& min, float& max)
+size_t Collision::FindClosestPointOnPolygon(const FVector2D& CircleCenter, const std::vector<FVector2D>& Vertices)
 {
-    const FVector2D direction = FVector2D::Normalize(axis);
-    const FVector2D directionAndRadius = direction * radius;
+    size_t Result = 0;
+    float MinDistance = std::numeric_limits<float>::max();
 
-    const FVector2D p1 = center + directionAndRadius;
-    const FVector2D p2 = center - directionAndRadius;
-
-    min = FVector2D::DotProduct(p1, axis);
-    max = FVector2D::DotProduct(p2, axis);
-
-    if (min > max)
+    for (size_t i = 0; i < Vertices.size(); ++i)
     {
-        std::swap(min, max);
-    }
-}
+        const FVector2D& V = Vertices[i];
+        const float Distance = FVector2D::Distance(V, CircleCenter);
 
-size_t Collision::FindClosestPointOnPolygon(const FVector2D& circleCenter, const std::vector<FVector2D>& vertices)
-{
-    size_t result = 0;
-    float minDistance = std::numeric_limits<float>::max();
-
-    for (size_t i = 0; i < vertices.size(); ++i)
-    {
-        const FVector2D& v = vertices[i];
-        const float distance = FVector2D::Distance(v, circleCenter);
-
-        if (distance < minDistance)
+        if (Distance < MinDistance)
         {
-            minDistance = distance;
-            result = i;
+            MinDistance = Distance;
+            Result = i;
         }
     }
 
-    return result;
+    return Result;
 }
 
-void Collision::FindCirclesContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp)
+void Collision::FindCirclesContactPoint(const FVector2D& CenterA, float RadiusA, const FVector2D& CenterB, FVector2D& Cp)
 {
-    FVector2D ab = centerB - centerA;
-    FVector2D dir = FVector2D::Normalize(ab);
-    cp = centerA + dir * radiusA;
+    FVector2D AB = CenterB - CenterA;
+    FVector2D Dir = FVector2D::Normalize(AB);
+    Cp = CenterA + Dir * RadiusA;
 }
 
-bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
+bool Collision::IntersectAABBs(AlignAxisBoundingBox& A, AlignAxisBoundingBox& B)
 {
-    if (a.Max.X <= b.Min.X || b.Max.X <= a.Min.X ||
-        a.Max.Y <= b.Min.Y || b.Max.Y <= a.Min.Y)
+    if (A.Max.X <= B.Min.X || B.Max.X <= A.Min.X ||
+        A.Max.Y <= B.Min.Y || B.Max.Y <= A.Min.Y)
     {
         return false;
     }
@@ -262,120 +262,133 @@ bool Collision::IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b)
 }
 
 void Collision::FindCirclePolygonContactPoint(
-    const FVector2D& circleCenter, float circleRadius,
-    const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices,
-    FVector2D& cp)
+    const FVector2D& CircleCenter, float CircleRadius,
+    const FVector2D& PolygonCenter, const std::vector<FVector2D>& PolygonVertices,
+    FVector2D& Cp)
 {
-    cp = FVector2D::Zero();
+    Cp = FVector2D::Zero();
 
-    float minDistSq = std::numeric_limits<float>::max();
+    float MinDistSq = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < polygonVertices.size(); i++)
+    for (size_t i = 0; i < PolygonVertices.size(); i++)
     {
-        const FVector2D& va = polygonVertices[i];
-        const FVector2D& vb = polygonVertices[(i + 1) % polygonVertices.size()];
+        const FVector2D& Va = PolygonVertices[i];
+        const FVector2D& Vb = PolygonVertices[(i + 1) % PolygonVertices.size()];
 
-        float distSq;
-        FVector2D contact;
-        PointSegmentDistance(circleCenter, va, vb, distSq, contact);
+        float DistSq;
+        FVector2D Contact;
+        PointSegmentDistance(CircleCenter, Va, Vb, DistSq, Contact);
 
-        if (distSq < minDistSq)
+        if (DistSq < MinDistSq)
         {
-            minDistSq = distSq;
-            cp = contact;
+            MinDistSq = DistSq;
+            Cp = Contact;
         }
     }
 }
 
-void Collision::PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp)
+void Collision::PointSegmentDistance(const FVector2D& P, const FVector2D& A, const FVector2D& B, float& DistanceSquared, FVector2D& Cp)
 {
-    FVector2D ab = b - a;
-    FVector2D ap = p - a;
+    FVector2D AB = B - A;
+    FVector2D AP = P - A;
 
-    float proj = FVector2D::DotProduct(ap, ab);
-    float abLenSq = ab.GetSquareLength();
-    float d = proj / abLenSq;
+    float Proj = FVector2D::DotProduct(AP, AB);
+    float AbLenSq = AB.GetSquareLength();
+    float D = Proj / AbLenSq;
 
-    if (d <= 0.0f)
+    if (D <= 0.0f)
     {
-        cp = a;
+        Cp = A;
     }
-    else if (d >= 1.0f)
+    else if (D >= 1.0f)
     {
-        cp = b;
+        Cp = B;
     }
     else
     {
-        cp = a + ab * d;
+        Cp = A + AB * D;
     }
 
-    distanceSquared = FVector2D::GetSquareLength(p, cp);
+    DistanceSquared = FVector2D::GetSquareLength(P, Cp);
 }
 
 void Collision::FindPolygonsContactPoints(
-    const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB,
-    FVector2D& contact1, FVector2D& contact2, int& contactCount)
+    const std::vector<FVector2D>& VerticesA, const std::vector<FVector2D>& VerticesB,
+    FVector2D& Contact1, FVector2D& Contact2, int& ContactCount)
 {
-    contact1 = FVector2D::Zero();
-    contact2 = FVector2D::Zero();
-    contactCount = 0;
+    Contact1 = FVector2D::Zero();
+    Contact2 = FVector2D::Zero();
+    ContactCount = 0;
 
-    float minDistSq = std::numeric_limits<float>::max();
+    float MinDistSq = std::numeric_limits<float>::max();
 
-    for (const auto& p : verticesA)
+    for (const auto& P : VerticesA)
     {
-        for (size_t j = 0; j < verticesB.size(); ++j)
+        for (size_t j = 0; j < VerticesB.size(); ++j)
         {
-            const FVector2D& va = verticesB[j];
-            const FVector2D& vb = verticesB[(j + 1) % verticesB.size()];
+            const FVector2D& Va = VerticesB[j];
+            const FVector2D& Vb = VerticesB[(j + 1) % VerticesB.size()];
 
-            float distSq;
-            FVector2D cp;
+            float DistSq;
+            FVector2D Cp;
 
-            PointSegmentDistance(p, va, vb, distSq, cp);
+            PointSegmentDistance(P, Va, Vb, DistSq, Cp);
 
-            if (FVector2D::NearlyEqual( distSq, minDistSq))
+            if (FVector2D::NearlyEqual(DistSq, MinDistSq))
             {
-                if (!FVector2D::NearlyEqual(cp, contact1))
+                if (!FVector2D::NearlyEqual(Cp, Contact1))
                 {
-                    contact2 = cp;
-                    contactCount = 2;
+                    Contact2 = Cp;
+                    ContactCount = 2;
                 }
             }
-            else if (distSq < minDistSq)
+            else if (DistSq < MinDistSq)
             {
-                minDistSq = distSq;
-                contactCount = 1;
-                contact1 = cp;
+                MinDistSq = DistSq;
+                ContactCount = 1;
+                Contact1 = Cp;
             }
         }
     }
 
-    for (const auto& p : verticesB)
+    for (const auto& P : VerticesB)
     {
-        for (size_t j = 0; j < verticesA.size(); ++j)
+        for (size_t j = 0; j < VerticesA.size(); ++j)
         {
-            const FVector2D& va = verticesA[j];
-            const FVector2D& vb = verticesA[(j + 1) % verticesA.size()];
+            const FVector2D& Va = VerticesA[j];
+            const FVector2D& Vb = VerticesA[(j + 1) % VerticesA.size()];
 
-            float distSq;
-            FVector2D cp;
-            PointSegmentDistance(p, va, vb, distSq, cp);
+            float DistSq;
+            FVector2D Cp;
 
-            if (FVector2D::NearlyEqual(distSq, minDistSq))
+            PointSegmentDistance(P, Va, Vb, DistSq, Cp);
+
+            if (FVector2D::NearlyEqual(DistSq, MinDistSq))
             {
-                if (!FVector2D::NearlyEqual(cp, contact1))
+                if (!FVector2D::NearlyEqual(Cp, Contact1))
                 {
-                    contact2 = cp;
-                    contactCount = 2;
+                    Contact2 = Cp;
+                    ContactCount = 2;
                 }
             }
-            else if (distSq < minDistSq)
+            else if (DistSq < MinDistSq)
             {
-                minDistSq = distSq;
-                contactCount = 1;
-                contact1 = cp;
+                MinDistSq = DistSq;
+                ContactCount = 1;
+                Contact1 = Cp;
             }
         }
     }
+}
+
+void Collision::SetCollisionManifold(SActor* First, SActor* Other, Manifold& Collision, FVector2D& Normal, float& Depth,
+    FVector2D& Contact1, FVector2D& Contact2, int ContactCount)
+{
+    Collision.BodyA = First;
+    Collision.BodyB = Other;
+    Collision.Normal = Normal;
+    Collision.Depth = Depth;
+    Collision.Contact1 = Contact1;
+    Collision.Contact2 = Contact2;
+    Collision.ContactCount = ContactCount;
 }

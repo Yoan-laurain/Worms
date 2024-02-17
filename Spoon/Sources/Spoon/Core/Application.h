@@ -44,7 +44,7 @@ public:
 
 	void AddNewPlayer(SPlayer* player);
 
-	bool BindAction(SPlayer* player,InputAction inputAction, std::function<void(float)> func, InputType inputType);
+	bool BindAction(const SPlayer* Player,InputAction InputAction, const std::function<void(float)>& Func, InputType InputType);
 
 	FVector2D GetScreenSize() const;
 
@@ -62,13 +62,14 @@ private:
 	bool OnAppTick(AppTickEvent& e);
 	bool OnWindowResize(WindowResizeEvent& e);
 	bool OnMouseMoved(MouseMovedEvent& e);
-	void SpawnCircleObject();
-	void SpawnRectangleObject();
 	bool OnMousePressed(MouseButtonPressedEvent& e);
 
 	void TickRun();
 	void OnRender();
 
+	void SpawnCircleObject();
+	void SpawnRectangleObject();
+	
 	#pragma region WindowProperty
 
 	FVector2D ScreenSize;

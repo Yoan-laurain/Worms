@@ -1,19 +1,15 @@
 #include "CircleObject.h"
 #include "Objects/Components/SShapeComponent.h"
-#include <Library/Collision.h>
+#include "Library/Collision.h"
 
 SCircleObject::SCircleObject() : CircleComponent(CreateComponent<SCircleComponent>("VisualComponent"))
 {
 	CircleComponent->ObjectColor = FColor(80, 40, 200);
 }
 
-SCircleObject::~SCircleObject()
+void SCircleObject::SetRadius(const float Radius)
 {
-}
-
-void SCircleObject::SetRadius(const float radius)
-{
-	CircleComponent->Radius = radius;
+	CircleComponent->Radius = Radius;
 }
 
 float SCircleObject::GetRadius() const
@@ -21,9 +17,9 @@ float SCircleObject::GetRadius() const
 	return CircleComponent->Radius;
 }
 
-void SCircleObject::SetColor(const FColor& color)
+void SCircleObject::SetColor(const FColor& Color)
 {
-	CircleComponent->ObjectColor = color;
+	CircleComponent->ObjectColor = Color;
 }
 
 const FColor& SCircleObject::GetColor() const
@@ -31,23 +27,21 @@ const FColor& SCircleObject::GetColor() const
 	return CircleComponent->ObjectColor;
 }
 
-bool SCircleObject::IsInBound(const FVector2D& _loc)
+SCircleComponent* SCircleObject::GetCircleComponent() const
 {
-	FVector2D normal;
-	float depth;
-
-	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, _loc, 5.f, normal, depth);
+	return CircleComponent;
 }
 
-float SCircleObject::CalculateRotationInertia()
+bool SCircleObject::IsInBound(const FVector2D& Loc)
 {
-	// Formule is : 1/2 * m * R^2
-	float radius = GetSize().X / 2.f;
-	return (1.f / 2.f) * GetMass() * ( radius * radius );
+	FVector2D Normal;
+	float Depth;
+
+	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, Loc, 5.f, Normal, Depth);
 }
 
-void SCircleObject::SetTransform(const FTransform& transform)
+void SCircleObject::SetTransform(const FTransform& Transform)
 {
-	SActor::SetTransform(transform);
-	CircleComponent->Radius = transform.Size.X / 2.f;
+	SActor::SetTransform(Transform);
+	CircleComponent->Radius = Transform.Size.X / 2.f;
 }

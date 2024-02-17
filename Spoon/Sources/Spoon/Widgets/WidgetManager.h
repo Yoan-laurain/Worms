@@ -13,25 +13,27 @@ class SPOON_API WidgetManager
     public:
         WidgetManager() = default;
 
-    static WidgetManager* GetInstance();
+        static WidgetManager* GetInstance();
 
-    void AddWidget(std::shared_ptr<Widget> widget);
-    void DestroyWidgetMarkedForDestruction();
-    void DestroyWidget(std::shared_ptr<Widget> widget);
-    void GetWidgetToRender();
-    void HandleWidgetOnClicked(const FVector2D& mousePosition);
-    void HandleWidgetHoverState(const FVector2D& mousePosition, bool& bIsHoveringSomething);
+        void AddWidget(const std::shared_ptr<Widget>& Widget);
+        
+        void DestroyWidgetMarkedForDestruction();
+        void DestroyWidget(const std::shared_ptr<Widget>& Widget);
+        
+        void RenderWidgets();
+        
+        void HandleWidgetOnClicked(const FVector2D& MousePosition);
+        void HandleWidgetHoverState(const FVector2D& MousePosition, bool& bIsHoveringSomething);
 
-    void BeforeRenderImGui();
-    void AfterRenderImGui();
+        void BeforeRenderImGui();
+        void AfterRenderImGui();
 
-    void Tick(float deltaTime);
+        void Tick(float DeltaTime);
 
     private:
-        void UnSelectAllOtherButtons(Widget* widget);
+        void UnSelectAllOtherButtons(const Widget* Widget);
+    
+        std::vector< std::shared_ptr<Widget> > Widgets;
 
-	private:
-		std::vector< std::shared_ptr<Widget> > Widgets;
-
-        static WidgetManager* instance;
+        static WidgetManager* Instance;
 };

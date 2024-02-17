@@ -3,8 +3,8 @@
 #include "../../Config.h"
 #include "../WormsPlayer.h"
 #include <Objects/Prefab/PolygonObject.h>
-#include <Inputs/InputAction.h>
-#include <Inputs/InputType.h>
+#include <Inputs/Enums/InputAction.h>
+#include <Inputs/Enums/InputType.h>
 #include <Library/TStruct.h>
 #include <Objects/Components/SShapeComponent.h>
 

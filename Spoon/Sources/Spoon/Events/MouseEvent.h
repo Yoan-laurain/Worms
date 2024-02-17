@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SpoonEvent.h"
-#include "Inputs/MouseCode.h"
+#include "Inputs/Enums/MouseCode.h"
 
 class MouseMovedEvent : public SpoonEvent
 {

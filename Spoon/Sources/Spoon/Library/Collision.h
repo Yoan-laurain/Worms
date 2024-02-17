@@ -11,159 +11,149 @@ class Collision
 public:
 
 	template <typename FirstShapeType, typename OtherShapeType = FirstShapeType>
-	static bool CheckCollisionImpl(FirstShapeType* first, OtherShapeType* other, Manifold& collision)
+	static bool CheckCollisionImpl(FirstShapeType* First, OtherShapeType* Other, Manifold& Collision)
 	{
 		return false;
-	};
+	}
 
 	template <typename FirstShapeType, typename OtherShapeType = FirstShapeType>
-	static void FindContactPointImpl(FirstShapeType* first, OtherShapeType* other, FVector2D& cp1, FVector2D& cp2, int& contactCount)
+	static void FindContactPointImpl(FirstShapeType* First, OtherShapeType* Other, FVector2D& Cp1, FVector2D& Cp2, int& ContactCount)
 	{
 		return;
-	};
+	}
+	
+    static bool IntersectCirclePolygon(const FVector2D& CircleCenter, float CircleRadius, const FVector2D& PolygonCenter,
+        const std::vector<FVector2D>& Vertices, FVector2D& Normal, float& Depth);
 
+    static bool IntersectCircles(const FVector2D& CenterA, float RadiusA,
+        const FVector2D& CenterB, float RadiusB,
+        FVector2D& Normal, float& Depth);
 
-    static bool IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter,
-        const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth);
+	static void ApplyCollision(SActor& First, SActor& Other, const FVector2D& Normal, float Depth);
+	
+    static bool IntersectPolygons(const std::vector<FVector2D>& VerticesA, const FVector2D& PolygonCenterA, const std::vector<FVector2D>& VerticesB,
+		const FVector2D& PolygonCenterB,FVector2D& Normal, float& Depth);
 
-    static bool IntersectCircles(const FVector2D& centerA, float radiusA,
-        const FVector2D& centerB, float radiusB,
-        FVector2D& normal, float& depth);
+	static bool IntersectAABBs(AlignAxisBoundingBox& A, AlignAxisBoundingBox& B);
+	static void FindCirclePolygonContactPoint(const FVector2D& CircleCenter, float CircleRadius, const FVector2D& PolygonCenter, const std::vector<FVector2D>& PolygonVertices, FVector2D& Cp);
+	static void PointSegmentDistance(const FVector2D& P, const FVector2D& A, const FVector2D& B, float& DistanceSquared, FVector2D& Cp);
+	static void FindPolygonsContactPoints(const std::vector<FVector2D>& VerticesA, const std::vector<FVector2D>& VerticesB, FVector2D& Contact1, FVector2D& Contact2, int& ContactCount);
 
-	static void ApplyCollision(SActor& first, SActor& other, const FVector2D& normal, float depth);
+	static void SetCollisionManifold(SActor* First, SActor* Other, Manifold& Collision, FVector2D& Normal,
+	                          float& Depth,FVector2D& Contact1, FVector2D& Contact2, int ContactCount);
 
-public:
-    static bool IntersectPolygons(const std::vector<FVector2D>& verticesA, const FVector2D& polygonCenterA, const std::vector<FVector2D>& verticesB,
-		const FVector2D& polygonCenterB,FVector2D& normal, float& depth);
-
-	static bool IntersectAABBs(AlignAxisBoundingBox& a, AlignAxisBoundingBox& b);
-	static void FindCirclePolygonContactPoint(const FVector2D& circleCenter, float circleRadius, const FVector2D& polygonCenter, const std::vector<FVector2D>& polygonVertices, FVector2D& cp);
-	static void PointSegmentDistance(const FVector2D& p, const FVector2D& a, const FVector2D& b, float& distanceSquared, FVector2D& cp);
-	static void FindPolygonsContactPoints(const std::vector<FVector2D>& verticesA, const std::vector<FVector2D>& verticesB, FVector2D& contact1, FVector2D& contact2, int& contactCount);
 private:
-    static void ProjectVertices(const std::vector<FVector2D>& vertices, const FVector2D& axis, float& min, float& max);
+    static void ProjectVertices(const std::vector<FVector2D>& Vertices, const FVector2D& Axis, float& Min, float& Max);
 
-    static void ProjectCircle(const FVector2D& center, float radius, const FVector2D& axis, float& min, float& max);
+    static void ProjectCircle(const FVector2D& Center, float Radius, const FVector2D& Axis, float& Min, float& Max);
 
-    static size_t FindClosestPointOnPolygon(const FVector2D& circleCenter, const std::vector<FVector2D>& vertices);
-	static void FindCirclesContactPoint(const FVector2D& centerA, float radiusA, const FVector2D& centerB, FVector2D& cp);
+    static size_t FindClosestPointOnPolygon(const FVector2D& CircleCenter, const std::vector<FVector2D>& Vertices);
+	static void FindCirclesContactPoint(const FVector2D& CenterA, float RadiusA, const FVector2D& CenterB, FVector2D& Cp);
 };
 
 template <>
-inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygonObject* first, SCircleObject* other, Manifold& collision)
+inline bool Collision::CheckCollisionImpl<SPolygonObject, SCircleObject>(SPolygonObject* First, SCircleObject* Other, Manifold& Collision)
 {
-	if (first == nullptr || other == nullptr || first->GetVertices().size() == 0)
+	if (First == nullptr || Other == nullptr || First->GetVertices().empty())
 	{
 		return false;
 	}
 
-	FVector2D normal;
-	float depth;
-	const bool Result = Collision::IntersectCirclePolygon(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), normal, depth);
+	FVector2D Normal;
+	float Depth;
+	
+	const bool Result = IntersectCirclePolygon(Other->GetLocation(),
+		Other->GetRadius(),
+		First->GetLocation(),
+		First->GetVertices()
+		,Normal
+		,Depth);
 
 	if (Result)
 	{
-		ApplyCollision(*other, *first, normal, depth);
+		ApplyCollision(*Other, *First, Normal, Depth);
 
-		collision.BodyA = first;
-		collision.BodyB = other;
-		collision.Normal = normal;
-		collision.Depth = depth;
-		collision.Contact1 = FVector2D::Zero();
-		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 1;
+		SetCollisionManifold(First, Other, Collision, Normal, Depth, Collision.Contact1, Collision.Contact2, 1);
 
-		FindCirclePolygonContactPoint(other->GetLocation(), other->GetRadius(), first->GetLocation(), first->GetVertices(), collision.Contact1);
+		FindCirclePolygonContactPoint(
+			Other->GetLocation()
+			, Other->GetRadius()
+			, First->GetLocation()
+			, First->GetVertices()
+			, Collision.Contact1);
 	}
 
 	return Result;
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircleObject* first, SPolygonObject* other, Manifold& collision)
+inline bool Collision::CheckCollisionImpl<SCircleObject, SPolygonObject>(SCircleObject* First, SPolygonObject* Other, Manifold& Collision)
 {
-	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0)
-	{
-		return false;
-	}
-
-	FVector2D normal;
-	float depth;
-	const bool Result = Collision::IntersectCirclePolygon(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), normal, depth);
-
-	if (Result)
-	{
-		ApplyCollision(*first, *other, normal, depth);
-
-		collision.BodyA = first;
-		collision.BodyB = other;
-		collision.Normal = normal;
-		collision.Depth = depth;
-		collision.Contact1 = FVector2D::Zero();
-		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 1;
-
-		FindCirclePolygonContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetVertices(), collision.Contact1);
-	}
-
-	return Result;
+	return CheckCollisionImpl(Other, First, Collision);
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* first, SCircleObject* other, Manifold& collision)
+inline bool Collision::CheckCollisionImpl<SCircleObject>(SCircleObject* First, SCircleObject* Other, Manifold& Collision)
 {
-	if (first == nullptr || other == nullptr)
+	if (First == nullptr || Other == nullptr)
 	{
 		return false;
 	}
 
-	FVector2D normal;
-	float depth;
-	const bool Result = Collision::IntersectCircles(first->GetLocation(), first->GetRadius(), other->GetLocation(), other->GetRadius(), normal, depth);
+	FVector2D Normal;
+	float Depth;
+	
+	const bool Result = IntersectCircles(
+		First->GetLocation(),
+		First->GetRadius(),
+		Other->GetLocation(),
+		Other->GetRadius(),
+		Normal,
+		Depth);
 	
 	if (Result)
 	{
-		ApplyCollision(*first, *other, normal, depth);
+		ApplyCollision(*First, *Other, Normal, Depth);
 
-		collision.BodyA = first;
-		collision.BodyB = other;
-		collision.Normal = normal;
-		collision.Depth = depth;
-		collision.Contact1 = FVector2D::Zero();
-		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 1;
+		SetCollisionManifold(First, Other, Collision, Normal, Depth, Collision.Contact1, Collision.Contact2, 1);
 
-		FindCirclesContactPoint(first->GetLocation(), first->GetRadius(), other->GetLocation(), collision.Contact1);
+		FindCirclesContactPoint(First->GetLocation(), First->GetRadius(), Other->GetLocation(), Collision.Contact1);
 	}
 
 	return Result;
 }
 
 template <>
-inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* first, SPolygonObject* other, Manifold& collision)
+inline bool Collision::CheckCollisionImpl<SPolygonObject>(SPolygonObject* First, SPolygonObject* Other, Manifold& Collision)
 {
-	if (first == nullptr || other == nullptr || other->GetVertices().size() == 0 || first->GetVertices().size() == 0)
+	if (First == nullptr || Other == nullptr || Other->GetVertices().empty() || First->GetVertices().empty())
 	{
 		return false;
 	}
 
-	FVector2D normal;
-	float depth;
-	const bool Result = Collision::IntersectPolygons(first->GetVertices(),first->GetLocation(), other->GetVertices(),other->GetLocation(), normal, depth);
+	FVector2D Normal;
+	float Depth;
+	
+	const bool Result = IntersectPolygons(
+		First->GetVertices(),
+		First->GetLocation(),
+		Other->GetVertices(),
+		Other->GetLocation(),
+		Normal,
+		Depth);
 
 	if (Result)
 	{
-		ApplyCollision(*first, *other, normal, depth);
+		ApplyCollision(*First, *Other, Normal, Depth);
 
-		collision.BodyA = first;
-		collision.BodyB = other;
-		collision.Normal = normal;
-		collision.Depth = depth;
-		collision.Contact1 = FVector2D::Zero();
-		collision.Contact2 = FVector2D::Zero();
-		collision.ContactCount = 0;
-
-		FindPolygonsContactPoints(first->GetVertices(), other->GetVertices(), collision.Contact1, collision.Contact2, collision.ContactCount);
+		SetCollisionManifold( First, Other, Collision, Normal, Depth, Collision.Contact1, Collision.Contact2, 0);
+		
+		FindPolygonsContactPoints(
+			First->GetVertices(),
+			Other->GetVertices(),
+			Collision.Contact1,
+			Collision.Contact2,
+			Collision.ContactCount);
 	}
 
 	return Result;

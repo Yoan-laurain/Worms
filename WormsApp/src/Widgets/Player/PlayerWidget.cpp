@@ -56,7 +56,7 @@ void PlayerWidget::CreateHealthBar()
 	HealthBar->Size = FVector2D(100.f, 10.f);
 	HealthBar->RelativePosition = FVector2D(-HealthBar->Size.X / 2.f, -Player->GetSize().Y * 2);
 	HealthBar->BaseStyle = { FColor(127, 127, 127, 150), FColor(0, 0, 0, 0), 0.f };
-	HealthBar->color = FColor(0, 255, 0, 255);
+	HealthBar->Color = FColor(0, 255, 0, 255);
 	SetHealthBarProgress(Player->CurrentHealth, Player->MaxHealth);
 	
 	HealthBar->AddToViewport();
@@ -123,7 +123,7 @@ TextBlockWidget* PlayerWidget::CreateAmmunitionText(ButtonWidget* Button)
 void PlayerWidget::SetHealthBarProgress(float Health, float MaxHealth)
 {
 	if (HealthBar)
-		HealthBar->progress = Health / MaxHealth;
+		HealthBar->Progress = Health / MaxHealth;
 }
 
 void PlayerWidget::SetWeaponsButtonEnabled(bool bEnabled)

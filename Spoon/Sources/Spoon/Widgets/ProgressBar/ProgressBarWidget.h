@@ -1,16 +1,17 @@
 #pragma once
 
 #include "../Widget.h"
-#include "Library/TColor.h"
+
+struct FColor;
 
 class SPOON_API ProgressBarWidget : public Widget
 {
 	public:
 		ProgressBarWidget();
-		~ProgressBarWidget() override = default;
+		virtual ~ProgressBarWidget() override = default;
 
 		void Render() override;
 	
-		float progress;
-		FColor color;
+		float Progress;
+		FColor Color;
 };

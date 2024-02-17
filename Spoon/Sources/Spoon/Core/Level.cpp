@@ -7,13 +7,9 @@
 #include <Widgets/WidgetManager.h>
 
 Level::Level() : 
-	bIsListBeingEdit(false),
-	DebugShapes()
+	bIsListBeingEdit(false)
 {
 }
-
-Level::~Level()
-{}
 
 void Level::UpdateEntity(double deltatime)
 {
@@ -58,99 +54,98 @@ void Level::UpdateEntity(double deltatime)
 	WidgetManager::GetInstance()->DestroyWidgetMarkedForDestruction(); 
 }
 
-void Level::ResolveCollision(Manifold& contact)
+void Level::ResolveCollision(const Manifold& Contact)
 {
-	SActor* bodyA = contact.BodyA;
-	SActor* bodyB = contact.BodyB;
-	const FVector2D normal = contact.Normal;
+	SActor* BodyA = Contact.BodyA;
+	SActor* BodyB = Contact.BodyB;
+	const FVector2D Normal = Contact.Normal;
 
 #if DEBUG
 
 	DebugShapeData shape;
-	shape.Shape = DebugShape::SPHERE;
-	shape.Transform = FTransform(contact.Contact1, FVector2D(2.f, 2.f));
+	shape.Shape = SPHERE;
+	shape.Transform = FTransform(Contact.Contact1, FVector2D(2.f, 2.f));
 
 	AddDebugShape( shape );
 
-	if (contact.ContactCount > 1)
+	if (Contact.ContactCount > 1)
 	{
-		shape.Transform = FTransform(contact.Contact2, FVector2D(2.f, 2.f));
+		shape.Transform = FTransform(Contact.Contact2, FVector2D(2.f, 2.f));
 		AddDebugShape( shape );
 	}
 
 #endif
 
-	bodyA->OnCollide(bodyB);
-	bodyB->OnCollide(bodyA);
+	BodyA->OnCollide(BodyB);
+	BodyB->OnCollide(BodyA);
 
-	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
+	const FVector2D RelativeVelocity = BodyB->LinearVelocity - BodyA->LinearVelocity;
 
-	if (FVector2D::DotProduct(relativeVelocity, normal) > 0.f) {
+	if (FVector2D::DotProduct(RelativeVelocity, Normal) > 0.f)
 		return;
-	}
 
-	float e = fminf(bodyA->Restitution, bodyB->Restitution);
+	const float E = fminf(BodyA->Restitution, BodyB->Restitution);
 
-	float j = -(1.f + e) * (relativeVelocity.X * normal.X + relativeVelocity.Y * normal.Y);
-	j /= bodyA->InvMass + bodyB->InvMass;
+	float j = -(1.f + E) * (RelativeVelocity.X * Normal.X + RelativeVelocity.Y * Normal.Y);
+	j /= BodyA->InvMass + BodyB->InvMass;
 
-	FVector2D impulse = FVector2D(j * normal.X, j * normal.Y);
+	const FVector2D Impulse = FVector2D(j * Normal.X, j * Normal.Y);
 
-	bodyA->LinearVelocity -= impulse * bodyA->InvMass;
-	bodyB->LinearVelocity += impulse * bodyB->InvMass;
+	BodyA->LinearVelocity -= Impulse * BodyA->InvMass;
+	BodyB->LinearVelocity += Impulse * BodyB->InvMass;
 }
 
-AlignAxisBoundingBox& Level::GetAABB(SActor* obj)
+AlignAxisBoundingBox& Level::GetAABB(SActor* Obj)
 {
-	if (obj->bNeedToUpdateBoundingBox)
+	if (Obj->bNeedToUpdateBoundingBox)
 	{
-		float minX = std::numeric_limits<float>::max();
-		float minY = std::numeric_limits<float>::max();
-		float maxX = std::numeric_limits<float>::min();
-		float maxY = std::numeric_limits<float>::min();
+		float MinX = std::numeric_limits<float>::max();
+		float MinY = std::numeric_limits<float>::max();
+		float MaxX = std::numeric_limits<float>::min();
+		float MaxY = std::numeric_limits<float>::min();
 
-		if (SPolygonObject* poly = dynamic_cast<SPolygonObject*>(obj))
+		if (SPolygonObject* Poly = dynamic_cast<SPolygonObject*>(Obj))
 		{
-			std::vector<FVector2D> vertices = poly->GetVertices();
+			const std::vector<FVector2D>& Vertices = Poly->GetVertices();
 
-			for (const auto& v : vertices)
+			for (const auto& V : Vertices)
 			{
-				if (v.X < minX) { minX = v.X; }
-				if (v.X > maxX) { maxX = v.X; }
-				if (v.Y < minY) { minY = v.Y; }
-				if (v.Y > maxY) { maxY = v.Y; }
+				if (V.X < MinX) { MinX = V.X; }
+				if (V.X > MaxX) { MaxX = V.X; }
+				if (V.Y < MinY) { MinY = V.Y; }
+				if (V.Y > MaxY) { MaxY = V.Y; }
 			}
 		}
-		else if (SCircleObject* circle = dynamic_cast<SCircleObject*>(obj))
+		else if (SCircleObject* Circle = dynamic_cast<SCircleObject*>(Obj))
 		{
-			minX = circle->GetLocation().X - circle->GetRadius();
-			minY = circle->GetLocation().Y - circle->GetRadius();
-			maxX = circle->GetLocation().X + circle->GetRadius();
-			maxY = circle->GetLocation().Y + circle->GetRadius();
+			MinX = Circle->GetLocation().X - Circle->GetRadius();
+			MinY = Circle->GetLocation().Y - Circle->GetRadius();
+			MaxX = Circle->GetLocation().X + Circle->GetRadius();
+			MaxY = Circle->GetLocation().Y + Circle->GetRadius();
 		}
 		else
 		{
 			throw std::runtime_error("Unknown ShapeType.");
 		}
 
-		obj->AABB = AlignAxisBoundingBox(minX, minY, maxX, maxY);
+		Obj->AABB = AlignAxisBoundingBox(MinX, MinY, MaxX, MaxY);
 	}
 
-	obj->bNeedToUpdateBoundingBox = false;
-	return obj->AABB;
+	Obj->bNeedToUpdateBoundingBox = false;
+	return Obj->AABB;
 }
 
-void Level::HandleObjectOutOfWindow(SActor* obj)
+void Level::HandleObjectOutOfWindow(SActor* Obj)
 {
-	AlignAxisBoundingBox AABB = GetAABB(obj);
+	const AlignAxisBoundingBox& AABB = GetAABB(Obj);
 
 	if (AABB.Max.X < 0 || AABB.Max.Y < 0 || AABB.Min.X > Application::Get().GetScreenSize().X || AABB.Min.Y > Application::Get().GetScreenSize().Y)
 	{
-		obj->DestroyActor();
+		Obj->DestroyActor();
 	}
 }
 
-void Level::DestroyObject(class SActor* _actor)
+void Level::DestroyObject(SActor* _actor)
 {
 	RemoveObject(_actor);
 }
@@ -187,79 +182,81 @@ void Level::AddObject(SActor* obj)
 	bIsListBeingEdit = false;
 }
 
-void Level::AddDebugShape(const DebugShapeData& shape)
+#if DEBUG
+void Level::AddDebugShape(const DebugShapeData& Shape)
 {
-	std::unique_lock<std::mutex> lock(_mutex);
+	std::unique_lock lock(_mutex);
 	
-	for (const auto& s : DebugShapes)
+	for (const auto& S : DebugShapes)
 	{
-		if (FVector2D::NearlyEqual(s.Transform.Location , shape.Transform.Location, 0.1f))
+		if (FVector2D::NearlyEqual(S.Transform.Location , Shape.Transform.Location, 0.1f))
 		{
 			return;
 		}
 	}	
 
-	DebugShapes.push_back(shape);
+	DebugShapes.push_back(Shape);
 }
 
 void Level::ClearDebugShapes()
 {
-	std::unique_lock<std::mutex> lock(_mutex);
+	std::unique_lock lock(_mutex);
 
 	DebugShapes.clear();
 }
+#endif
 
 int Level::GetEntityCount() const
 {
 	return EntityList.size();
 }
 
-void Level::HandleCollision( SActor* obj )
+void Level::HandleCollision( SActor* Obj )
 {
-	for (const auto& entity : EntityList)
+	for (const auto& Entity : EntityList)
 	{
-		if (entity.get() != obj && entity.get() != nullptr)
+		if (Entity.get() != Obj && Entity.get() != nullptr)
 		{
-			if (entity->bIsStatic && obj->bIsStatic)
+			if (Entity->bIsStatic && Obj->bIsStatic)
 			{
 				continue;
 			}
 
-			if (entity.get())
+			if (Entity.get())
 			{
-				AlignAxisBoundingBox& firstAABB = GetAABB(entity.get());
-				AlignAxisBoundingBox& secondAABB = GetAABB(obj);
+				AlignAxisBoundingBox& FirstAABB = GetAABB(Entity.get());
+				AlignAxisBoundingBox& SecondAABB = GetAABB(Obj);
 
 				// Dont bother checking for collision if the Axis Aligned Bounding Boxes dont overlap
-				if (Collision::IntersectAABBs(firstAABB, secondAABB) == false)
+				if (Collision::IntersectAABBs(FirstAABB, SecondAABB) == false)
 				{
 					continue;
 				}
 
-				NarrowPhase(entity.get(), obj);
+				NarrowPhase(Entity.get(), Obj);
 			}
 		}
 	}
 }
 
-void Level::NarrowPhase(SActor* entity, SActor* obj)
+void Level::NarrowPhase(SActor* Entity, SActor* Obj)
 {
-	Manifold collision;
+	Manifold Collision;
 
-	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(Entity), dynamic_cast<SCircleObject*>(Obj), Collision))
 	{
-		ResolveCollision(collision); 
+		ResolveCollision(Collision); 
 	}
-	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(Entity), dynamic_cast<SPolygonObject*>(Obj), Collision))
 	{
-		ResolveCollision(collision); 
+		ResolveCollision(Collision); 
 	}
-	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(Entity), dynamic_cast<SCircleObject*>(Obj), Collision))
 	{
-		ResolveCollision(collision);
+		ResolveCollision(Collision);
 	}
-	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
+	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(Entity), dynamic_cast<SPolygonObject*>(Obj), Collision))
 	{
-		ResolveCollision(collision);
+		ResolveCollision(Collision);
 	}
 }

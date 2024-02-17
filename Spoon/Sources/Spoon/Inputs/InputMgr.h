@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PlayerInputAction.h"
-
 #include <map>
 #include <vector>
 #include <functional>
@@ -11,7 +10,7 @@ enum class InputAction;
 
 struct InputBindInfo
 {
-	InputBindInfo(unsigned playerIndex, InputAction action, sf::Keyboard::Key key);
+	InputBindInfo(unsigned PlayerIndex, InputAction Action, sf::Keyboard::Key Key);
 	unsigned PlayerIndex;
 	InputAction Action;
 	sf::Keyboard::Key Key;
@@ -19,19 +18,19 @@ struct InputBindInfo
 
 class InputMgr final
 {
-public:
-	bool Init();
-	bool Update(float fDeltaTime);
-	bool Reset();
+	public:
+		bool Init();
+		bool Update(float DeltaTime);
+		bool Reset();
 
-	void AddNewPlayer();
+		void AddNewPlayer();
 
-	void BindAction(int playerIndex, InputAction inputAction, std::function<void(float)> func, InputType inputType);
+		void BindAction(int PlayerIndex, InputAction InputAction, const std::function<void(float)>& Func, InputType InputType);
 
-private:
+	private:
 
-	void SetPlayerActionState(unsigned playerIndex, InputAction action, float value);
+		void SetPlayerActionState(unsigned PlayerIndex, InputAction Action, float Value);
 
-	std::vector<PlayerInputAction> PlayersInputAction;
-	std::map<int,std::vector<InputBindInfo>> InputBinds;
+		std::vector<PlayerInputAction> PlayersInputAction;
+		std::map<int,std::vector<InputBindInfo>> InputBinds;
 };

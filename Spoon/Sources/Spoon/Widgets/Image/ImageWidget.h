@@ -7,7 +7,8 @@ class SPOON_API ImageWidget : public Widget
 {
     public:
 
-        ImageWidget();
+        ImageWidget() = default;
+        virtual ~ImageWidget() override = default;
 
         void Render() override;
     

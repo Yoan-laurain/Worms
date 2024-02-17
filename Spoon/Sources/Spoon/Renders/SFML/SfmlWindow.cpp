@@ -37,7 +37,6 @@ Window* Window::Create(const WindowsProps& props)
 SfmlWindow::SfmlWindow(const WindowsProps& props) :
 	WidgetInterfaceSelectedIndex( new char[10] ),
 	WidgetInterfaceSelectedPreviousIndex( new char[10] ),
-	WidgetDrawingInterfaces(),
 	bIsHoveringSomething(false)
 {
 	Init(props);
@@ -83,7 +82,7 @@ void SfmlWindow::OnRender()
 
 	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
 
-	WidgetManager::GetInstance()->GetWidgetToRender();
+	WidgetManager::GetInstance()->RenderWidgets();
 	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
@@ -92,60 +91,63 @@ void SfmlWindow::OnRender()
 	WindowRef->display();
 }
 
-void SfmlWindow::Draw(const SActor* _currentActor)
+void SfmlWindow::Draw(const SActor* CurrentActor)
 {
-	if (_currentActor == nullptr || WindowRef == nullptr)
+	if (CurrentActor == nullptr || WindowRef == nullptr)
 	{
 		return;
 	}
 	std::vector<SShapeComponent*> CompList;
 
-	std::unique_lock<std::mutex> lock(_mutex);
-	if(!_currentActor->GetAllComponentType<SShapeComponent*>(CompList))
+	std::unique_lock lock(_mutex);
+	
+	if(!CurrentActor->GetAllComponentType<SShapeComponent*>(CompList))
 		return;
 
-	for (SShapeComponent* comp : CompList)
+	for (SShapeComponent* Comp : CompList)
 	{
-		if (comp->GetType() == FActorType::ActorType_Polygon)
+		if (Comp->GetType() == ActorType_Polygon)
 		{
-			sf::ConvexShape drawShape;
-			DrawConvex(static_cast<SPolygonComponent*>(comp), drawShape);
-			WindowRef->draw(drawShape);
+			sf::ConvexShape DrawShape;
+			DrawConvex(static_cast<SPolygonComponent*>(Comp), DrawShape);
+			WindowRef->draw(DrawShape);
 		}
-		else if(comp->GetType() == FActorType::ActorType_Circle)
+		else if(Comp->GetType() == ActorType_Circle)
 		{
-			sf::CircleShape drawShape;
-			DrawCircle(static_cast<SCircleComponent*>(comp), drawShape);
-			WindowRef->draw(drawShape);
+			sf::CircleShape DrawShape;
+			DrawCircle(static_cast<SCircleComponent*>(Comp), DrawShape);
+			WindowRef->draw(DrawShape);
 		}
 
-		comp->GetOwner()->bIsColliding = false;
+		Comp->GetOwner()->bIsColliding = false;
 	}
-
 }
 
 #if DEBUG
-void SfmlWindow::DrawDebugPoint(const FTransform& transform)
+void SfmlWindow::DrawDebugPoint(const FTransform& Transform)
 {
-	std::unique_lock<std::mutex> lock(_mutex);
-	sf::CircleShape circle;
-	circle.setRadius(transform.Size.X);
-	circle.setOrigin(transform.Size.X, transform.Size.Y);
-	circle.setPosition(sf::Vector2f(transform.Location.X, transform.Location.Y));
-	circle.setFillColor(sf::Color::Red);
-	circle.setOutlineColor(sf::Color::Green);
-	circle.setOutlineThickness(1);
-	WindowRef->draw(circle);
+	std::unique_lock Lock(_mutex);
+	
+	sf::CircleShape Circle;
+	
+	Circle.setRadius(Transform.Size.X);
+	Circle.setOrigin(Transform.Size.X, Transform.Size.Y);
+	Circle.setPosition(sf::Vector2f(Transform.Location.X, Transform.Location.Y));
+	Circle.setFillColor(sf::Color::Red);
+	Circle.setOutlineColor(sf::Color::Green);
+	Circle.setOutlineThickness(1);
+	
+	WindowRef->draw(Circle);
 }
 
 void SfmlWindow::DrawAllDebugs(std::vector<DebugShapeData>& DebugShapes)
 {
-	for (auto& shape : DebugShapes)
+	for (auto& Shape : DebugShapes)
 	{
-		switch (shape.Shape)
+		switch (Shape.Shape)
 		{
-			case DebugShape::SPHERE :
-					DrawDebugPoint(shape.Transform);
+			case SPHERE :
+					DrawDebugPoint(Shape.Transform);
 					break;
 				default:
 					break;
@@ -165,110 +167,107 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
-void SfmlWindow::SetTexture( SShapeComponent* _component, sf::Shape& _shape )
+void SfmlWindow::SetTexture(const SShapeComponent* Component, sf::Shape& Shape )
 {
-	if (_component->TexturePath != "")
+	if (!Component->TexturePath.empty())
 	{
-		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->TexturePath))
+		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(Component->TexturePath))
 		{
-			Application::Get().GetTextureMgr()->LoadTexture(_component->TexturePath, _component->TexturePath);
+			Application::Get().GetTextureMgr()->LoadTexture(Component->TexturePath, Component->TexturePath);
 		}
 
-		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->TexturePath);
-		_shape.setTexture(texture);
+		const sf::Texture* Texture = &Application::Get().GetTextureMgr()->GetTexture(Component->TexturePath);
+		Shape.setTexture(Texture);
 	}
 }
 
-void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
+void SfmlWindow::DrawCircle(SCircleComponent* Component, sf::CircleShape& Circle)
 {
-	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
-	_circle.setRadius(_component->Radius);
+	Circle.setOrigin(Component->Origin.X * Component->Radius * 2, Component->Origin.Y * Component->Radius * 2);
+	Circle.setRadius(Component->Radius);
 	
-	SetTexture(_component, _circle);
+	SetTexture(Component, Circle);
 
 #if DEBUG
 
-	sf::Vertex line[] =
+	sf::Vertex Line[] =
 	{
-		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y)),
-		sf::Vertex(sf::Vector2f(_component->GetOwner()->GetLocation().X + _component->Radius, _component->GetOwner()->GetLocation().Y + _component->Radius))
+		sf::Vertex(sf::Vector2f(Component->GetOwner()->GetLocation().X, Component->GetOwner()->GetLocation().Y)),
+		sf::Vertex(sf::Vector2f(Component->GetOwner()->GetLocation().X + Component->Radius, Component->GetOwner()->GetLocation().Y + Component->Radius))
 	};
 
-	WindowRef->draw(line, 2, sf::Lines);
+	WindowRef->draw(Line, 2, sf::Lines);
 
 #endif
 	
-	SetCommonShapeProperties(_circle, _component);
+	SetCommonShapeProperties(Circle, Component);
 }
 
-void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& drawShape)
+void SfmlWindow::DrawConvex(const SPolygonComponent* Component, sf::ConvexShape& DrawShape)
 {
-	drawShape.setPointCount(_component->Points.size());	
+	DrawShape.setPointCount(Component->Points.size());
 
-	FVector2D ownerLocation = _component->GetOwner()->GetLocation();
+	const FVector2D OwnerLocation = Component->GetOwner()->GetLocation();
 
-	for (int i = 0; i < _component->Points.size(); i++)
+	for (int i = 0; i < Component->Points.size(); i++)
 	{
-		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
+		DrawShape.setPoint(i, sf::Vector2f(OwnerLocation.X + Component->Points[i].X, OwnerLocation.Y + Component->Points[i].Y));
 
 #if DEBUG
 		sf::CircleShape point( 3 );
+		
 		point.setOrigin( 3, 3 );
-		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
+		point.setPosition(sf::Vector2f(OwnerLocation.X + Component->Points[i].X, OwnerLocation.Y + Component->Points[i].Y));
 		point.setFillColor(sf::Color::White);
+		
 		WindowRef->draw(point);
-#endif
 	}
+	SetCollidingState(DrawShape, Component->GetOwner());
 
-	SetCollidingState(drawShape, _component->GetOwner());
+#endif
+	
+	SetTexture(Component, DrawShape);
 
-	SetTexture(_component, drawShape);
-
-	if (_component->TexturePath != "" && _component->ObjectColor.A == 0.f)
+	if (!Component->TexturePath.empty())
 		return;
 
-	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		_component->ObjectColor.B, _component->ObjectColor.A));
+	DrawShape.setFillColor(sf::Color(Component->ObjectColor.R, Component->ObjectColor.G,
+		Component->ObjectColor.B, Component->ObjectColor.A));
 
 }
 
-void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
-{
 #if DEBUG
-	if (_actor->bIsColliding)
+void SfmlWindow::SetCollidingState(sf::Shape& Shape, const SActor* Actor)
+{
+	Shape.setOutlineColor(Actor->bIsColliding ? sf::Color::Red : sf::Color::Green);
+	Shape.setOutlineThickness(1);
+	
+	if ( Actor->bIsStatic )
 	{
-		_shape.setOutlineColor(sf::Color::Red);
+		Shape.setOutlineColor(sf::Color::Magenta);
 	}
-	else
+}
+#endif
+
+void SfmlWindow::SetCommonShapeProperties(sf::Shape& Shape, const SShapeComponent* Component)
+{
+	if (Component->TexturePath.empty())
 	{
-		_shape.setOutlineColor(sf::Color::Green);
+		Shape.setFillColor(sf::Color(Component->ObjectColor.R, Component->ObjectColor.G,
+			Component->ObjectColor.B, Component->ObjectColor.A));
 	}
 
-	if ( _actor->bIsStatic )
-	{
-		_shape.setOutlineColor(sf::Color::Magenta);
-	}
-
-	_shape.setOutlineThickness(1);
+	Shape.setPosition(sf::Vector2f(Component->GetOwner()->GetLocation().X, Component->GetOwner()->GetLocation().Y));
+	Shape.setRotation(Component->GetOwner()->GetTransform().Rotation);
+	
+#if DEBUG
+	SetCollidingState(Shape, Component->GetOwner());
 #endif
 }
 
-void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
+void SfmlWindow::RenderDrawable(const sf::Drawable& Drawable)
 {
-	if (_component->TexturePath == "" || _component->ObjectColor.A == 0.f)
-	{
-		_shape.setFillColor(sf::Color(0, 0, 0, 0));
-	}
-
-	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
-	_shape.setRotation(_component->GetOwner()->GetTransform().Rotation);
-
-	SetCollidingState(_shape, _component->GetOwner());
-}
-
-void SfmlWindow::RenderDrawable(sf::Drawable& _drawable)
-{
-	WindowRef->draw(_drawable);
+	WindowRef->draw(Drawable);
 }
 
 void SfmlWindow::Init(const WindowsProps& props)
@@ -434,51 +433,52 @@ void SfmlWindow::HandleSelectedWidgetInterfaceChanged()
 	}
 }
 
-void SfmlWindow::OnWidgetInterfaceSet( const char* key, std::shared_ptr<DrawingWidgetInterface> value )
+void SfmlWindow::OnWidgetInterfaceSet( const char* Key, const std::shared_ptr<DrawingWidgetInterface>& Value )
 {
-	strcpy(WidgetInterfaceSelectedIndex, key);
+	strcpy(WidgetInterfaceSelectedIndex, Key);
 	strcpy(WidgetInterfaceSelectedPreviousIndex, WidgetInterfaceSelectedIndex);
 			 
-	DrawingWidgetInterfaceManager::getInstance().setWidgetDrawingInterface( value );
+	DrawingWidgetInterfaceManager::GetInstance().SetWidgetDrawingInterface( Value );
 }
 
-void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
+void SfmlWindow::SetWidgetDrawingInterface(const char* InterfaceName)
 {
-	for (auto& [key, value] : WidgetDrawingInterfaces)
+	for (auto& [Key, Value] : WidgetDrawingInterfaces)
 	{
-		if (strcmp(key, _interfaceName) == 0)
+		if (strcmp(Key, InterfaceName) == 0)
 		{
-			OnWidgetInterfaceSet( key, value );
+			OnWidgetInterfaceSet( Key, Value );
 			return;
 		}
 	}
 	
-	for (auto& [key, value] : WidgetDrawingInterfaces)
+	for (auto& [Key, Value] : WidgetDrawingInterfaces)
 	{
-		OnWidgetInterfaceSet( key, value );
+		OnWidgetInterfaceSet( Key, Value );
 		return;
 	}
 
-	std::cout << "Interface not found" << std::endl;
+	assert(false, "No widget drawing interface found");
 }
 
-sf::Sprite& SfmlWindow::GetSprite(const ImageWidget& image)
+sf::Sprite& SfmlWindow::GetSprite(const ImageWidget& Image)
 {
-	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(image.ImagePath))
+	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(Image.ImagePath))
 	{
-		Application::Get().GetTextureMgr()->LoadTexture(image.ImagePath, image.ImagePath);
+		Application::Get().GetTextureMgr()->LoadTexture(Image.ImagePath, Image.ImagePath);
 	}
 	
-	sf::Texture& texture = Application::Get().GetTextureMgr()->GetTexture(image.ImagePath);
+	sf::Texture& Texture = Application::Get().GetTextureMgr()->GetTexture(Image.ImagePath);
 
-	sf::Sprite* sprite = new sf::Sprite();
-	sprite->setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
-	sprite->setPosition(image.worldPosition.X + image.Size.X / 2.f, image.worldPosition.Y + image.Size.Y / 2.f);
-	sprite->setScale(image.Size.X / texture.getSize().x, image.Size.Y / texture.getSize().y);
-	sprite->setTexture(texture);
-	sprite->setRotation(image.Rotation);
+	sf::Sprite* Sprite = new sf::Sprite();
+	
+	Sprite->setOrigin(Texture.getSize().x / 2.f, Texture.getSize().y / 2.f);
+	Sprite->setPosition(Image.WorldPosition.X + Image.Size.X / 2.f, Image.WorldPosition.Y + Image.Size.Y / 2.f);
+	Sprite->setScale(Image.Size.X / Texture.getSize().x, Image.Size.Y / Texture.getSize().y);
+	Sprite->setTexture(Texture);
+	Sprite->setRotation(Image.Rotation);
 
-	return *sprite;
+	return *Sprite;
 }
 
 void SfmlWindow::HandleCursorState()

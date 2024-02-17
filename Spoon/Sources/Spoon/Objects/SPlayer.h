@@ -1,22 +1,21 @@
 #pragma once
 
 #include "Objects/Prefab/RectangleObject.h"
-#include <Inputs/PlayerInputAction.h>
 
 enum class InputAction;
+enum class InputType;
 
 class SPOON_API SPlayer : public SRectangleObject
 {
 	GENERATE()
 
-public:
-	SPlayer();
-	virtual ~SPlayer() override;
-	
-	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
-	
-protected:
+	public:
+		SPlayer();
+		virtual ~SPlayer() override = default;
 
-	virtual void Tick(float DeltaTime) override;
-	
+		// TODO : Move this in a PlayerController class
+		void BindFunctionToInputAction(InputAction InputAction, const std::function<void(float)>& Func, InputType InputType);
+		
+	protected:
+		void Tick(float DeltaTime) override;
 };

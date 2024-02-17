@@ -34,39 +34,42 @@ class SPOON_API Widget : public SObject
 {
     public:
         Widget();
-        ~Widget() override = default;
+        virtual ~Widget() override = default;
 
         virtual void Render() = 0;
 
         void AddToViewport();
         void RemoveFromParent();
 
-        void SetParent(SObject* parent);
+        void SetParent(SObject* Parent);
     
+        bool UpdateWorldPositionRelativeToParent();
         void UpdateWorldPosition();
-        bool IsPointInWidget( const FVector2D& mousePosition);
+    
+        bool IsPointInWidget( const FVector2D& MousePosition);
 
         bool IsHovered() const;
         void OnHover();
         void OnUnhover();
-        virtual void Tick(float deltaTime);
+        bool HandleHoverState(const FVector2D& MousePosition);
 
         virtual Style& GetStyle() const;
 
         virtual void SetIsEnabled(bool bIsEnabled);
         bool IsEnabled() const;
-
-        bool bIsAddedToViewport;
-        bool bIsTickable;
-
+    
+        virtual void Tick(float DeltaTime);
+        
         Visibility visibility;
 
-        SObject* parent;
+        SObject* Parent;
 
         FVector2D RelativePosition;
-        FVector2D worldPosition;
+        FVector2D WorldPosition;
         FVector2D Size;
+        
         float Rotation;
+        
         std::function<void()> onHover;
 
         Style BaseStyle;
@@ -74,9 +77,10 @@ class SPOON_API Widget : public SObject
         Style DisabledStyle;
 
         bool IsMarkedForDestruction;
+        bool bIsAddedToViewport;
+        bool bIsTickable;
 
     private:
         bool bIsHovered;
         bool bIsEnabled;
-
 };

@@ -1,14 +1,15 @@
 #pragma once
 
 #include "../Widget.h"
-#include "Library/TColor.h"
 #include <string>
+
+struct FColor;
 
 class SPOON_API TextBlockWidget : public Widget
 {
 	public:
 		TextBlockWidget();
-		~TextBlockWidget() override = default;
+		virtual ~TextBlockWidget() override = default;
 
 		void Render() override;
 	
