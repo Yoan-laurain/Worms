@@ -6,15 +6,18 @@ class WeaponStrategy : public SActor
 {
 	public:
 
-		WeaponStrategy( int maxAmunition, int damage );
+		WeaponStrategy(int MunitionInMagazine, int Damage, int MunitionByClip, float BulletSpeed);
+		WeaponStrategy() = default;
 
-		virtual ~WeaponStrategy() = default;
+		~WeaponStrategy() override = default;
 	
-		virtual void DoDamage(SActor* target);
+		virtual void DoDamage(SActor* Target);
 		virtual void Reload();
-		virtual void Shoot(Level& world, FTransform shootingPoint);
+		virtual bool Shoot(Level& World, FTransform& ShootingPoint, const FVector2D& Direction);
 	
-		int currentAmunition;
-		int maxAmunition;
-		int damage;
+		int CurrentAmmunition;
+		int MunitionInMagazine;
+		int MunitionByClip;
+		int Damage;
+		float BulletSpeed;
 };

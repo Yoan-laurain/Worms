@@ -13,9 +13,10 @@ public:
 	SPlayer();
 	virtual ~SPlayer() override;
 	
+	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
+	
 protected:
 
 	virtual void Tick(float DeltaTime) override;
 	
-	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
 };

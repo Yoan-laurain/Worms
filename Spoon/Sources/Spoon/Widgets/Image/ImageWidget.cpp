@@ -1,14 +1,13 @@
 #include "ImageWidget.h"
 #include "..\Renderer\DrawingWidgetInterface.h"
-#include "Core/Window.h"
 #include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
-ImageWidget::ImageWidget() : imagePath("")
+ImageWidget::ImageWidget()
 {
 }
 
-void ImageWidget::render()
+void ImageWidget::Render()
 {
 	UpdateWorldPosition();
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(imagePath, worldPosition, size);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderImage(*this);
 }

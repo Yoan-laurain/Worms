@@ -21,4 +21,10 @@ namespace MathLibrary
 	template <typename T>
 	static Vector2D<T>& Vect2DLerp(const Vector2D<T>& A, const Vector2D<T>& B, const double& alpha) { return Vector2D<T>(A.X + ((B.X-A.X)*alpha), A.Y + ((B.Y-A.Y)*alpha)); }
 
+	template <typename T>
+	static T Clamp(const T& value, const T& min, const T& max) { return (value < min) ? min : ( (value > max) ? max : value); }
+	
+	template <typename T>
+	static T Abs(const T& value) { return (value < 0) ? -value : value; }
+
 }

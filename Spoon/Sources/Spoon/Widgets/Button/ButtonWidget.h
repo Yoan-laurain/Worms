@@ -2,6 +2,7 @@
 
 #include "../Widget.h"
 #include "Widgets/TextBlock/TextBlockWidget.h" // On peut pas forward
+#include "Widgets/Image/ImageWidget.h" // On peut pas forward
 
 class SPOON_API ButtonWidget : public Widget
 {
@@ -9,12 +10,26 @@ class SPOON_API ButtonWidget : public Widget
 		ButtonWidget();
 		~ButtonWidget() override = default;
 
-		void render() override;
-		virtual void OnClick();
+		void Render() override;
+		virtual void CallOnClick();
 
 		void SetText(const std::string& text);
-		std::function<void()> onClick;
+		void SetBackgroundImage(const std::string& imagePath);
+		void SetIsEnabled(bool bIsEnabled) override;
 
-	private:
+		ImageWidget* GetImage() const;
+		TextBlockWidget* GetTextBlock() const;
+
+		Style& GetStyle() const override;
+
+		Style SelectedStyle;
+
+		std::function<void()> OnClick; 
+
+		bool bIsSelected;
+
+private:
+		 		
 		std::unique_ptr<TextBlockWidget> textBlock;
+		std::unique_ptr<ImageWidget> image;
 };

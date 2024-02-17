@@ -15,12 +15,13 @@ class SPOON_API SShapeComponent : public SComponent
 {
 	GENERATE()
 public:
-	SShapeComponent(class SActor* _owner) : SComponent(_owner), Type(FActorType::ActorType_None), ObjectColor(FColor::White()), Origin(0.5f) {};
+	SShapeComponent(class SActor* _owner) : SComponent(_owner), Type(FActorType::ActorType_None), ObjectColor(FColor::Zero()), Origin(0.5f),TexturePath("")  {};
 
 	FActorType GetType() const { return Type; }
 
 	FColor ObjectColor;
 	FVector2D Origin;
+	std::string TexturePath;
 
 protected:
 
@@ -40,9 +41,8 @@ class SPOON_API SPolygonComponent : public SShapeComponent
 {
 	GENERATE()
 public:
-	SPolygonComponent(class SActor* _owner) : SShapeComponent(_owner), Points(), texturePath(""), name("") { Type = ActorType_Polygon; };
+	SPolygonComponent(class SActor* _owner) : SShapeComponent(_owner), Points(), Name("") { Type = ActorType_Polygon; };
 
 	std::vector<FVector2D> Points;
-	std::string texturePath;
-	std::string name;
+	std::string Name;
 };

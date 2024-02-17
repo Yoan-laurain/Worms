@@ -1,35 +1,70 @@
 #include "WormLevel.h"
 #include "../Config.h"
 #include "../Player/WormsPlayer.h"
+#include "../Widgets/Wind/WindWidget.h"
 #include "../Field/Field.h"
+#include <Widgets/Image/ImageWidget.h> 
+#include <Library/WidgetHandler.h>
 
-WormLevel::WormLevel() : m_Field(nullptr)
+WormLevel::WormLevel() 
+	: MyWindWidget(nullptr)
+	, NumberOfGrenadeFragmentsRemaining(0)
+	, MyField(nullptr)
 {
-}
-
-void WormLevel::CreatePlayer(const FTransform& SpawnLocation,int PlayerId)
-{
-	FTransform transform = SpawnLocation;
-	transform.Size = FVector2D(25.f, 25.f);
-	transform.Location -= transform.Size;
-
-	WormsPlayer* playerPtr = SpawnActor<WormsPlayer>(transform);
-	playerPtr->PlayerId = PlayerId;
-
-	m_TurnManager->registerObserver(playerPtr);
 }
 
 void WormLevel::BeginPlay()
 {
-	m_TurnManager = std::make_unique<TurnManager>();
+	ATurnManager = std::make_unique<TurnManager>();
 
-	FVector2D spawnLocation = FVector2D(Config::WindowWidth / 2, (Config::WindowHeight * 75 ) /100.f);
+	MyWindWidget = WidgetHandler::CreateWidget<WindWidget>(nullptr);
+	MyWindWidget->Init();
+	MyWindWidget->AddToViewport();
+	
+	SpawnField();
+	SpawnPlayers();
 
-	m_Field = SpawnActor<Field>(FTransform(spawnLocation, FVector2D(Config::WindowWidth, Config::WindowHeight / 2)));
-	m_Field->GenerateFieldCurve();
+	ATurnManager->NextTurn();
+}
 
+void WormLevel::SpawnField()
+{
+	float Ratio = 0.25f;
+	float Height = Config::WindowHeight * Ratio;  // 25% of the screen
+	float SpawnPositionY = Config::WindowHeight * (1 - Ratio ) + Height / 2; // 75% of the screen
+	
+	const FVector2D SpawnLocation = FVector2D(Config::WindowWidth / 2, SpawnPositionY);
+
+	MyField = SpawnActor<Field>(FTransform(SpawnLocation, FVector2D(Config::WindowWidth, Height )));
+	MyField->GenerateField();
+}
+
+void WormLevel::SpawnPlayers()
+{
 	for (int i = 0; i < Config::MaxPlayers; ++i)
 	{
-		CreatePlayer(m_Field->GetSpawnPoint(),i);
+		CreatePlayer( MyField->GetSpawnPoint() , i);
+	}
+}
+
+void WormLevel::CreatePlayer(FTransform SpawnLocation, int PlayerId)
+{
+	WormsPlayer* PlayerPtr = SpawnActor<WormsPlayer>(SpawnLocation);
+	
+	if ( PlayerPtr )
+	{
+		PlayerPtr->PlayerId = PlayerId;
+		PlayerPtr->Init();
+
+		ATurnManager->RegisterObserver(PlayerPtr);
+	}
+}
+
+void WormLevel::OnGrenadeFragmentDestroy()
+{
+	NumberOfGrenadeFragmentsRemaining--;
+	if (NumberOfGrenadeFragmentsRemaining == 0)
+	{
+		ATurnManager->NextTurn();
 	}
 }

@@ -4,54 +4,45 @@
 #include "Spoon/Renders/SFML/TextureMgr.h"
 #include "Core/Window.h"
 #include "Renders/SFML/SfmlWindow.h"
+#include "Widgets/Image/ImageWidget.h"
+#include "Widgets/TextBlock/TextBlockWidget.h"
+#include "Widgets/ProgressBar/ProgressBarWidget.h"
+#include "Widgets/Button/ButtonWidget.h"
+#include "Widgets/Widget.h"
 #include <SFML/Graphics.hpp>
 
-void SFMLWidgetRenderer::RenderImage(const std::string& imagePath, const FVector2D& position, const FVector2D& size)
+void SFMLWidgetRenderer::RenderImage(const ImageWidget& image)
 {
-	if (imagePath.empty())
+	if (image.ImagePath.empty())
 	{
 		return;
 	}
-
-	sf::Sprite sprite;
-	sf::Texture texture;
-
-	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(imagePath))
-	{
-		Application::Get().GetTextureMgr()->LoadTexture(imagePath, imagePath);
-	}
 	
-	texture = Application::Get().GetTextureMgr()->GetTexture(imagePath);
-
-	sprite.setPosition(position.X, position.Y);
-	sprite.setScale(size.X / texture.getSize().x, size.Y / texture.getSize().y);
-	sprite.setTexture(texture);
-
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
 	if (window)
 	{
+		sf::Sprite& sprite = window->GetSprite(image);
 		window->RenderDrawable(sprite);
 	}
 }
 
-void SFMLWidgetRenderer::RenderText(const std::string& text, const FVector2D& position, const float fontSize, const FColor& color)
+void SFMLWidgetRenderer::RenderText(const TextBlockWidget& textBlock)
 {
 	sf::Text sfText;
-	sf::Font font;
 
 	if (!Application::Get().GetTextureMgr()->IsFontLoaded("Roboto-Black"))
 	{
 		Application::Get().GetTextureMgr()->LoadFont("Roboto-Black", "Ressources/Roboto-Black.ttf");
 	}
 
-	font = Application::Get().GetTextureMgr()->GetFont("Roboto-Black");
+	sf::Font& font = Application::Get().GetTextureMgr()->GetFont("Roboto-Black");
 
 	sfText.setFont(font);
-	sfText.setString(text);
-	sfText.setCharacterSize(fontSize); 
-	sfText.setFillColor(sf::Color(color.R, color.G, color.B, color.A)); 
-	sfText.setPosition(position.X, position.Y); 
+	sfText.setString(textBlock.Text);
+	sfText.setCharacterSize(textBlock.FontSize);
+	sfText.setFillColor(sf::Color(textBlock.color.R, textBlock.color.G, textBlock.color.B, textBlock.color.A));
+	sfText.setPosition(textBlock.worldPosition.X, textBlock.worldPosition.Y);
 
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
@@ -61,17 +52,19 @@ void SFMLWidgetRenderer::RenderText(const std::string& text, const FVector2D& po
 	}
 }
 
-void SFMLWidgetRenderer::RenderProgressBar(const FVector2D& position, const FVector2D& size, const float percentage, const FColor& color, const FColor& backgroundColor)
+void SFMLWidgetRenderer::RenderProgressBar(const ProgressBarWidget& progressBar )
 {
+	Style StyleToApply = progressBar.GetStyle();
+	
 	sf::RectangleShape background; 
-	background.setSize(sf::Vector2f(size.X, size.Y)); 
-	background.setFillColor(sf::Color(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A)); 
-	background.setPosition(position.X, position.Y); 
+	background.setSize(sf::Vector2f(progressBar.Size.X, progressBar.Size.Y));
+	background.setFillColor(sf::Color(StyleToApply.Color.R, StyleToApply.Color.G, StyleToApply.Color.B, StyleToApply.Color.A));
+	background.setPosition(progressBar.worldPosition.X, progressBar.worldPosition.Y);
 
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(size.X * percentage, size.Y));
-	rectangle.setFillColor(sf::Color(color.R, color.G, color.B, color.A));
-	rectangle.setPosition(position.X, position.Y);
+	rectangle.setSize(sf::Vector2f(progressBar.Size.X * progressBar.progress, progressBar.Size.Y));
+	rectangle.setFillColor(sf::Color(progressBar.color.R, progressBar.color.G, progressBar.color.B, progressBar.color.A));
+	rectangle.setPosition(progressBar.worldPosition.X, progressBar.worldPosition.Y);
 
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
@@ -82,20 +75,26 @@ void SFMLWidgetRenderer::RenderProgressBar(const FVector2D& position, const FVec
 	}
 }
 
-void SFMLWidgetRenderer::RenderButton( const FVector2D& position, const FVector2D& size, const std::string& text, const FColor& color)
+void SFMLWidgetRenderer::RenderButton(const ButtonWidget& button)
 {
+	const Style& StyleToApply = button.GetStyle();
+	
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(size.X, size.Y));
+	
+	rectangle.setSize(sf::Vector2f(button.Size.X, button.Size.Y));
 
-	sf::Color sfmlColor = sf::Color(color.R, color.G, color.B, color.A);
+	rectangle.setOutlineThickness( StyleToApply.OutlineThickness );
+	rectangle.setOutlineColor( sf::Color( StyleToApply.OutlineColor.R, StyleToApply.OutlineColor.G, StyleToApply.OutlineColor.B, StyleToApply.OutlineColor.A) );
+	
+	sf::Color sfmlColor = sf::Color( StyleToApply.Color.R, StyleToApply.Color.G, StyleToApply.Color.B, StyleToApply.Color.A);
+	rectangle.setFillColor(sfmlColor); 
 
-	rectangle.setFillColor(sfmlColor);
-	rectangle.setPosition(position.X, position.Y);
+	rectangle.setPosition(button.worldPosition.X, button.worldPosition.Y);
 
 	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
 	if (window)
 	{
-		window->RenderDrawable( rectangle );
+		window->RenderDrawable(rectangle);
 	}
 }

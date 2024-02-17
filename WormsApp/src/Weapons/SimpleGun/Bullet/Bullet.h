@@ -1,15 +1,14 @@
 #pragma once
 
 #include <Spoon/Objects/Prefab/CircleObject.h>
-#include <Library/Manifold.h>
 
 class Bullet : public SCircleObject
 {
 public:
 	Bullet();
-	virtual ~Bullet() override;
+	~Bullet() override;
 
 	/* SActor IMPLEMENTATION */
-	virtual void OnCollide(Manifold& contact) override;
+	void OnCollide(SObject* Actor) override;
 	/* SActor IMPLEMENTATION */
 };

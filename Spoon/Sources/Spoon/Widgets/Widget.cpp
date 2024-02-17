@@ -4,23 +4,25 @@
 
 Widget::Widget() : 
     bIsAddedToViewport(false)
-    , bIsEnabled(true)
+    , bIsTickable(false)
     , visibility(Visibility::VISIBLE)
-    , relativePosition(0, 0)
-	, worldPosition(0, 0)
-    , size(0, 0)
-	, BackgroundColor(127,127,127,127)
+    , parent(nullptr)
+	, RelativePosition(0, 0)
+    , worldPosition(0, 0)
+	, Size(0, 0)
+	, Rotation(0)
+	, BaseStyle( { FColor(127, 127, 127, 50), FColor(255, 255, 255, 255), 2.f } )
+	, HoverStyle( { FColor(127, 127, 127, 255), FColor(255, 255, 255, 255), 2.f } )
+	, DisabledStyle( { FColor(127, 127, 127, 50), FColor(255, 0, 0, 255), 2.f } )
+    , IsMarkedForDestruction(false)
+    , bIsHovered(false)
+    , bIsEnabled(true)
 {
 }
 
 void Widget::RemoveFromParent()
 { 
-    if (parent == nullptr)
-	{
-		return;
-	}
-
-    WidgetManager::GetInstance()->RemoveWidget(this);
+    IsMarkedForDestruction = true;	
 }
 
 void Widget::AddToViewport()
@@ -35,31 +37,80 @@ void Widget::SetParent(SObject* parent)
 
 void Widget::UpdateWorldPosition()
 {
-	worldPosition = relativePosition;
+	worldPosition = RelativePosition;
 	if (parent != nullptr)
 	{
 		SActor* parentActor = dynamic_cast<SActor*>(parent);
 
 		if (parentActor)
 		{
-			worldPosition = parentActor->GetLocation() + relativePosition;
+			worldPosition = parentActor->GetLocation() + RelativePosition;
 			return;
 		}
 
 		Widget* parentWidget = dynamic_cast<Widget*>(parent);
 		if (parentWidget)
 		{
-			worldPosition = parentWidget->worldPosition + relativePosition;
+			worldPosition = parentWidget->worldPosition + RelativePosition;
 		}
 	}
 }
 
 bool Widget::IsPointInWidget(const FVector2D& mousePosition)
 {
-	if (mousePosition.X > worldPosition.X && mousePosition.X < worldPosition.X + size.X &&
-		mousePosition.Y > worldPosition.Y && mousePosition.Y < worldPosition.Y + size.Y)
+	if (mousePosition.X > worldPosition.X && mousePosition.X < worldPosition.X + Size.X &&
+		mousePosition.Y > worldPosition.Y && mousePosition.Y < worldPosition.Y + Size.Y)
 	{
 		return true;
 	}
 	return false;
+}
+
+bool Widget::IsHovered() const
+{
+	return bIsHovered;
+}
+
+void Widget::OnHover()
+{
+	bIsHovered = true;
+}
+
+void Widget::OnUnhover()
+{
+	bIsHovered = false;
+}
+
+void Widget::Tick(float deltaTime)
+{
+}
+
+Style& Widget::GetStyle() const
+{
+	if (!bIsEnabled)
+	{
+		return const_cast<Style&>(DisabledStyle);
+	}
+
+	if (bIsHovered)
+	{
+		return const_cast<Style&>(HoverStyle);
+	}
+
+	return const_cast<Style&>(BaseStyle);
+}
+
+void Widget::SetIsEnabled(bool bIsEnabled)
+{
+	this->bIsEnabled = bIsEnabled;
+
+	if (!bIsEnabled)
+	{
+		bIsHovered = false;
+	}
+}
+
+bool Widget::IsEnabled() const
+{
+	return bIsEnabled;
 }

@@ -24,4 +24,11 @@ struct FColor
 
 	static FColor const Blue() { return FColor(0, 0, 255); }
 
+	static FColor const Random() { return FColor(rand() % 255, rand() % 255, rand() % 255); }
+
+	bool operator==(const FColor& other) const
+	{
+		return R == other.R && G == other.G && B == other.B && A == other.A;
+	}
+
 };

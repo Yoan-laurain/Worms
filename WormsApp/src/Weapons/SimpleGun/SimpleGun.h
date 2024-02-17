@@ -6,9 +6,10 @@ class SimpleGun : public WeaponStrategy
 {
 	public:
 		SimpleGun();
+		~SimpleGun() override = default;
+
 		/* WeaponStrategy IMPLEMENTATION */
-			void DoDamage(SActor* target) override;
-			void Shoot(Level& world, FTransform shootingPoint) override;
+			void DoDamage(SActor* Target) override;
+			bool Shoot(Level& World, FTransform& ShootingPoint,const FVector2D& Direction) override;
 		/* END WeaponStrategy IMPLEMENTATION */
-	
 };

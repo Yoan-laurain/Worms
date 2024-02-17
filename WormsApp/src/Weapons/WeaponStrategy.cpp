@@ -1,28 +1,38 @@
 #include "WeaponStrategy.h"
+#include <Library/MathLibrary.h>
 
-
-WeaponStrategy::WeaponStrategy(int maxAmunition, int damage) : maxAmunition(maxAmunition), damage(damage), currentAmunition(maxAmunition)
+WeaponStrategy::WeaponStrategy(int MunitionInMagazine, int Damage, int MunitionByClip, float BulletSpeed)
+	: CurrentAmmunition(MunitionByClip)
+	, MunitionInMagazine(MunitionInMagazine)
+	, MunitionByClip(MunitionByClip)
+    , Damage(Damage)
+	, BulletSpeed(BulletSpeed)
 {
 }
 
-void WeaponStrategy::DoDamage(SActor* target)
+void WeaponStrategy::DoDamage(SActor* Target)
 {
 	
 }
 
 void WeaponStrategy::Reload()
 {
-	currentAmunition = maxAmunition;
+	if (CurrentAmmunition == MunitionByClip)
+	{
+		return;
+	}
+
+	MunitionInMagazine = MathLibrary::Clamp(MunitionInMagazine - MunitionByClip, 0, MunitionInMagazine);
+	CurrentAmmunition = MathLibrary::Clamp(MunitionInMagazine, 0, MunitionByClip);
 }
 
-void WeaponStrategy::Shoot(Level& world, FTransform shootingPoint)
+bool WeaponStrategy::Shoot(Level& World, FTransform& ShootingPoint,const FVector2D& Direction)
 {
-	if (currentAmunition > 0)
+	if (CurrentAmmunition > 0)
 	{
-		currentAmunition--;
+		CurrentAmmunition--;
+		return true;
 	}
-	else
-	{
-		Reload();
-	}
+
+	return false;
 }

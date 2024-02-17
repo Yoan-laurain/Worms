@@ -6,10 +6,10 @@ class GrenadeFragment : public SCircleObject
 {
 public:
 	GrenadeFragment();
-	~GrenadeFragment();
+	~GrenadeFragment() override;
 
 	/* SActor IMPLEMENTATION */
-	virtual void OnCollide(Manifold& contact) override;
+	void OnCollide(SObject* Actor) override;
 	/* SActor IMPLEMENTATION */
 
 	std::function<void()> OnFragmentDestroyCallback;
@@ -20,16 +20,15 @@ class Grenade : public SCircleObject
 {
 	public :
 		Grenade();
-		~Grenade();
+		~Grenade() override = default;
+	
+		void SpawnFragment(int FragmentIndex);
 
 		/* SActor IMPLEMENTATION */
-		virtual void OnCollide(Manifold& contact) override;
+		void OnCollide(SObject* Actor) override;
 		/* SActor IMPLEMENTATION */
-
-		void OnFragmentDestroy();
 
 		int NumberOfFragmentsToSpawn = 3;
-		int NumberOfFragmentsRemaining = 3;
+	
 		bool bIsExploded = false;
-		std::vector<GrenadeFragment*> fragments;
 };

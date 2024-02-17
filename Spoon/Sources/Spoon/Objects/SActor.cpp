@@ -123,9 +123,18 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 		return;
 	}
 
-	// TODO : Get a list of forces
-	LinearVelocity += (Gravity + Force) * DeltaTime;
+	LinearVelocity += Gravity * DeltaTime + Force;
 
+	if ( Force != FVector2D::Zero()) // We clamp the velocity to the max velocity if needed
+	{
+		FVector2D MaxVelocity = Gravity + Force;
+
+		MaxVelocity = FVector2D(MathLibrary::Abs(MaxVelocity.X), MathLibrary::Abs(MaxVelocity.Y));	
+	
+		LinearVelocity.X = MathLibrary::Clamp(LinearVelocity.X, -MaxVelocity.X , MaxVelocity.X);
+		LinearVelocity.Y = MathLibrary::Clamp(LinearVelocity.Y, -MaxVelocity.Y, MaxVelocity.Y);
+	}
+	
 	if (LinearVelocity != FVector2D::Zero())
 	{
 		bNeedToUpdateBoundingBox = true;
@@ -183,6 +192,7 @@ FVector2D SActor::GetSize() const
 	return ObjectTransform.Size;
 }
 
+// Does not work since the rotation is not implemented
 FVector2D SActor::GetForwardVector() const
 {
 	FVector2D direction = FVector2D(cosf(ObjectTransform.Rotation), sinf(ObjectTransform.Rotation));
@@ -244,12 +254,7 @@ bool SActor::IsInBound(const FVector2D& _loc)
 	return false;
 }
 
-void SActor::OnCollide(Manifold& contact)
+void SActor::OnCollide(SObject* Actor)
 {
-	if ( contact.BodyA == nullptr || contact.BodyB == nullptr)
-	{
-		return;
-	}
 
-	GetWorld()->ResolveCollision(contact);
 }

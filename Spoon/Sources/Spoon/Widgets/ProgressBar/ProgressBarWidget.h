@@ -9,7 +9,7 @@ class SPOON_API ProgressBarWidget : public Widget
 		ProgressBarWidget();
 		~ProgressBarWidget() override = default;
 
-		void render() override;
+		void Render() override;
 	
 		float progress;
 		FColor color;

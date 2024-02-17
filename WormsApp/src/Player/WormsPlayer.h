@@ -1,54 +1,58 @@
 #pragma once
 
 #include "../Turn/ITurnObserver.h"
-#include "../Weapons/WeaponStrategy.h" // On peut pas forward
-#include "Objects/SPlayer.h"
+#include "../Weapons/WeaponStrategy.h" 
+#include <Objects/SPlayer.h>
+#include <Library/TColor.h>
+#include <SFML/System.hpp>
 
-class TextBlockWidget;
-class ImageWidget;
-class ButtonWidget;
-class ProgressBarWidget;
+class WormsPlayerController;
+class PlayerWidget;
 
 class WormsPlayer : public SPlayer, public ITurnObserver
 {
 	GENERATE()
 
-public :
+	public :
 
 		WormsPlayer();
 		~WormsPlayer() override;
 
 		/* Begin ITurnObserver Implementation */
-		void onTurnChange(int currentPlayer) override;
+		void OnTurnChange(int CurrentPlayer) override;
 		/* End ITurnObserver Implementation */
 
-		void SetWeaponStrategy(std::unique_ptr<WeaponStrategy> weaponStrategy);
-		WeaponStrategy* GetWeaponStrategy() const;
-
-		bool OnDamageTaken(int damage);
-
-		int PlayerId;
-		float currentHealth;
-private :
-
-	void MoveVertical(float value, float sign);
-	void MoveHorizontal(float value, float sign);
-	void ApplyBinding();
-	void Shoot();
-	bool IsMyTurn();
+		void Init();
+		bool OnDamageTaken(int Damage);
+		void ChangeTurn();
+		bool IsMyTurn() const;
 	
-	std::unique_ptr<WeaponStrategy> weaponStrategy;
+		int PlayerId;
+		float CurrentHealth;
+		float MaxHealth;
+		bool bHasShot;
+	
+		PlayerWidget* MyPlayerWidget;
+	
+		std::vector<std::shared_ptr<WeaponStrategy>> Weapons;
+		std::shared_ptr<WeaponStrategy> WeaponStrategy;
 
-	TextBlockWidget* healthText;
-	ImageWidget* healthImage;
-	ButtonWidget* UpgradeButton;
-	ProgressBarWidget* healthBar;
+	private :
+	
+		void CreateHUD();
+		void DisplayHitEffect(float DeltaTime);
+		void SetBeingHit(bool BeingHit);
+		void HandlePlayerDeath();
+	
+		std::unique_ptr<WormsPlayerController> PlayerController;
+	
+		bool bBeenHit;
 
-	void UpgradeWeapon();
+		FColor HitColor;
+		FColor DefaultColor;
 
-	float maxHealth;
-	bool HasShot;
+		sf::Clock TimerBeingHit;
 
-protected:
-	void BeginPlay() override;
+	protected:
+		void Tick(float DeltaTime) override;
 };

@@ -9,10 +9,10 @@ class ITurnObserver
     
     ITurnObserver() = default;
     virtual ~ITurnObserver() = default;
-    ITurnObserver(const ITurnObserver& other) = delete;
-    ITurnObserver(ITurnObserver&& other) = delete;
-    ITurnObserver& operator=(const ITurnObserver& other) = delete;
-    ITurnObserver& operator=(ITurnObserver&& other) = delete;
+    ITurnObserver(const ITurnObserver& Other) = delete;
+    ITurnObserver(ITurnObserver&& Other) = delete;
+    ITurnObserver& operator=(const ITurnObserver& Other) = delete;
+    ITurnObserver& operator=(ITurnObserver&& Other) = delete;
     
-    virtual void onTurnChange(int currentPlayer) = 0;
+    virtual void OnTurnChange(int CurrentPlayer) = 0;
 };

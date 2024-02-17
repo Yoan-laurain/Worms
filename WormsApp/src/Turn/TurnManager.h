@@ -11,15 +11,18 @@ class TurnManager
         TurnManager();
         ~TurnManager();
 
-        void registerObserver(ITurnObserver* observer);
-        void unregisterObserver(ITurnObserver* observer);
-        void nextTurn();
+        void RegisterObserver(ITurnObserver* Observer);
+        void UnregisterObserver(ITurnObserver* Observer);
+    
+        void NextTurn();
         void OnEndGame();
+    
+        bool IsMyTurn(int PlayerId);
 
-        int currentPlayer;
+        int CurrentPlayer;
 
     private:
-        void notifyObservers();
+        void NotifyObservers();
     
-        std::vector<ITurnObserver*> observers;
+        std::vector<ITurnObserver*> Observers;
 };

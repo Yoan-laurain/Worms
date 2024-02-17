@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Objects/Prefab/CircleObject.h"
 #include <snpch.h>
+#include <Widgets/WidgetManager.h>
 
 Level::Level() : 
 	bIsListBeingEdit(false),
@@ -53,6 +54,8 @@ void Level::UpdateEntity(double deltatime)
 			entity->DestroyActor();
 		}
 	}
+
+	WidgetManager::GetInstance()->DestroyWidgetMarkedForDestruction(); 
 }
 
 void Level::ResolveCollision(Manifold& contact)
@@ -76,6 +79,9 @@ void Level::ResolveCollision(Manifold& contact)
 	}
 
 #endif
+
+	bodyA->OnCollide(bodyB);
+	bodyB->OnCollide(bodyA);
 
 	FVector2D relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 
@@ -242,22 +248,18 @@ void Level::NarrowPhase(SActor* entity, SActor* obj)
 
 	if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision); 
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SCircleObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision); 
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SCircleObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision);
 	}
 	else if (Collision::CheckCollisionImpl(dynamic_cast<SPolygonObject*>(entity), dynamic_cast<SPolygonObject*>(obj), collision))
 	{
-		entity->OnCollide(collision);
-		obj->OnCollide(collision);
+		ResolveCollision(collision);
 	}
 }

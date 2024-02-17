@@ -1,66 +1,49 @@
 #include "Field.h"
-#include "../Config.h"
 #include "../Levels/WormLevel.h"
-#include "Objects/Components/SShapeComponent.h"
+#include "../Config.h"
+#include <Objects/Components/SShapeComponent.h>
 #include <random>
-#include <cmath>
 #include <Library/TVector.h>
-#include <Library/MathLibrary.h>
 
-Field::Field() : SPolygonObject()
+Field::Field() 
 {
     bIsStatic = true;
-    GetPolygonComponent()->ObjectColor  = FColor(74 , 82 , 160);
+    GetPolygonComponent()->ObjectColor  = FColor(127, 127, 127, 255);
 }
 
-void Field::GenerateFieldCurve()
+void Field::GenerateField()
 {
-    GetPolygonComponent()->Points.clear();
+    GetPolygonComponent()->Points.emplace_back(-GetSize().X / 2.f, -GetSize().Y / 2.f);
+    GetPolygonComponent()->Points.emplace_back(GetSize().X / 2.f, -GetSize().Y / 2.f);
+    GetPolygonComponent()->Points.emplace_back(GetSize().X / 2.f, GetSize().Y / 2.f);
+    GetPolygonComponent()->Points.emplace_back(-GetSize().X / 2.f, GetSize().Y / 2.f);
 
-    int numberOfCurvePoints = Config::NumberOfCurvesPoints;
+    CreateSpawnPoints();
+}
 
-    for (int i = 0; i <= numberOfCurvePoints; ++i)
+void Field::CreateSpawnPoints()
+{
+    float Offsets [] = { -500.f, -300.f, 0.f, 200.f, 500.f };
+    
+    for (const int Offset : Offsets)
     {
-        float x = 10.f + i * ((Config::WindowWidth-20.f) / numberOfCurvePoints);
-        float y = Config::WindowHeight /2.f;
-
-        FVector2D point(x, y);
-        FVector2D dt = point - GetLocation();
-
-        GetPolygonComponent()->Points.push_back( dt );
-
-        if (i != 0 && i < numberOfCurvePoints - 1)
-        {
-            FTransform spawnPoint = FTransform(point, FVector2D(0.f, 0.f), 0.f);
-            AddSpawnPoint(spawnPoint);
-        }
-
-    }
-
-    // Add symetric points to close convex
-    for (int i = 0; i <= numberOfCurvePoints; ++i)
-    {
-        float dtY = Config::WindowHeight - GetLocation().Y;
-        FVector2D point = FVector2D(GetPolygonComponent()->Points[numberOfCurvePoints - i].X, dtY - 10.f);
-
-        GetPolygonComponent()->Points.push_back(point);
+        SpawnPoints.emplace_back( FTransform( FVector2D( GetSize().X / 2.f + Offset,
+            GetLocation().Y - GetSize().Y / 2.f - Config::PlayerSize / 2.f ),
+            FVector2D( Config::PlayerSize ),
+            0.f ) );
     }
 }
 
-FTransform& Field::GetSpawnPoint()
+FTransform Field::GetSpawnPoint()
 {
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(0, m_SpawnPoints.size() - 1);
-	int index = dist6(rng);
-	FTransform& spawnPoint = m_SpawnPoints[index];
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, SpawnPoints.size() - 1);
+    int RandomIndex = dis(gen);
+    
+	FTransform Spawn = SpawnPoints[RandomIndex];
 
-    m_SpawnPoints.erase(m_SpawnPoints.begin() + index);
+    SpawnPoints.erase( SpawnPoints.begin() + RandomIndex );
 
-    return spawnPoint;
-}
-
-void Field::AddSpawnPoint(const FTransform& spawnPoint)
-{
-    m_SpawnPoints.push_back(spawnPoint);
+    return Spawn;
 }

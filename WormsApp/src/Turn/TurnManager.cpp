@@ -2,56 +2,63 @@
 #include "ITurnObserver.h"
 #include <iostream>
 
-TurnManager::TurnManager() : currentPlayer(1)
+TurnManager::TurnManager() : CurrentPlayer(1)
 {
 }
 
 TurnManager::~TurnManager()
 {
-    for (const auto& weakObserver : observers)
+    for (const auto& WeakObserver : Observers)
     {
-		auto observer = weakObserver;
-        if (observer)
+		auto Observer = WeakObserver;
+        if (Observer)
         {
-			unregisterObserver(observer);
+			UnregisterObserver(Observer);
 		}
 	}
 }
 
-void TurnManager::registerObserver(ITurnObserver* observer)
+void TurnManager::RegisterObserver(ITurnObserver* Observer)
 {
-    observers.push_back(observer);
+    Observers.push_back(Observer);
 }
 
-void TurnManager::unregisterObserver(ITurnObserver* observer)
+void TurnManager::UnregisterObserver(ITurnObserver* Observer)
 {
-    auto it = std::find(observers.begin(), observers.end(), observer);
-    if (it != observers.end())
+    auto it = std::find(Observers.begin(), Observers.end(), Observer);
+    if (it != Observers.end())
     {
-        observers.erase(it, observers.end());
+        Observers.erase(it, Observers.end());
     }
 }
 
-void TurnManager::nextTurn()
+void TurnManager::NextTurn()
 {
-    currentPlayer = currentPlayer == 1 ? 0 : 1;
-    notifyObservers();
+    CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+    NotifyObservers();
 }
 
 void TurnManager::OnEndGame()
 {
+    //TODO : Handle end game correctly
     std::cout << "Game over" << std::endl;
+    
     exit(0);
 }
 
-void TurnManager::notifyObservers()
+bool TurnManager::IsMyTurn(int PlayerId)
 {
-    for (const auto& weakObserver : observers)
+    return CurrentPlayer == PlayerId;
+}
+
+void TurnManager::NotifyObservers()
+{
+    for (const auto& WeakObserver : Observers)
     {
-        auto observer = weakObserver;
-        if (observer)
+        auto Observer = WeakObserver;
+        if (Observer)
         {
-            observer->onTurnChange(currentPlayer);
+            Observer->OnTurnChange(CurrentPlayer);
         }
     }
 }

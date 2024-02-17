@@ -9,8 +9,8 @@ ProgressBarWidget::ProgressBarWidget() :
 {
 }
 
-void ProgressBarWidget::render()
+void ProgressBarWidget::Render()
 {
 	UpdateWorldPosition();
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderProgressBar(worldPosition, size, progress, color, BackgroundColor);
+	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderProgressBar(*this);
 }

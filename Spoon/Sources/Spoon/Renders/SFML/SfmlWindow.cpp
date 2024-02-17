@@ -14,8 +14,11 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <implot.h>
+#include <Windows.h>
 
 #include <Core/Level.h>
+
+#include "Widgets/Image/ImageWidget.h"
 
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
@@ -34,13 +37,13 @@ Window* Window::Create(const WindowsProps& props)
 SfmlWindow::SfmlWindow(const WindowsProps& props) :
 	WidgetInterfaceSelectedIndex( new char[10] ),
 	WidgetInterfaceSelectedPreviousIndex( new char[10] ),
-	WidgetDrawingInterfaces()
+	WidgetDrawingInterfaces(),
+	bIsHoveringSomething(false)
 {
 	Init(props);
 
 	WidgetDrawingInterfaces["SFML"] = std::make_shared<SFMLWidgetRenderer>();
 	WidgetDrawingInterfaces["ImGUI"] = std::make_shared<ImGuiWidgetRenderer>();
-
 }
 
 SfmlWindow::~SfmlWindow()
@@ -69,9 +72,10 @@ void SfmlWindow::OnRender()
 		HandleEvent(event);
 	}
 
+	HandleCursorState();
 	m_ClockDraw.restart();
-
 	WindowRef->clear();
+
 	EventRenderBack();
 
 	ImGui::SFML::Update(*WindowRef, m_GlobalClock.getElapsedTime());
@@ -161,10 +165,28 @@ unsigned int SfmlWindow::GetHeight() const
 	return m_Data.Height;
 }
 
+void SfmlWindow::SetTexture( SShapeComponent* _component, sf::Shape& _shape )
+{
+	if (_component->TexturePath != "")
+	{
+		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->TexturePath))
+		{
+			Application::Get().GetTextureMgr()->LoadTexture(_component->TexturePath, _component->TexturePath);
+		}
+
+		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->TexturePath);
+		_shape.setTexture(texture);
+	}
+}
+
 void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circle)
 {
 	_circle.setOrigin(_component->Origin.X * _component->Radius * 2, _component->Origin.Y * _component->Radius * 2);
 	_circle.setRadius(_component->Radius);
+	
+	SetTexture(_component, _circle);
+
+#if DEBUG
 
 	sf::Vertex line[] =
 	{
@@ -174,6 +196,8 @@ void SfmlWindow::DrawCircle(SCircleComponent* _component, sf::CircleShape& _circ
 
 	WindowRef->draw(line, 2, sf::Lines);
 
+#endif
+	
 	SetCommonShapeProperties(_circle, _component);
 }
 
@@ -187,34 +211,30 @@ void SfmlWindow::DrawConvex(SPolygonComponent* _component, sf::ConvexShape& draw
 	{
 		drawShape.setPoint(i, sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 
-		// For debug purpose only
+#if DEBUG
 		sf::CircleShape point( 3 );
 		point.setOrigin( 3, 3 );
 		point.setPosition(sf::Vector2f(ownerLocation.X + _component->Points[i].X, ownerLocation.Y + _component->Points[i].Y));
 		point.setFillColor(sf::Color::White);
 		WindowRef->draw(point);
-		// end debug
+#endif
 	}
 
 	SetCollidingState(drawShape, _component->GetOwner());
 
+	SetTexture(_component, drawShape);
+
+	if (_component->TexturePath != "" && _component->ObjectColor.A == 0.f)
+		return;
+
 	drawShape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
 		_component->ObjectColor.B, _component->ObjectColor.A));
 
-	if (_component->texturePath != "")
-	{
-		if (!Application::Get().GetTextureMgr()->IsTextureLoaded(_component->name))
-		{
-			Application::Get().GetTextureMgr()->LoadTexture(_component->name, _component->texturePath);
-		}
-		
-		sf::Texture* texture = &Application::Get().GetTextureMgr()->GetTexture(_component->name);
-		drawShape.setTexture(texture);
-	}
 }
 
 void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 {
+#if DEBUG
 	if (_actor->bIsColliding)
 	{
 		_shape.setOutlineColor(sf::Color::Red);
@@ -230,14 +250,16 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 	}
 
 	_shape.setOutlineThickness(1);
+#endif
 }
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
 {
-	//_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
-		//_component->ObjectColor.B, _component->ObjectColor.A));
+	if (_component->TexturePath == "" || _component->ObjectColor.A == 0.f)
+	{
+		_shape.setFillColor(sf::Color(0, 0, 0, 0));
+	}
 
-	_shape.setFillColor(sf::Color(0, 0, 0, 0));
 	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
 	_shape.setRotation(_component->GetOwner()->GetTransform().Rotation);
 
@@ -293,6 +315,8 @@ void SfmlWindow::HandleEvent(sf::Event& event)
 		MouseMovedEvent tmpevent(FVector2D(event.mouseMove.x, event.mouseMove.y));
 		EventCallBack(tmpevent);
 		m_mousePos = tmpevent.GetLoc();
+
+		WidgetManager::GetInstance()->HandleWidgetHoverState(m_mousePos, bIsHoveringSomething);
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
 	{
@@ -436,4 +460,28 @@ void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
 	}
 
 	std::cout << "Interface not found" << std::endl;
+}
+
+sf::Sprite& SfmlWindow::GetSprite(const ImageWidget& image)
+{
+	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(image.ImagePath))
+	{
+		Application::Get().GetTextureMgr()->LoadTexture(image.ImagePath, image.ImagePath);
+	}
+	
+	sf::Texture& texture = Application::Get().GetTextureMgr()->GetTexture(image.ImagePath);
+
+	sf::Sprite* sprite = new sf::Sprite();
+	sprite->setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+	sprite->setPosition(image.worldPosition.X + image.Size.X / 2.f, image.worldPosition.Y + image.Size.Y / 2.f);
+	sprite->setScale(image.Size.X / texture.getSize().x, image.Size.Y / texture.getSize().y);
+	sprite->setTexture(texture);
+	sprite->setRotation(image.Rotation);
+
+	return *sprite;
+}
+
+void SfmlWindow::HandleCursorState()
+{
+	SetCursor(LoadCursorA(NULL, bIsHoveringSomething ? IDC_HAND : IDC_ARROW));
 }

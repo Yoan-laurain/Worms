@@ -20,11 +20,10 @@ bool InputMgr::Update(float fDeltaTime)
 		
 			if (sf::Keyboard::isKeyPressed(key))
 			{
-				SetPlayerActionState(inputBind.PlayerIndex, inputBind.Action, 1.f * fDeltaTime);
+				SetPlayerActionState(inputBind.PlayerIndex, inputBind.Action, 1.f);
 			}
 			else
-			{
-				
+			{				
 				SetPlayerActionState(inputBind.PlayerIndex, inputBind.Action, 0.f);
 			}
 		}	
