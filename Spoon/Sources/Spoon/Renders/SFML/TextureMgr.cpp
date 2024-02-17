@@ -1,70 +1,70 @@
 #include "TextureMgr.h"
 
-bool TextureMgr::LoadTexture(const std::string& name, const std::string& fileName)
+bool TextureMgr::LoadTexture(const std::string& Name, const std::string& FileName)
 {
-	if (IsTextureLoaded(name))
+	if (IsTextureLoaded(Name))
 	{
 		return true;
 	}
 
-	sf::Texture texture;
+	sf::Texture Texture;
 
-	if ( texture.loadFromFile(fileName) )
+	if ( Texture.loadFromFile(FileName) )
 	{
-		_textures[name] = texture;
+		Textures[Name] = Texture;
 	}
 	else
 	{
-		throw std::runtime_error("Error loading texture: " + fileName);
+		throw std::runtime_error("Error loading texture: " + FileName);
 	}
 	return true;
 }
 
-sf::Texture& TextureMgr::GetTexture(const std::string& name)
+sf::Texture& TextureMgr::GetTexture(const std::string& Name)
 {
-	if (!IsTextureLoaded(name))
+	if (!IsTextureLoaded(Name))
 	{
-		throw std::runtime_error("Error texture not found: " + name);
+		throw std::runtime_error("Error texture not found: " + Name);
 	}
 
-	return _textures.at(name);
+	return Textures.at(Name);
 }
 
-bool TextureMgr::IsTextureLoaded(const std::string& name)
+bool TextureMgr::IsTextureLoaded(const std::string& Name) const
 {
-	return _textures.find(name) != _textures.end();
+	return Textures.contains(Name);
 }
 
-void TextureMgr::LoadFont(const std::string& name, const std::string& fileName)
+void TextureMgr::LoadFont(const std::string& Name, const std::string& FileName)
 {
-	if ( IsFontLoaded(name) )
+	if ( IsFontLoaded(Name) )
 	{
 		return;
 	}
 
-	sf::Font font;
+	sf::Font Font;
 
-	if (font.loadFromFile(fileName))
+	if (Font.loadFromFile(FileName))
 	{
-		_fonts[name] = font;
+		Fonts[Name] = Font;
 	}
 	else
 	{
-		throw std::runtime_error("Error loading font: " + fileName);
+		throw std::runtime_error("Error loading font: " + FileName);
 	}
 }
 
-sf::Font& TextureMgr::GetFont(const std::string& name)
+sf::Font& TextureMgr::GetFont(const std::string& Name)
 {
-	if (_fonts.find(name) == _fonts.end())
+	if (!Fonts.contains(Name))
 	{
-		throw std::runtime_error("Error font not found: " + name);
+		throw std::runtime_error("Error font not found: " + Name);
 	}
 
-	return _fonts.at(name);
+	return Fonts.at(Name);
 }
 
-bool TextureMgr::IsFontLoaded(const std::string& name)
+bool TextureMgr::IsFontLoaded(const std::string& Name) const
 {
-	return _fonts.find(name) != _fonts.end();
+	return Fonts.contains(Name);
 }

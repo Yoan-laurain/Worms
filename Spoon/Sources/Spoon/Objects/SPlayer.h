@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Objects/Prefab/RectangleObject.h"
-#include <Inputs/PlayerInputAction.h>
 
 enum class InputAction;
+enum class InputType;
 
 class SPOON_API SPlayer : public SRectangleObject
 {
@@ -11,12 +11,10 @@ class SPOON_API SPlayer : public SRectangleObject
 
 public:
 	SPlayer();
-	virtual ~SPlayer() override;
+	virtual ~SPlayer() override = default;
 	
-	void BindFunctionToInputAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
+	void BindFunctionToInputAction(InputAction InputAction, std::function<void(float)> Func, InputType InputType);
 	
 protected:
-
-	virtual void Tick(float DeltaTime) override;
-	
+	void Tick(float DeltaTime) override;
 };

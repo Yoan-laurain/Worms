@@ -10,8 +10,8 @@ class DrawingWidgetInterface
 	public :
 		virtual ~DrawingWidgetInterface() = default;
 
-		virtual void RenderImage(const ImageWidget& image) = 0;
-		virtual void RenderText(const TextBlockWidget& textBlock) = 0;
-		virtual void RenderProgressBar(const ProgressBarWidget& progressBar) = 0;
-		virtual void RenderButton(const ButtonWidget& button) = 0;
+		virtual void RenderImage(const ImageWidget& Image) = 0;
+		virtual void RenderText(const TextBlockWidget& TextBlock) = 0;
+		virtual void RenderProgressBar(const ProgressBarWidget& ProgressBar) = 0;
+		virtual void RenderButton(const ButtonWidget& Button) = 0;
 };

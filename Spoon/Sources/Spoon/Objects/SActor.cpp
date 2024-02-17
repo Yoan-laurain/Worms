@@ -15,17 +15,13 @@ SActor::SActor() :
 	Density(1.f),
 	bNeedToUpdateBoundingBox(true),
 	AABB(FVector2D::Zero(), FVector2D::Zero()),
-	bIsHovered(false),
-	bIsPressed(false),
+	LifeSpan(-1.f),
+	bNeedToDestroy(false),
 	WorldRef(nullptr),
-	Inertia(0.f),
-	InvInertia(0.f),
 	Mass(1.f),
 	InvMass(1.f / Mass),
 	Force(FVector2D::Zero()),
-	Gravity(FVector2D(0.f, MathLibrary::Gravity)),
-	LifeSpan(-1.f),
-	bNeedToDestroy(false)
+	Gravity(FVector2D(0.f, MathLibrary::Gravity))
 {
 }
 
@@ -54,13 +50,6 @@ void SActor::Tick(float DeltaTime)
 	{
 		i->OnUpdate(DeltaTime);
 	}
-	if (bIsPressed && bIsHovered)
-	{
-		if (!bIsStatic)
-		{
-			SetLocation(mouseLoc);
-		}
-	}
 
 	UpdateObjectPhysics(DeltaTime);
 }
@@ -75,45 +64,27 @@ void SActor::DestroyActor()
 	GetWorld()->DestroyObject(this);
 }
 
-bool SActor::OnMouseEvent(MouseMovedEvent& _event)
-{
-	if (bIsPressed)
-	{
-		bIsHovered = IsInBound(_event.GetLoc());
-	}
-	else
-	{
-		bIsHovered = false;
-	}
-
-	mouseLoc = (bIsPressed) ? _event.GetLoc() : GetLocation();
-
-	return false;
-}
-
-bool SActor::OnMousePressedEvent(MouseButtonPressedEvent& _event)
-{
-	bIsPressed = true;
-	return bIsHovered;
-}
-
-bool SActor::OnMouseRelesedEvent(MouseButtonReleasedEvent& _event)
-{
-	bIsPressed = false;
-	return false;
-}
-
 void SActor::OnEvent(SpoonEvent& event)
 {
 	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(SActor::OnMouseEvent));
-	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(SActor::OnMousePressedEvent));
-	dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(SActor::OnMouseRelesedEvent));
 }
 
 void SActor::SetWorldRef(Level* parentRef)
 {
 	WorldRef = parentRef;
+}
+
+void SActor::ClampAcceleration()
+{
+	if ( Force != FVector2D::Zero()) // We clamp the velocity to the max velocity if needed
+	{
+		FVector2D MaxVelocity = Gravity + Force;
+
+		MaxVelocity = FVector2D(MathLibrary::Abs(MaxVelocity.X), MathLibrary::Abs(MaxVelocity.Y));	
+	
+		LinearVelocity.X = MathLibrary::Clamp(LinearVelocity.X, -MaxVelocity.X , MaxVelocity.X);
+		LinearVelocity.Y = MathLibrary::Clamp(LinearVelocity.Y, -MaxVelocity.Y, MaxVelocity.Y);
+	}
 }
 
 void SActor::UpdateObjectPhysics(float DeltaTime)
@@ -125,15 +96,7 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 
 	LinearVelocity += Gravity * DeltaTime + Force;
 
-	if ( Force != FVector2D::Zero()) // We clamp the velocity to the max velocity if needed
-	{
-		FVector2D MaxVelocity = Gravity + Force;
-
-		MaxVelocity = FVector2D(MathLibrary::Abs(MaxVelocity.X), MathLibrary::Abs(MaxVelocity.Y));	
-	
-		LinearVelocity.X = MathLibrary::Clamp(LinearVelocity.X, -MaxVelocity.X , MaxVelocity.X);
-		LinearVelocity.Y = MathLibrary::Clamp(LinearVelocity.Y, -MaxVelocity.Y, MaxVelocity.Y);
-	}
+	ClampAcceleration();
 	
 	if (LinearVelocity != FVector2D::Zero())
 	{
@@ -145,14 +108,9 @@ void SActor::UpdateObjectPhysics(float DeltaTime)
 	Force = FVector2D::Zero();
 }
 
-float SActor::CalculateRotationInertia()
+void SActor::AddForce(const FVector2D& Force)
 {
-	return 0.f;
-}
-
-void SActor::AddForce(const FVector2D& force)
-{
-	Force = force;
+	this->Force = Force;
 }
 
 float SActor::GetMass() const
@@ -160,11 +118,10 @@ float SActor::GetMass() const
 	return Mass;
 }
 
-void SActor::SetDensity(float density)
+void SActor::SetDensity(float Density)
 {
-	Density = density;
+	this->Density = Density;
 	UpdateMass();
-	SetInertia(CalculateRotationInertia());
 }
 
 FVector2D SActor::GetLocation() const
@@ -192,7 +149,7 @@ FVector2D SActor::GetSize() const
 	return ObjectTransform.Size;
 }
 
-// Does not work since the rotation is not implemented
+// TODO Does not work since the rotation is not implemented
 FVector2D SActor::GetForwardVector() const
 {
 	FVector2D direction = FVector2D(cosf(ObjectTransform.Rotation), sinf(ObjectTransform.Rotation));
@@ -216,18 +173,6 @@ void SActor::SetTransform(const FTransform& transform)
 	ObjectTransform = transform;
 
 	UpdateMass();
-	SetInertia(CalculateRotationInertia());
-}
-
-void SActor::SetInertia(float inertia)
-{
-	if (bIsStatic)
-	{
-		return;
-	}
-
-	Inertia = inertia;
-	InvInertia = bIsStatic ? 0.f : 1.f / Inertia;
 }
 
 void SActor::UpdateMass()

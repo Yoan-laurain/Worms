@@ -62,13 +62,14 @@ private:
 	bool OnAppTick(AppTickEvent& e);
 	bool OnWindowResize(WindowResizeEvent& e);
 	bool OnMouseMoved(MouseMovedEvent& e);
-	void SpawnCircleObject();
-	void SpawnRectangleObject();
 	bool OnMousePressed(MouseButtonPressedEvent& e);
 
 	void TickRun();
 	void OnRender();
 
+	void SpawnCircleObject();
+	void SpawnRectangleObject();
+	
 	#pragma region WindowProperty
 
 	FVector2D ScreenSize;

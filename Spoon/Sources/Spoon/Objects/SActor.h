@@ -3,8 +3,6 @@
 #include "Objects/SObject.h"
 #include "Library/TStruct.h"
 #include "Components/SComponent.h"
-#include "Library/Manifold.h"
-
 #include <Library/AlignAxisBoudingBox.h>
 
 class SPOON_API SActor : public SObject
@@ -29,7 +27,7 @@ public:
 	void MarkActorToDestruction();
 	void DestroyActor();
 
-	inline class Level* GetWorld() const { return WorldRef; };
+	Level* GetWorld() const { return WorldRef; };
 
 	/************************************************************************/
 	/* Transform															*/
@@ -92,11 +90,10 @@ public:
 	/************************************************************************/
 	/* Physics															*/
 	/************************************************************************/
-
-	void SetInertia(float inertia);
-	virtual void AddForce(const FVector2D& force);
+	
+	virtual void AddForce(const FVector2D& Force);
 	float GetMass() const;
-	void SetDensity(float density);
+	void SetDensity(float Density);
 
 protected:
 
@@ -105,15 +102,7 @@ protected:
 
 	// Function called à chaque boucle du LogicThread
 	virtual void Tick(float DeltaTime);
-
-	bool OnMouseEvent(class MouseMovedEvent& _event);
-
-	virtual bool OnMousePressedEvent(class MouseButtonPressedEvent& _event);
-
-	virtual bool OnMouseRelesedEvent(class MouseButtonReleasedEvent& _event);
-
-	virtual float CalculateRotationInertia();
-
+	
 	// Function à called pour cree un component
 	template<typename T>
 	T* CreateComponent(const std::string& name)
@@ -130,7 +119,8 @@ private:
 
 	void OnEvent(class SpoonEvent& event);
 
-	void SetWorldRef(class Level* parentRef);
+	void SetWorldRef(Level* parentRef);
+	void ClampAcceleration();
 
 	void UpdateObjectPhysics(float DeltaTime);
 
@@ -154,35 +144,22 @@ public:
 	bool bNeedToDestroy;
 
 protected:
-
-	bool bIsHovered;
-
-	bool bIsPressed;
-
+	
 	FVector2D mouseLoc;
 
 	FTransform ObjectTransform;
 
 private:
 
-	std::vector<std::unique_ptr<class SComponent>> ComponentList;
+	std::vector<std::unique_ptr<SComponent>> ComponentList;
 
-	std::vector<class SComponent> TickableComponent;
+	std::vector<SComponent> TickableComponent;
 
-	class Level* WorldRef;
-
-	float Inertia;
-	float InvInertia;
+	Level* WorldRef;
 	
 	float Mass;
 	float InvMass;
 
 	FVector2D Force;
 	FVector2D Gravity;
-
-};
-
-class SPOON_API IPrefab
-{
-	virtual class SShapeComponent* GetShapeComponent() const = 0;
 };

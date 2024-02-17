@@ -1,7 +1,5 @@
 #include "InputMgr.h"
-
-#include "InputAction.h"
-
+#include "./Enums/InputAction.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <assert.h>
 

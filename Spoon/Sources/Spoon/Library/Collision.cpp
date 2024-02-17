@@ -1,6 +1,6 @@
 #include "Library/Collision.h"
-#include <snpch.h>
 #include "Manifold.h"
+#include <snpch.h>
 
 bool Collision::IntersectCirclePolygon(const FVector2D& circleCenter, float circleRadius,
     const FVector2D& polygonCenter, const std::vector<FVector2D>& vertices, FVector2D& normal, float& depth)
@@ -378,4 +378,16 @@ void Collision::FindPolygonsContactPoints(
             }
         }
     }
+}
+
+void Collision::SetCollisionManifold(SActor* First, SActor* Other, Manifold& Collision, FVector2D& Normal, float& Depth,
+    FVector2D& Contact1, FVector2D& Contact2, int ContactCount)
+{
+    Collision.BodyA = First;
+    Collision.BodyB = Other;
+    Collision.Normal = Normal;
+    Collision.Depth = Depth;
+    Collision.Contact1 = Contact1;
+    Collision.Contact2 = Contact2;
+    Collision.ContactCount = ContactCount;
 }

@@ -1,14 +1,10 @@
 #include "Objects/SPlayer.h"
 #include "Core/Application.h"
-#include "Inputs/InputAction.h"
+#include "Inputs/Enums/InputAction.h"
 
 SPlayer::SPlayer()
 {
 	Application::Get().AddNewPlayer(this);
-}
-
-SPlayer::~SPlayer()
-{
 }
 
 void SPlayer::Tick(float DeltaTime)

@@ -11,67 +11,67 @@
 #include "Widgets/Widget.h"
 #include "Renders/SFML/TextureMgr.h"
 
-void ImGuiWidgetRenderer::RenderImage(const ImageWidget& image)
+void ImGuiWidgetRenderer::RenderImage(const ImageWidget& Image)
 {
-	if (image.ImagePath.empty())
+	if (Image.ImagePath.empty())
 	{
 		return;
 	}
 	
-	ImGui::SetCursorPos(ImVec2(image.worldPosition.X, image.worldPosition.Y));
+	ImGui::SetCursorPos(ImVec2(Image.WorldPosition.X, Image.WorldPosition.Y));
 	
-	SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+	SfmlWindow* Window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
-	if (window)
+	if (Window)
 	{
-		sf::Sprite& sprite = window->GetSprite(image);
+		sf::Sprite& Sprite = Window->GetSprite(Image);
 
 		// Imgui does not seams to handle image rotation : cf https://github.com/SFML/imgui-sfml/issues/86
-		ImGui::Image(sprite, ImVec2(image.Size.X, image.Size.Y));
+		ImGui::Image(Sprite, ImVec2(Image.Size.X, Image.Size.Y));
 	}
 }
 
-void ImGuiWidgetRenderer::RenderText(const TextBlockWidget& textBlock)
+void ImGuiWidgetRenderer::RenderText(const TextBlockWidget& TextBlock)
 {
 	// TODO : Handle font size
 
-    ImGui::SetCursorPos(ImVec2(textBlock.worldPosition.X, textBlock.worldPosition.Y));
+    ImGui::SetCursorPos(ImVec2(TextBlock.WorldPosition.X, TextBlock.WorldPosition.Y));
 
-	ImGui::SetWindowFontScale(textBlock.FontSize / 10.f); 
+	ImGui::SetWindowFontScale(TextBlock.FontSize / 10.f); 
 
-    ImGui::TextColored(ImVec4(textBlock.color.R / 255.0f, textBlock.color.G / 255.0f,
-		textBlock.color.B / 255.0f, textBlock.color.A / 255.0f), textBlock.Text.c_str());
+    ImGui::TextColored(ImVec4(TextBlock.color.R / 255.0f, TextBlock.color.G / 255.0f,
+		TextBlock.color.B / 255.0f, TextBlock.color.A / 255.0f), TextBlock.Text.c_str());
 
 	ImGui::SetWindowFontScale(1.0f);
 }
 
-void ImGuiWidgetRenderer::RenderProgressBar(const ProgressBarWidget& progressBar)
+void ImGuiWidgetRenderer::RenderProgressBar(const ProgressBarWidget& ProgressBar)
 {
-	ImGui::SetCursorPos(ImVec2(progressBar.worldPosition.X, progressBar.worldPosition.Y));
-	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(progressBar.color.R / 255.0f, progressBar.color.G / 255.0f,
-		progressBar.color.B / 255.0f, progressBar.color.A / 255.0f));
-	ImGui::ProgressBar(progressBar.progress, ImVec2(progressBar.Size.X, progressBar.Size.Y), "");
+	ImGui::SetCursorPos(ImVec2(ProgressBar.WorldPosition.X, ProgressBar.WorldPosition.Y));
+	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(ProgressBar.Color.R / 255.0f, ProgressBar.Color.G / 255.0f,
+		ProgressBar.Color.B / 255.0f, ProgressBar.Color.A / 255.0f));
+	ImGui::ProgressBar(ProgressBar.Progress, ImVec2(ProgressBar.Size.X, ProgressBar.Size.Y), "");
 	ImGui::PopStyleColor();
 }
 
-void ImGuiWidgetRenderer::RenderButton(const ButtonWidget& button)
+void ImGuiWidgetRenderer::RenderButton(const ButtonWidget& Button)
 {
-	const Style& StyleToApply = button.GetStyle();
+	const Style& StyleToApply = Button.GetStyle();
 
-	ImGui::SetCursorPos(ImVec2(button.worldPosition.X, button.worldPosition.Y));
+	ImGui::SetCursorPos(ImVec2(Button.WorldPosition.X, Button.WorldPosition.Y));
 
 	int StylePushedCount = PushStyleColor(StyleToApply);
 	int StyleVarPushedCount = PushStyleVar(StyleToApply);
 
-	if (button.GetImage())
+	if (Button.GetImage())
 	{
-		SfmlWindow* window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
+		SfmlWindow* Window = dynamic_cast<SfmlWindow*>(Application::Get().GetWindow());
 
-		if (window)
+		if (Window)
 		{
 			ImGui::ImageButton(
-				window->GetSprite(*button.GetImage())
-				, ImVec2(button.Size.X, button.Size.Y)
+				Window->GetSprite(*Button.GetImage())
+				, ImVec2(Button.Size.X, Button.Size.Y)
 				,0
 				, sf::Color::Transparent
 				);
@@ -79,39 +79,39 @@ void ImGuiWidgetRenderer::RenderButton(const ButtonWidget& button)
 	}
 	else
 	{
-		const char* textChar = "##";
+		const char* TextChar = "##";
 
-		if (button.GetTextBlock())
+		if (Button.GetTextBlock())
 		{
-			textChar = button.GetTextBlock()->Text.c_str();
+			TextChar = Button.GetTextBlock()->Text.c_str();
 		}
 
-		ImGui::Button(textChar, ImVec2(button.Size.X, button.Size.Y));
+		ImGui::Button(TextChar, ImVec2(Button.Size.X, Button.Size.Y));
 	}
 
 	ImGui::PopStyleColor(StylePushedCount);
 	ImGui::PopStyleVar(StyleVarPushedCount);
 }
 
-int ImGuiWidgetRenderer::PushStyleVar(const Style& style)
+int ImGuiWidgetRenderer::PushStyleVar(const Style& Style)
 {
-	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, style.OutlineThickness);
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, Style.OutlineThickness);
 	return 1;
 }
 
-int ImGuiWidgetRenderer::PushStyleColor(const Style& style)
+int ImGuiWidgetRenderer::PushStyleColor(const Style& Style)
 {
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(style.Color.R / 255.0f, style.Color.G / 255.0f, style.Color.B / 255.0f, style.Color.A / 255.0f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(style.Color.R / 255.0f, style.Color.G / 255.0f, style.Color.B / 255.0f, style.Color.A / 255.0f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(style.Color.R / 255.0f, style.Color.G / 255.0f, style.Color.B / 255.0f, style.Color.A / 255.0f));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(Style.Color.R / 255.0f, Style.Color.G / 255.0f, Style.Color.B / 255.0f, Style.Color.A / 255.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(Style.Color.R / 255.0f, Style.Color.G / 255.0f, Style.Color.B / 255.0f, Style.Color.A / 255.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(Style.Color.R / 255.0f, Style.Color.G / 255.0f, Style.Color.B / 255.0f, Style.Color.A / 255.0f));
 
 
 	ImGui::PushStyleColor(ImGuiCol_Border,
 		ImVec4( 
-			style.OutlineColor.R / 255.0f,
-			style.OutlineColor.G / 255.0f,
-			style.OutlineColor.B / 255.0f,
-			style.OutlineColor.A / 255.0f
+			Style.OutlineColor.R / 255.0f,
+			Style.OutlineColor.G / 255.0f,
+			Style.OutlineColor.B / 255.0f,
+			Style.OutlineColor.A / 255.0f
 		));
 
 	return 4;

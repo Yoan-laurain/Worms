@@ -11,16 +11,16 @@ public:
 	TextureMgr& operator=(const TextureMgr&) = delete;
 	~TextureMgr() = default;
 
-	bool LoadTexture(const std::string& name, const std::string& fileName);
-	sf::Texture& GetTexture(const std::string& name);
-	bool IsTextureLoaded(const std::string& name);
+	bool LoadTexture(const std::string& Name, const std::string& FileName);
+	sf::Texture& GetTexture(const std::string& Name);
+	bool IsTextureLoaded(const std::string& Name) const;
 
-	void LoadFont(const std::string& name, const std::string& fileName);
-	sf::Font& GetFont(const std::string& name);
-	bool IsFontLoaded(const std::string& name);
+	void LoadFont(const std::string& Name, const std::string& FileName);
+	sf::Font& GetFont(const std::string& Name);
+	bool IsFontLoaded(const std::string& Name) const;
 
 private:
-	std::map<std::string, sf::Texture> _textures;
-	std::map<std::string, sf::Font> _fonts;
+	std::map<std::string, sf::Texture> Textures;
+	std::map<std::string, sf::Font> Fonts;
 
 };

@@ -12,7 +12,7 @@ ButtonWidget::ButtonWidget()
 	: SelectedStyle( { FColor(127, 127, 127, 255), FColor(255, 255, 255, 255), 2.f } )
 	, OnClick(nullptr)
 	, bIsSelected(false)
-	, textBlock(nullptr)
+	, TextBlock(nullptr)
 {
 }
 
@@ -20,23 +20,23 @@ void ButtonWidget::Render()
 {
 	UpdateWorldPosition();
 
-	DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface()->RenderButton(*this);
+	DrawingWidgetInterfaceManager::GetInstance().GetWidgetDrawingInterface()->RenderButton(*this);
 
-	if (!dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::getInstance().getWidgetDrawingInterface().get()))
+	if (!dynamic_cast<ImGuiWidgetRenderer*>(DrawingWidgetInterfaceManager::GetInstance().GetWidgetDrawingInterface().get()))
 	{
-		if (textBlock)
+		if (TextBlock)
 		{
-			textBlock->FontSize = 10.f;
-			textBlock->RelativePosition = FVector2D(Size.X / 2.f - (textBlock->Text.size() / 2.f * textBlock->FontSize / 2.f),
-				Size.Y / 2.f - textBlock->FontSize / 2.f);
-			textBlock->color = FColor(255, 255, 255, 255);
-			textBlock->Render();
+			TextBlock->FontSize = 10.f;
+			TextBlock->RelativePosition = FVector2D(Size.X / 2.f - (TextBlock->Text.size() / 2.f * TextBlock->FontSize / 2.f),
+				Size.Y / 2.f - TextBlock->FontSize / 2.f);
+			TextBlock->color = FColor(255, 255, 255, 255);
+			TextBlock->Render();
 		}
 
-		if (image)
+		if (Image)
 		{
-			image->Size = Size;
-			image->Render();
+			Image->Size = Size;
+			Image->Render();
 		}
 	}
 }
@@ -50,29 +50,29 @@ void ButtonWidget::CallOnClick()
 	}
 }
 
-void ButtonWidget::SetText(const std::string& text)
+void ButtonWidget::SetText(const std::string& Text)
 {
-	if ( !textBlock )
+	if ( !TextBlock )
 	{		
 		TextBlockWidget* TBWidget = WidgetHandler::CreateWidget<TextBlockWidget>(this);
-		textBlock = std::unique_ptr<TextBlockWidget>(TBWidget);
+		TextBlock = std::unique_ptr<TextBlockWidget>(TBWidget);
 	}
-	textBlock->Text = text;
+	TextBlock->Text = Text;
 }
 
-void ButtonWidget::SetBackgroundImage(const std::string& imagePath)
+void ButtonWidget::SetBackgroundImage(const std::string& ImagePath)
 {
-	if (!image)
+	if (!Image)
 	{
-		ImageWidget* imgWidget = WidgetHandler::CreateWidget<ImageWidget>(this);
+		ImageWidget* ImgWidget = WidgetHandler::CreateWidget<ImageWidget>(this);
 
-		if (!imgWidget)
+		if (!ImgWidget)
 		{
 			return;
 		}
 
-		imgWidget->ImagePath = imagePath;
-		image = std::unique_ptr<ImageWidget>(imgWidget);
+		ImgWidget->ImagePath = ImagePath;
+		Image = std::unique_ptr<ImageWidget>(ImgWidget);
 	}
 }
 
@@ -88,12 +88,12 @@ void ButtonWidget::SetIsEnabled(bool bIsEnabled)
 
 ImageWidget* ButtonWidget::GetImage() const
 {
-	return image.get();
+	return Image.get();
 }
 
 TextBlockWidget* ButtonWidget::GetTextBlock() const
 {
-	return textBlock.get();
+	return TextBlock.get();
 }
 
 Style& ButtonWidget::GetStyle() const

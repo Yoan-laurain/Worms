@@ -42,10 +42,9 @@ public:
 
 #if DEBUG
 	virtual void DrawAllDebugs(std::vector<DebugShapeData>& DebugShapes) = 0;
-	virtual void DrawDebugPoint(const FTransform& transform) = 0;
+	virtual void DrawDebugPoint(const FTransform& Transform) = 0;
 #endif
 
 protected:
 	FVector2D m_mousePos;
 };
-

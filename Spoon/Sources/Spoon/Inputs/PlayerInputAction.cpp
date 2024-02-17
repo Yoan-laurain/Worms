@@ -1,6 +1,6 @@
 #include "PlayerInputAction.h"
-#include "InputAction.h"
-#include "InputType.h"
+#include "./Enums/InputAction.h"
+#include "./Enums/InputType.h"
 
 PlayerInputAction::PlayerInputAction(unsigned playerIndex): PlayerIndex(playerIndex)
 {
@@ -14,11 +14,7 @@ PlayerInputAction::PlayerInputAction(unsigned playerIndex): PlayerIndex(playerIn
 void PlayerInputAction::SetInputAction(InputAction action, float value)
 {
 	InputActionInfo& info = InputActionsInfo.at(action);
-
-#if _DEBUG
-	//std::cout << "Player " << PlayerIndex << ", Action: " << (int) action << ", Update: " << value << std::endl;
-#endif
-
+	
 	if (info.InputType == InputType::Pressed && info.HasBeenPressed)
 		return;
 
@@ -58,5 +54,6 @@ void PlayerInputAction::BindAction(InputAction inputAction, std::function<void(f
 	InputActionsInfo.at(inputAction).InputType = inputType;
 }
 
-InputActionInfo::InputActionInfo(): Value(0.f), Callbacks()
-{}
+InputActionInfo::InputActionInfo(): Value(0.f), InputType(), HasBeenPressed(false)
+{
+}

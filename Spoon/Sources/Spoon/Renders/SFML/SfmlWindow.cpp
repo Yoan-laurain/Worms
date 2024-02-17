@@ -83,7 +83,7 @@ void SfmlWindow::OnRender()
 
 	m_DrawTime = m_ClockDraw.getElapsedTime().asSeconds() * 1000.f;
 
-	WidgetManager::GetInstance()->GetWidgetToRender();
+	WidgetManager::GetInstance()->RenderWidgets();
 	DrawImGuiWin();
 	ImGui::SFML::Render(*WindowRef);
 
@@ -255,9 +255,14 @@ void SfmlWindow::SetCollidingState(sf::Shape& _shape, SActor* _actor)
 
 void SfmlWindow::SetCommonShapeProperties(sf::Shape& _shape, SShapeComponent* _component)
 {
-	if (_component->TexturePath == "" || _component->ObjectColor.A == 0.f)
+	if (_component->TexturePath != "" || _component->ObjectColor.A == 0.f)
 	{
 		_shape.setFillColor(sf::Color(0, 0, 0, 0));
+	}
+	else
+	{
+		_shape.setFillColor(sf::Color(_component->ObjectColor.R, _component->ObjectColor.G,
+			_component->ObjectColor.B, _component->ObjectColor.A));
 	}
 
 	_shape.setPosition(sf::Vector2f(_component->GetOwner()->GetLocation().X, _component->GetOwner()->GetLocation().Y));
@@ -439,7 +444,7 @@ void SfmlWindow::OnWidgetInterfaceSet( const char* key, std::shared_ptr<DrawingW
 	strcpy(WidgetInterfaceSelectedIndex, key);
 	strcpy(WidgetInterfaceSelectedPreviousIndex, WidgetInterfaceSelectedIndex);
 			 
-	DrawingWidgetInterfaceManager::getInstance().setWidgetDrawingInterface( value );
+	DrawingWidgetInterfaceManager::GetInstance().SetWidgetDrawingInterface( value );
 }
 
 void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
@@ -473,7 +478,7 @@ sf::Sprite& SfmlWindow::GetSprite(const ImageWidget& image)
 
 	sf::Sprite* sprite = new sf::Sprite();
 	sprite->setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
-	sprite->setPosition(image.worldPosition.X + image.Size.X / 2.f, image.worldPosition.Y + image.Size.Y / 2.f);
+	sprite->setPosition(image.WorldPosition.X + image.Size.X / 2.f, image.WorldPosition.Y + image.Size.Y / 2.f);
 	sprite->setScale(image.Size.X / texture.getSize().x, image.Size.Y / texture.getSize().y);
 	sprite->setTexture(texture);
 	sprite->setRotation(image.Rotation);

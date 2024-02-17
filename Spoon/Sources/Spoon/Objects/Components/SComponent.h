@@ -12,9 +12,9 @@ class SPOON_API SComponent : public SObject
 
 public:
 
-	SComponent(class SActor* owner = nullptr);
+	SComponent(SActor* owner = nullptr);
 
-	virtual ~SComponent() override;
+	virtual ~SComponent() override = default;
 
 	template <typename T = SActor>
 	T* GetOwner() const

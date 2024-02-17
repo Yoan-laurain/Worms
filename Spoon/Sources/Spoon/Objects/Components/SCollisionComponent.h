@@ -23,7 +23,7 @@ public:
 class SPOON_API PolygonShape : public BaseShape
 {
 public:
-	PolygonShape( SActor* _owner) : BaseShape(_owner), Vertices() {}
+	PolygonShape( SActor* _owner) : BaseShape(_owner) {}
 
 	std::vector<FVector2D> Vertices;
 };

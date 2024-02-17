@@ -7,13 +7,13 @@
 class SPOON_API DrawingWidgetInterfaceManager
 {
     public:
-        static DrawingWidgetInterfaceManager& getInstance();
+        static DrawingWidgetInterfaceManager& GetInstance();
 
-        void setWidgetDrawingInterface(std::shared_ptr<DrawingWidgetInterface> interface);
+        void SetWidgetDrawingInterface(const std::shared_ptr<DrawingWidgetInterface>& Interface);
 
-        std::shared_ptr<DrawingWidgetInterface> getWidgetDrawingInterface() const;
+        std::shared_ptr<DrawingWidgetInterface> GetWidgetDrawingInterface() const;
 
     private:
         DrawingWidgetInterfaceManager() = default;
-        std::shared_ptr<DrawingWidgetInterface> widgetDrawingInterface;
+        std::shared_ptr<DrawingWidgetInterface> WidgetDrawingInterface;
 };
