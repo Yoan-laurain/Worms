@@ -44,7 +44,7 @@ class WormsPlayer : public SPlayer, public ITurnObserver
 		void SetBeingHit(bool BeingHit);
 		void HandlePlayerDeath();
 	
-		WormsPlayerController* PlayerController;
+		std::unique_ptr<WormsPlayerController> PlayerController;
 	
 		bool bBeenHit;
 

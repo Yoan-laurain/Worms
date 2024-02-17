@@ -30,7 +30,8 @@ WormsPlayer::WormsPlayer()
 
 	WeaponStrategy = Weapons[0];
 
-	PlayerController = new WormsPlayerController();
+	WormsPlayerController* PC = new WormsPlayerController();
+	PlayerController = std::unique_ptr<WormsPlayerController>(PC);
 	PlayerController->Player = this;
 	PlayerController->ApplyBinding();
 }
@@ -43,13 +44,10 @@ WormsPlayer::~WormsPlayer()
 	{
 		Level->ATurnManager->OnEndGame();
 	}
-
-	delete PlayerController;
 }
 
 void WormsPlayer::Init()
 {
-	// TODO : Store the texture path in a config file
 	GetPolygonComponent()->TexturePath = PlayerId == 0 ? Config::Player1Right : Config::Player2Right;
 	
 	CreateHUD();
