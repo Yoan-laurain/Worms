@@ -1,9 +1,8 @@
 #include "ImageWidget.h"
 #include "..\Renderer\DrawingWidgetInterface.h"
-#include "Core/Window.h"
 #include "..\Renderer\DrawingWidgetInterfaceManager.h"
 
-ImageWidget::ImageWidget() : ImagePath("")
+ImageWidget::ImageWidget()
 {
 }
 

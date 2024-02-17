@@ -18,6 +18,8 @@
 
 #include <Core/Level.h>
 
+#include "Widgets/Image/ImageWidget.h"
+
 // Todo faire un vrai truc pour un bon fichier config pour l'engine :/
 namespace Configuration
 {
@@ -458,6 +460,25 @@ void SfmlWindow::SetWidgetDrawingInterface(const char* _interfaceName)
 	}
 
 	std::cout << "Interface not found" << std::endl;
+}
+
+sf::Sprite& SfmlWindow::GetSprite(const ImageWidget& image)
+{
+	if (!Application::Get().GetTextureMgr()->IsTextureLoaded(image.ImagePath))
+	{
+		Application::Get().GetTextureMgr()->LoadTexture(image.ImagePath, image.ImagePath);
+	}
+	
+	sf::Texture& texture = Application::Get().GetTextureMgr()->GetTexture(image.ImagePath);
+
+	sf::Sprite* sprite = new sf::Sprite();
+	sprite->setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+	sprite->setPosition(image.worldPosition.X + image.Size.X / 2.f, image.worldPosition.Y + image.Size.Y / 2.f);
+	sprite->setScale(image.Size.X / texture.getSize().x, image.Size.Y / texture.getSize().y);
+	sprite->setTexture(texture);
+	sprite->setRotation(image.Rotation);
+
+	return *sprite;
 }
 
 void SfmlWindow::HandleCursorState()

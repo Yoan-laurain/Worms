@@ -11,10 +11,12 @@ Widget::Widget() :
     , worldPosition(0, 0)
 	, Size(0, 0)
 	, Rotation(0)
-	, BackgroundColor(127,127,127,0)
-	, IsMarkedForDestruction(false)
-	, bIsHovered(false)
-	, bIsEnabled(true)
+	, BaseStyle( { FColor(127, 127, 127, 50), FColor(255, 255, 255, 255), 2.f } )
+	, HoverStyle( { FColor(127, 127, 127, 255), FColor(255, 255, 255, 255), 2.f } )
+	, DisabledStyle( { FColor(127, 127, 127, 50), FColor(255, 0, 0, 255), 2.f } )
+    , IsMarkedForDestruction(false)
+    , bIsHovered(false)
+    , bIsEnabled(true)
 {
 }
 
@@ -81,6 +83,21 @@ void Widget::OnUnhover()
 
 void Widget::Tick(float deltaTime)
 {
+}
+
+Style& Widget::GetStyle() const
+{
+	if (!bIsEnabled)
+	{
+		return const_cast<Style&>(DisabledStyle);
+	}
+
+	if (bIsHovered)
+	{
+		return const_cast<Style&>(HoverStyle);
+	}
+
+	return const_cast<Style&>(BaseStyle);
 }
 
 void Widget::SetIsEnabled(bool bIsEnabled)

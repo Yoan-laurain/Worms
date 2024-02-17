@@ -4,7 +4,6 @@
 #include "WidgetManager.h"
 #include "Library/TVector.h"
 #include "Library/TColor.h"
-#include <memory>
 
 enum class Visibility 
 {
@@ -15,6 +14,21 @@ enum class Visibility
 
 class DrawingWidgetInterface;
 class Window;
+
+struct SPOON_API Style
+{
+    Style (FColor Color, FColor OutlineColor, float OutlineThickness)
+        : Color(Color)
+        , OutlineColor(OutlineColor)
+        , OutlineThickness(OutlineThickness)
+    {
+        
+    }
+    
+    FColor Color;
+    FColor OutlineColor;
+    float OutlineThickness;
+};
 
 class SPOON_API Widget : public SObject
 {
@@ -37,6 +51,8 @@ class SPOON_API Widget : public SObject
         void OnUnhover();
         virtual void Tick(float deltaTime);
 
+        virtual Style& GetStyle() const;
+
         virtual void SetIsEnabled(bool bIsEnabled);
         bool IsEnabled() const;
 
@@ -51,12 +67,16 @@ class SPOON_API Widget : public SObject
         FVector2D worldPosition;
         FVector2D Size;
         float Rotation;
-        FColor BackgroundColor;
         std::function<void()> onHover;
+
+        Style BaseStyle;
+        Style HoverStyle;
+        Style DisabledStyle;
 
         bool IsMarkedForDestruction;
 
     private:
         bool bIsHovered;
         bool bIsEnabled;
+
 };

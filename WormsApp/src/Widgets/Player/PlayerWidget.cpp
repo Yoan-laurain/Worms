@@ -55,7 +55,7 @@ void PlayerWidget::CreateHealthBar()
 	
 	HealthBar->Size = FVector2D(100.f, 10.f);
 	HealthBar->RelativePosition = FVector2D(-HealthBar->Size.X / 2.f, -Player->GetSize().Y * 2);
-	HealthBar->BackgroundColor = FColor(127, 127, 127, 150);
+	HealthBar->BaseStyle = { FColor(127, 127, 127, 150), FColor(0, 0, 0, 0), 0.f };
 	HealthBar->color = FColor(0, 255, 0, 255);
 	SetHealthBarProgress(Player->CurrentHealth, Player->MaxHealth);
 	
@@ -87,7 +87,6 @@ ButtonWidget* PlayerWidget::CreateWeaponButton(const std::string& ImagePath, std
 	{
 		Button->Size = FVector2D(ButtonSize);
 		Button->RelativePosition = FVector2D(Config::CenterOfSection + Config::SectionForOnePlayer * Player->PlayerId + OffsetX - Button->Size.X / 2.f, 100.f);
-		Button->BackgroundColor = FColor(127, 127, 127, 50);
 	
 		Button->SetBackgroundImage(ImagePath);
 

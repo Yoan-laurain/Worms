@@ -83,7 +83,8 @@ void WidgetManager::HandleWidgetOnClicked(const FVector2D& mousePosition)
 				ButtonWidget* button = dynamic_cast<ButtonWidget*>(widget.get());
 				if (button)
 				{
-					button->OnClick(); 
+					button->OnClick();
+					button->bIsSelected = true;
 					UnSelectAllOtherButtons(button);
 				}
 			}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DrawingWidgetInterface.h"
+#include "Core/Core.h"
 #include <memory>
 
 class SPOON_API DrawingWidgetInterfaceManager

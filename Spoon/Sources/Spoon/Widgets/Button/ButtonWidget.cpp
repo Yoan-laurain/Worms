@@ -9,9 +9,10 @@
 #include "..\Renderer\ImGui\ImGuiWidgetRenderer.h"
 
 ButtonWidget::ButtonWidget() 
-	: OnClick(nullptr)
-	, textBlock(nullptr)
+	: SelectedStyle( { FColor(127, 127, 127, 255), FColor(255, 255, 255, 255), 2.f } )
+	, OnClick(nullptr)
 	, bIsSelected(false)
+	, textBlock(nullptr)
 {
 }
 
@@ -93,4 +94,14 @@ ImageWidget* ButtonWidget::GetImage() const
 TextBlockWidget* ButtonWidget::GetTextBlock() const
 {
 	return textBlock.get();
+}
+
+Style& ButtonWidget::GetStyle() const
+{
+	if (bIsSelected)
+	{
+		return const_cast<Style&>(SelectedStyle);
+	}
+	
+	return Widget::GetStyle();
 }

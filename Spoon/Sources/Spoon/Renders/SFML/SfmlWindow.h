@@ -46,6 +46,7 @@ public:
 	void RenderDrawable( sf::Drawable& _drawable);
 
 	void SetWidgetDrawingInterface(const char* _interfaceName);
+	sf::Sprite& GetSprite(const ImageWidget& image);
 
 	void HandleCursorState();
 

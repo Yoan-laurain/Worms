@@ -20,6 +20,10 @@ class SPOON_API ButtonWidget : public Widget
 		ImageWidget* GetImage() const;
 		TextBlockWidget* GetTextBlock() const;
 
+		Style& GetStyle() const override;
+
+		Style SelectedStyle;
+
 		std::function<void()> OnClick; 
 
 		bool bIsSelected;
