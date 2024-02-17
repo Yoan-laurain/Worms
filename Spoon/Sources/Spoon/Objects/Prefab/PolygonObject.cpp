@@ -13,7 +13,7 @@ SPolygonComponent* SPolygonObject::GetPolygonComponent() const
 	return PolygonComponent;
 }
 
-std::vector<FVector2D> SPolygonObject::GetVertices()
+std::vector<FVector2D>& SPolygonObject::GetVertices()
 {
 	if (bUpdateVerticesRequired)
 	{
@@ -32,29 +32,29 @@ std::vector<FVector2D> SPolygonObject::GetVertices()
 	return Vertices;
 }
 
-bool SPolygonObject::IsInBound(const FVector2D& _loc)
+bool SPolygonObject::IsInBound(const FVector2D& Loc)
 {
 	if (GetVertices().empty())
 	{
 		return false;
 	}
 
-	FVector2D normal;
-	float depth;
-	const bool Result = Collision::IntersectCirclePolygon(_loc, 5.0f, GetLocation(), GetVertices(), normal, depth);
+	FVector2D Normal;
+	float Depth;
+	const bool Result = Collision::IntersectCirclePolygon(Loc, 5.0f, GetLocation(), GetVertices(), Normal, Depth);
 
 	return Result;
 }
 
-void SPolygonObject::Move(const FVector2D& loc)
+void SPolygonObject::Move(const FVector2D& Loc)
 {
-	SActor::Move(loc);
+	SActor::Move(Loc);
 	bUpdateVerticesRequired = true;
 }
 
-void SPolygonObject::AddForce(const FVector2D& force)
+void SPolygonObject::AddForce(const FVector2D& Force)
 {
-	SActor::AddForce(force);
+	SActor::AddForce(Force);
 	bUpdateVerticesRequired = true;
 }
 

@@ -15,7 +15,7 @@ class SPOON_API WidgetManager
 
         static WidgetManager* GetInstance();
 
-        void AddWidget(std::shared_ptr<Widget> Widget);
+        void AddWidget(const std::shared_ptr<Widget>& Widget);
         
         void DestroyWidgetMarkedForDestruction();
         void DestroyWidget(const std::shared_ptr<Widget>& Widget);
@@ -28,7 +28,7 @@ class SPOON_API WidgetManager
         void BeforeRenderImGui();
         void AfterRenderImGui();
 
-        void Tick(float deltaTime);
+        void Tick(float DeltaTime);
 
     private:
         void UnSelectAllOtherButtons(const Widget* Widget);

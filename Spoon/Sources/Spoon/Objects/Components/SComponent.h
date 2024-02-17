@@ -12,7 +12,7 @@ class SPOON_API SComponent : public SObject
 
 public:
 
-	SComponent(SActor* owner = nullptr);
+	SComponent(SActor* Owner = nullptr);
 
 	virtual ~SComponent() override = default;
 

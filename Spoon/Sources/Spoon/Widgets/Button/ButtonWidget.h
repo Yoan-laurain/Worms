@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Widget.h"
-#include "Widgets/TextBlock/TextBlockWidget.h" // On peut pas forward
-#include "Widgets/Image/ImageWidget.h" // On peut pas forward
+#include "Widgets/TextBlock/TextBlockWidget.h" 
+#include "Widgets/Image/ImageWidget.h"
 
 class SPOON_API ButtonWidget : public Widget
 {

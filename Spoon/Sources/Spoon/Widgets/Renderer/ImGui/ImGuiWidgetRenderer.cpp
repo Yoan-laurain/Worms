@@ -5,11 +5,11 @@
 #include "Widgets/TextBlock/TextBlockWidget.h"
 #include "Widgets/ProgressBar/ProgressBarWidget.h"
 #include "Widgets/Button/ButtonWidget.h"
-#include <imgui.h>
-#include <imgui-SFML.h>
 #include "Core/Application.h"
 #include "Widgets/Widget.h"
 #include "Renders/SFML/TextureMgr.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 void ImGuiWidgetRenderer::RenderImage(const ImageWidget& Image)
 {

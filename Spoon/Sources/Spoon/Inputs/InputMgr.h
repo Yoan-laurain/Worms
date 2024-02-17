@@ -25,7 +25,7 @@ class InputMgr final
 
 		void AddNewPlayer();
 
-		void BindAction(int PlayerIndex, InputAction InputAction, std::function<void(float)> Func, InputType InputType);
+		void BindAction(int PlayerIndex, InputAction InputAction, const std::function<void(float)>& Func, InputType InputType);
 
 	private:
 

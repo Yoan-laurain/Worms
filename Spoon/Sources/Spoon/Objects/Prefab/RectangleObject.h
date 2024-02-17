@@ -10,6 +10,6 @@ class SPOON_API SRectangleObject : public SPolygonObject
 		virtual ~SRectangleObject() override = default;
 	
 		/* SActor IMPLEMENTATION */
-		void SetTransform(const FTransform& transform) override;
+		void SetTransform(const FTransform& Transform) override;
 		/* END SActor IMPLEMENTATION */
 };

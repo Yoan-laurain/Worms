@@ -16,8 +16,8 @@ class SPOON_API SShapeComponent : public SComponent
 	GENERATE()
 	
 	public:
-		SShapeComponent(SActor* _owner)
-			: SComponent(_owner)
+		SShapeComponent(SActor* Owner)
+			: SComponent(Owner)
 			, ObjectColor(FColor::Zero())
 			, Origin(0.5f)
 			, TexturePath("")
@@ -42,8 +42,8 @@ class SPOON_API SCircleComponent : public SShapeComponent
 	GENERATE()
 	
 	public:
-		SCircleComponent(SActor* _owner)
-			: SShapeComponent(_owner)
+		SCircleComponent(SActor* Owner)
+			: SShapeComponent(Owner)
 			, Radius(0)
 		{
 			Type = ActorType_Circle;
@@ -57,8 +57,8 @@ class SPOON_API SPolygonComponent : public SShapeComponent
 	GENERATE()
 	
 	public:
-		SPolygonComponent(SActor* _owner)
-			: SShapeComponent(_owner)
+		SPolygonComponent(SActor* Owner)
+			: SShapeComponent(Owner)
 			, Name("")
 		{
 			Type = ActorType_Polygon;

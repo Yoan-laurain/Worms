@@ -42,20 +42,22 @@ class SPOON_API Widget : public SObject
         void RemoveFromParent();
 
         void SetParent(SObject* Parent);
+    
         bool UpdateWorldPositionRelativeToParent();
-
         void UpdateWorldPosition();
+    
         bool IsPointInWidget( const FVector2D& MousePosition);
 
         bool IsHovered() const;
         void OnHover();
         void OnUnhover();
+        bool HandleHoverState(const FVector2D& MousePosition);
 
         virtual Style& GetStyle() const;
 
         virtual void SetIsEnabled(bool bIsEnabled);
         bool IsEnabled() const;
-
+    
         virtual void Tick(float DeltaTime);
         
         Visibility visibility;

@@ -7,9 +7,9 @@ SCircleObject::SCircleObject() : CircleComponent(CreateComponent<SCircleComponen
 	CircleComponent->ObjectColor = FColor(80, 40, 200);
 }
 
-void SCircleObject::SetRadius(const float radius)
+void SCircleObject::SetRadius(const float Radius)
 {
-	CircleComponent->Radius = radius;
+	CircleComponent->Radius = Radius;
 }
 
 float SCircleObject::GetRadius() const
@@ -17,9 +17,9 @@ float SCircleObject::GetRadius() const
 	return CircleComponent->Radius;
 }
 
-void SCircleObject::SetColor(const FColor& color)
+void SCircleObject::SetColor(const FColor& Color)
 {
-	CircleComponent->ObjectColor = color;
+	CircleComponent->ObjectColor = Color;
 }
 
 const FColor& SCircleObject::GetColor() const
@@ -32,16 +32,16 @@ SCircleComponent* SCircleObject::GetCircleComponent() const
 	return CircleComponent;
 }
 
-bool SCircleObject::IsInBound(const FVector2D& _loc)
+bool SCircleObject::IsInBound(const FVector2D& Loc)
 {
-	FVector2D normal;
-	float depth;
+	FVector2D Normal;
+	float Depth;
 
-	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, _loc, 5.f, normal, depth);
+	return Collision::IntersectCircles(GetLocation(), CircleComponent->Radius, Loc, 5.f, Normal, Depth);
 }
 
-void SCircleObject::SetTransform(const FTransform& transform)
+void SCircleObject::SetTransform(const FTransform& Transform)
 {
-	SActor::SetTransform(transform);
-	CircleComponent->Radius = transform.Size.X / 2.f;
+	SActor::SetTransform(Transform);
+	CircleComponent->Radius = Transform.Size.X / 2.f;
 }

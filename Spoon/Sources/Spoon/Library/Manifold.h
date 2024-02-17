@@ -1,56 +1,56 @@
 #pragma once
 
-#include <Objects/SActor.h>
+class SActor;
 
 class OBJECT_API Manifold
 {
-public:
-    SActor* BodyA;
-    SActor* BodyB;
-    FVector2D Normal;
-    float Depth;
-    FVector2D Contact1;
-    FVector2D Contact2;
-    int ContactCount;
+    public:
+        SActor* BodyA;
+        SActor* BodyB;
+        FVector2D Normal;
+        float Depth;
+        FVector2D Contact1;
+        FVector2D Contact2;
+        int ContactCount;
 
-    Manifold()
-        : BodyA(nullptr),
-        BodyB(nullptr),
-        Normal(FVector2D::Zero()),
-        Depth(0.f),
-        Contact1(FVector2D::Zero()),
-        Contact2(FVector2D::Zero()),
-        ContactCount(0)
-    {
-    }
+        Manifold()
+            : BodyA(nullptr),
+            BodyB(nullptr),
+            Normal(FVector2D::Zero()),
+            Depth(0.f),
+            Contact1(FVector2D::Zero()),
+            Contact2(FVector2D::Zero()),
+            ContactCount(0)
+        {
+        }
 
-    Manifold(
-        SActor* bodyA, SActor* bodyB,
-         FVector2D& normal, float depth,
-         FVector2D& contact1,  FVector2D& contact2, int contactCount)
-        : BodyA(bodyA),
-        BodyB(bodyB),
-        Normal(normal),
-        Depth(depth),
-        Contact1(contact1),
-        Contact2(contact2),
-        ContactCount(contactCount)
-    {
-    }
+        Manifold(
+            SActor* BodyA, SActor* BodyB,
+            const FVector2D& Normal, const float Depth,
+            const FVector2D& Contact1, const FVector2D& Contact2, const int ContactCount)
+            : BodyA(BodyA),
+            BodyB(BodyB),
+            Normal(Normal),
+            Depth(Depth),
+            Contact1(Contact1),
+            Contact2(Contact2),
+            ContactCount(ContactCount)
+        {
+        }
 
-    Manifold& operator=( Manifold& other)
-    {
-        if (this == &other)
+        Manifold& operator=(const Manifold& Other)
+        {
+            if (this == &Other)
+                return *this;
+
+            BodyA = Other.BodyA;
+            BodyB = Other.BodyB;
+            Normal = Other.Normal;
+            Depth = Other.Depth;
+            Contact1 = Other.Contact1;
+            Contact2 = Other.Contact2;
+            ContactCount = Other.ContactCount;
+
             return *this;
-
-        BodyA = other.BodyA;
-        BodyB = other.BodyB;
-        Normal = other.Normal;
-        Depth = other.Depth;
-        Contact1 = other.Contact1;
-        Contact2 = other.Contact2;
-        ContactCount = other.ContactCount;
-
-        return *this;
-    }
+        }
 };

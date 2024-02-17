@@ -64,8 +64,8 @@ void Widget::UpdateWorldPosition()
 
 bool Widget::IsPointInWidget(const FVector2D& MousePosition)
 {
-	if (MousePosition.X > MousePosition.X && MousePosition.X < MousePosition.X + Size.X &&
-		MousePosition.Y > MousePosition.Y && MousePosition.Y < MousePosition.Y + Size.Y)
+	if ( MousePosition.X >= WorldPosition.X && MousePosition.X <= WorldPosition.X + Size.X &&
+		MousePosition.Y >= WorldPosition.Y && MousePosition.Y <= WorldPosition.Y + Size.Y )
 	{
 		return true;
 	}
@@ -106,7 +106,7 @@ Style& Widget::GetStyle() const
 	return const_cast<Style&>(BaseStyle);
 }
 
-void Widget::SetIsEnabled(bool bIsEnabled)
+void Widget::SetIsEnabled(const bool bIsEnabled)
 {
 	this->bIsEnabled = bIsEnabled;
 
@@ -119,4 +119,24 @@ void Widget::SetIsEnabled(bool bIsEnabled)
 bool Widget::IsEnabled() const
 {
 	return bIsEnabled;
+}
+
+bool Widget::HandleHoverState(const FVector2D& MousePosition)
+{
+	if (IsPointInWidget(MousePosition) && !IsHovered() )
+	{
+		OnHover();
+		return true;
+	}
+	if (IsHovered() && !IsPointInWidget(MousePosition))
+	{
+		OnUnhover(); 
+		return false;
+	}
+	if (IsHovered() && IsPointInWidget(MousePosition))
+	{
+		return true;
+	}
+
+	return false;
 }

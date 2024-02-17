@@ -1,14 +1,14 @@
 #include "RectangleObject.h"
 #include "Objects/Components/SShapeComponent.h"
 
-void SRectangleObject::SetTransform(const FTransform& transform)
+void SRectangleObject::SetTransform(const FTransform& Transform)
 {
-	SActor::SetTransform(transform);
+	SActor::SetTransform(Transform);
 	
 	PolygonComponent->Points.clear();
 
-	const float X = transform.Size.X;
-	const float Y = transform.Size.Y;
+	const float X = Transform.Size.X;
+	const float Y = Transform.Size.Y;
 
 	PolygonComponent->Points.emplace_back(-X, -Y);
 	PolygonComponent->Points.emplace_back(-X, Y);

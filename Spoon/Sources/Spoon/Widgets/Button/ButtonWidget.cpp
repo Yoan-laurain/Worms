@@ -1,12 +1,12 @@
 #include "ButtonWidget.h"
 #include "../TextBlock/TextBlockWidget.h"
-#include "..\Renderer\DrawingWidgetInterface.h"
+#include "../Renderer/DrawingWidgetInterface.h"
 #include "Core/Window.h"
 #include "Objects/SActor.h"
 #include "Library/WidgetHandler.h"
 #include "Widgets/Image/ImageWidget.h"
-#include "..\Renderer\DrawingWidgetInterfaceManager.h"
-#include "..\Renderer\ImGui\ImGuiWidgetRenderer.h"
+#include "../Renderer\DrawingWidgetInterfaceManager.h"
+#include "../Renderer\ImGui\ImGuiWidgetRenderer.h"
 
 ButtonWidget::ButtonWidget() 
 	: SelectedStyle( { FColor(127, 127, 127, 255), FColor(255, 255, 255, 255), 2.f } )

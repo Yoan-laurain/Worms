@@ -20,21 +20,17 @@ struct InputActionInfo
 class PlayerInputAction final
 {
 public:
-	PlayerInputAction(unsigned playerIndex);
+	PlayerInputAction();
 
-	void SetInputAction(InputAction action, float value);
-	void OnReleased(InputAction action);
+	void SetInputAction(InputAction Action, float Value);
+	void OnReleased(InputAction Action);
 
-	float GetInputActionValue(InputAction action) const;
+	float GetInputActionValue(InputAction Action) const;
 
-	bool IsInputActionPressed(InputAction action) const;
-	bool IsInputActionReleased(InputAction action) const;
+	bool IsInputActionPressed(InputAction Action) const;
+	bool IsInputActionReleased(InputAction Action) const;
 
-	void BindAction(InputAction inputAction, std::function<void(float)> func, InputType inputType);
+	void BindAction(InputAction InputAction, const std::function<void(float)>& Func, InputType InputType);
 
 	std::map<InputAction, InputActionInfo> InputActionsInfo;
-
-private:
-	unsigned PlayerIndex;
-
 };

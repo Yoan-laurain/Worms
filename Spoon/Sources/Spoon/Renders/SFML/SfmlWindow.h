@@ -36,14 +36,17 @@ public:
 	
 	unsigned int GetWidth() const override;
 	unsigned int GetHeight() const override;
-	void SetTexture(SShapeComponent* _component, sf::Shape& _shape);
+	void SetTexture(const SShapeComponent* _component, sf::Shape& _shape);
 
 	void DrawCircle(class SCircleComponent* _component, sf::CircleShape& _circle);
-	void DrawConvex(class SPolygonComponent* _component, sf::ConvexShape& _convex);
-
-	void SetCollidingState(sf::Shape& _shape, SActor* _actor);
-	void SetCommonShapeProperties(sf::Shape& _shape, class SShapeComponent* _actor);
-	void RenderDrawable( sf::Drawable& _drawable);
+	void DrawConvex(const class SPolygonComponent* _component, sf::ConvexShape& _convex);
+	
+#if DEBUG
+	void SetCollidingState(sf::Shape& _shape, const SActor* _actor);
+#endif
+	
+	void SetCommonShapeProperties(sf::Shape& _shape, const class SShapeComponent* _actor);
+	void RenderDrawable(const sf::Drawable& _drawable);
 
 	void SetWidgetDrawingInterface(const char* _interfaceName);
 	sf::Sprite& GetSprite(const ImageWidget& image);
@@ -88,7 +91,7 @@ private:
 
 	void DrawImGuiWin();
 	void HandleSelectedWidgetInterfaceChanged();
-	void OnWidgetInterfaceSet(const char* key, std::shared_ptr<DrawingWidgetInterface> value); 
+	void OnWidgetInterfaceSet(const char* key, const std::shared_ptr<DrawingWidgetInterface>& value); 
 
 	// Function to callback
 	EventCallBackFn EventCallBack;

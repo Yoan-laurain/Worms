@@ -6,6 +6,7 @@
 
 class SActor;
 
+#if DEBUG
 enum DebugShape
 {
 	SPHERE,
@@ -16,6 +17,7 @@ struct DebugShapeData
 	FTransform Transform;
 	DebugShape Shape;
 };
+#endif
 
 // TODO Levels
 // je dois déplacer pour faire en sorte que ce soit pas à moi de faire ça.
@@ -28,7 +30,7 @@ class SPOON_API Level
 public:
 
 	Level();
-	virtual ~Level();
+	virtual ~Level() = default;
 
 	// Le DestroyObject might not work so be carefull
 	void DestroyObject(SActor* _actor);
@@ -46,10 +48,13 @@ public:
 		// Cast vide du coup c mort.
 		return tmp;
 	}
-
+	
+#if DEBUG
 	void ClearDebugShapes();
+#endif
+	
 	int GetEntityCount() const;
-	void ResolveCollision(Manifold& contact);
+	void ResolveCollision(const Manifold& contact);
 
 protected:
 	
@@ -60,16 +65,18 @@ private:
 
 	void UpdateEntity(double deltatime);
 
-	AlignAxisBoundingBox& GetAABB(SActor* obj);
-	void HandleObjectOutOfWindow(SActor* obj);	
+	AlignAxisBoundingBox& GetAABB(SActor* Obj);
+	void HandleObjectOutOfWindow(SActor* Obj);	
 	
 	void RemoveObject(SActor* obj);
 
 	void AddObject(SActor* obj);
-	void AddDebugShape(const DebugShapeData& shape);
+
+#if DEBUG
+	void AddDebugShape(const DebugShapeData& Shape);
+#endif
 
 	void NarrowPhase(SActor* entity, SActor* obj);
-
 protected:
 
 	// Entity actuellement dans le world.
@@ -77,7 +84,9 @@ protected:
 
 	std::vector<std::unique_ptr<SActor>> AddEntityList;
 
+#if DEBUG
 	std::vector<DebugShapeData> DebugShapes;
+#endif
 
 	bool bIsListBeingEdit;
 };
