@@ -8,6 +8,7 @@
 class SObject;
 class Widget;
 
+// TODO : Handle deletion of children widgets
 class SPOON_API WidgetManager
 {
     public:

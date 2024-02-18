@@ -26,6 +26,8 @@ class SPOON_API SShapeComponent : public SComponent
 			
 		}
 
+		virtual ~SShapeComponent() override = default;
+
 		FActorType GetType() const { return Type; }
 
 		FColor ObjectColor;
@@ -48,6 +50,8 @@ class SPOON_API SCircleComponent : public SShapeComponent
 		{
 			Type = ActorType_Circle;
 		}
+
+		virtual ~SCircleComponent() override = default;
 	
 		float Radius;
 };
@@ -63,6 +67,8 @@ class SPOON_API SPolygonComponent : public SShapeComponent
 		{
 			Type = ActorType_Polygon;
 		}
+
+		virtual ~SPolygonComponent() override = default;
 
 		std::vector<FVector2D> Points;
 		std::string Name;
