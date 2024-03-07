@@ -23,4 +23,7 @@ class WormsPlayerController
 
         WormsPlayer* Player;
         float PlayerSpeed;
+
+        // Forward vector temporaire parce que la flemme et j'ai pas la rotation du player.
+        FVector2D ForwardVector;
 };

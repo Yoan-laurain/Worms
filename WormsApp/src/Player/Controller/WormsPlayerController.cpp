@@ -11,6 +11,7 @@
 WormsPlayerController::WormsPlayerController() 
     : Player(nullptr)
     , PlayerSpeed(10.f)
+    , ForwardVector(FVector2D::Right())
 {
 }
 
@@ -35,15 +36,14 @@ void WormsPlayerController::Shoot()
         return;
     
     FVector2D Location = Player->GetLocation();
-    Location.X += Player->GetForwardVector().X * Player->GetSize().X + 10.f;
+    Location.X += ForwardVector.X * 2.5f * Player->GetSize().X;
 
     FTransform ShootingPoint(Location, FVector2D(0.f), 0.f);
 
-    // TODO : Remplacer par le forward vector du player quand il sera correctement orienté
-    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), ShootingPoint, FVector2D(1.f, 0.f)))
+    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), ShootingPoint, ForwardVector))
     {
         Player->bHasShot = true;
-        Player->MyPlayerWidget->UpdateAmountOfAmmo(); 
+        Player->MyPlayerWidget->UpdateAmountOfAmmo();
         Player->MyPlayerWidget->StopTimer();
     }
 }
@@ -78,7 +78,7 @@ void WormsPlayerController::MoveHorizontal(float Value, float Sign)
     if (Value > 0.f)
     {	
         FVector2D Direction = FVector2D(Sign * Value, 0.f);
-
+        ForwardVector = Direction;
         Player->AddForce(Direction * Value * PlayerSpeed);
 
         UpdateSpriteDirection(Direction);

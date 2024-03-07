@@ -49,7 +49,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-    # target_compile_options(${PROJECT_NAME} PRIVATE /wd4244 /wd4251 /wd4311)
+    target_compile_options(${PROJECT_NAME} PRIVATE /wd4251 )
 endif()
 
 add_compile_definitions(SN_BUILD_DLL)
@@ -76,3 +76,9 @@ message("Target file : ${TARGET_FILE}")
 message("Target files dir : ${TARGET_FILE_DIR}")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${TARGET_FILE}  ${TARGET_FILE_DIR} COMMAND_EXPAND_LISTS )
+
+file(GLOB_RECURSE ASSETS "*.ttf")
+
+foreach(ASSET ${ASSETS})
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy  ${ASSET}  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/Ressources COMMAND_EXPAND_LISTS )
+endforeach()
