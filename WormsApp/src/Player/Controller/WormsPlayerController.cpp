@@ -36,15 +36,14 @@ void WormsPlayerController::Shoot()
         return;
     
     FVector2D Location = Player->GetLocation();
-    Location.X += ForwardVector.X * Player->GetSize().X + 10.f;
+    Location.X += ForwardVector.X * 2.5f * Player->GetSize().X;
 
     FTransform ShootingPoint(Location, FVector2D(0.f), 0.f);
 
-    // TODO : Remplacer par le forward vector du player quand il sera correctement orienté
-    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), ShootingPoint, FVector2D(1.f, 0.f)))
+    if (Player->WeaponStrategy->Shoot(*Player->GetWorld(), ShootingPoint, ForwardVector))
     {
         Player->bHasShot = true;
-        Player->MyPlayerWidget->UpdateAmountOfAmmo(); 
+        Player->MyPlayerWidget->UpdateAmountOfAmmo();
         Player->MyPlayerWidget->StopTimer();
     }
 }

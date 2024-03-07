@@ -47,7 +47,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
-file(GLOB_RECURSE ASSETS "*.png")
+file(GLOB_RECURSE ASSETS "*.png" "*.ttf")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/Ressources/ COMMAND_EXPAND_LISTS )
 
