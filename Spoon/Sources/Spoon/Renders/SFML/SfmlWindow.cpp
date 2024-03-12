@@ -221,9 +221,10 @@ void SfmlWindow::DrawConvex(const SPolygonComponent* Component, sf::ConvexShape&
 		point.setFillColor(sf::Color::White);
 		
 		WindowRef->draw(point);
+#endif // DEBUG
 	}
+#if DEBUG
 	SetCollidingState(DrawShape, Component->GetOwner());
-
 #endif
 	
 	SetTexture(Component, DrawShape);
