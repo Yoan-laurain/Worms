@@ -82,7 +82,8 @@ private:
 	struct Data
 	{
 		std::string Title = "";
-		unsigned int Width, Height = 0;
+		unsigned int Width = 0;
+		unsigned int Height = 0;
 	};
 
 	Data m_Data;
